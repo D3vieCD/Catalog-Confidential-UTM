@@ -42,3 +42,16 @@ const formatDate = (dateString: string) => {
       </div>
     </motion.div>
   );
+  <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+            {reports.map((report, index) => (
+              <motion.tr
+                key={report.id}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: index * 0.05 }}
+                className="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
+              >
+                {/* ... Celulele tabelului ... */}
+              </motion.tr>
+            ))}
+          </tbody>
