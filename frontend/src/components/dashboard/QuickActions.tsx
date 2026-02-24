@@ -42,3 +42,15 @@ export const QuickActions: React.FC<QuickActionsProps> = ({ actions }) => {
       color: 'from-orange-500 to-orange-600',
       route: '/catalog/add-absence'
     },
+    {
+      id: 'generate-report',
+      title: 'Generează Raport',
+      description: 'Creează rapoarte pentru grupe sau studenți',
+      icon: (
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 17v1a1 1 0 001 1h4a1 1 0 001-1v-1m3-2V8a2 2 0 00-2-2H8a2 2 0 00-2 2v6m9-4h-6"/>
+        </svg>
+      ),
+      color: 'from-green-500 to-green-600',
+      route: '/reports'
+    },
