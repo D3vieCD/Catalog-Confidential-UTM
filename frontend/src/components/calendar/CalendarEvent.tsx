@@ -97,3 +97,80 @@ export const CalendarEventCard: React.FC<CalendarEventCardProps> = ({
               {event.description}
             </p>
           )}
+          <div className="flex items-center gap-4 text-xs text-gray-500 dark:text-gray-400">
+            <div className="flex items-center gap-1">
+              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+              {event.startTime} - {event.endTime}
+            </div>
+
+            {event.location && (
+              <div className="flex items-center gap-1">
+                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                </svg>
+                {event.location}
+              </div>
+            )}
+
+            {event.professor && (
+              <div className="flex items-center gap-1">
+                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                </svg>
+                {event.professor}
+              </div>
+            )}
+
+            {event.group && (
+              <div className="flex items-center gap-1">
+                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                </svg>
+                {event.group}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  );
+};
+
+interface CalendarEventListProps {
+  events: CalendarEvent[];
+  title?: string;
+  onEventClick?: (event: CalendarEvent) => void;
+}
+
+export const CalendarEventList: React.FC<CalendarEventListProps> = ({
+  events,
+  title,
+  onEventClick
+}) => {
+  return (
+    <div className="space-y-3">
+      {title && (
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+          {title}
+        </h3>
+      )}
+      
+      {events.length === 0 ? (
+        <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+          Nu există evenimente programate
+        </div>
+      ) : (
+        events.map((event) => (
+          <CalendarEventCard
+            key={event.id}
+            event={event}
+            onClick={() => onEventClick?.(event)}
+          />
+        ))
+      )}
+    </div>
+  );
+};
