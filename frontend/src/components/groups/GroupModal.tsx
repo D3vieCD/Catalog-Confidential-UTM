@@ -242,3 +242,59 @@ export const GroupModal: React.FC<GroupModalProps> = ({
             />
           </div>
         </div>
+                {/* Facultate cu inline add */}
+        <div>
+          <label className="block text-sm font-semibold text-gray-600 dark:text-gray-400 mb-2 uppercase tracking-wide">
+            Facultate *
+          </label>
+          <div className="flex gap-2">
+            <div className="flex-1">
+              <CustomDropdown
+                value={formData.faculty}
+                onChange={handleFacultyChange}
+                options={[
+                  { value: '', label: 'Selectează facultatea' },
+                  ...faculties.map(fac => ({ value: fac, label: fac }))
+                ]}
+                placeholder="Selectează facultatea"
+              />
+            </div>
+            <button
+              type="button"
+              onClick={() => setShowNewFaculty(!showNewFaculty)}
+              className="px-4 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-xl transition-colors duration-200"
+              title="Adaugă facultate nouă"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4"/>
+              </svg>
+            </button>
+          </div>
+
+          <AnimatePresence>
+            {showNewFaculty && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                className="mt-2 flex gap-2"
+              >
+                <input
+                  type="text"
+                  value={newFacultyInput}
+                  onChange={(e) => setNewFacultyInput(e.target.value)}
+                  placeholder="Nume facultate nouă"
+                  className="flex-1 px-4 py-2 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 dark:text-white placeholder-gray-400"
+                  onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddFaculty())}
+                />
+                <button
+                  type="button"
+                  onClick={handleAddFaculty}
+                  className="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-xl transition-colors text-sm font-medium"
+                >
+                  Salvează
+                </button>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
