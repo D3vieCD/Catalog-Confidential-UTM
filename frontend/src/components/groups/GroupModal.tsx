@@ -146,3 +146,17 @@ export const GroupModal: React.FC<GroupModalProps> = ({
     }
     setErrors([]);
   }, [group, isOpen]);
+    const handleFacultyChange = (faculty: string) => {
+    setFormData({ ...formData, faculty, specialization: '' });
+    setSpecializations(getSpecializations(faculty));
+  };
+
+  const handleAddFaculty = () => {
+    if (newFacultyInput.trim()) {
+      const updated = addFaculty(newFacultyInput.trim());
+      setFaculties(updated);
+      handleFacultyChange(newFacultyInput.trim());
+      setNewFacultyInput('');
+      setShowNewFaculty(false);
+    }
+  };
