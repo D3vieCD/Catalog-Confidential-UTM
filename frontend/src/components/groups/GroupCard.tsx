@@ -55,3 +55,12 @@ export const GroupCard: React.FC<GroupCardProps> = ({ group, onEdit, onDelete, i
           </svg>
         </div>
       </div>
+            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-1 pr-16">
+        {group.name}
+      </h3>
+
+      <div className="mb-4">
+        <span className="px-3 py-1 bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-300 text-xs font-medium rounded-full">
+          ANUL {group.year}
+        </span>
+      </div>
