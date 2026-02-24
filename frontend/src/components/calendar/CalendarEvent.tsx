@@ -50,3 +50,31 @@ export const CalendarEventCard: React.FC<CalendarEventCardProps> = ({
         );
     }
   };
+  const getEventLabel = (type: CalendarEvent['type']) => {
+    switch (type) {
+      case 'exam': return 'Examen';
+      case 'class': return 'Curs';
+      case 'meeting': return 'Ședință';
+      case 'deadline': return 'Termen limită';
+      case 'holiday': return 'Sărbătoare';
+      default: return 'Eveniment';
+    }
+  };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.2 }}
+      whileHover={{ scale: 1.02, y: -2 }}
+      onClick={onClick}
+      className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 cursor-pointer hover:shadow-md transition-all"
+    >
+      <div className="flex items-start gap-3">
+        {/* Event Icon */}
+        <div 
+          className="p-2 rounded-lg text-white flex-shrink-0"
+          style={{ backgroundColor: event.color }}
+        >
+          {getEventIcon(event.type)}
+        </div>
