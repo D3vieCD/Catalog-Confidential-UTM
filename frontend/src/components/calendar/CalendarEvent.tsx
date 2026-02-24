@@ -78,3 +78,22 @@ export const CalendarEventCard: React.FC<CalendarEventCardProps> = ({
         >
           {getEventIcon(event.type)}
         </div>
+        {/* Event Details */}
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 mb-1">
+            <h3 className="font-medium text-gray-900 dark:text-white truncate">
+              {event.title}
+            </h3>
+            <span 
+              className="text-xs px-2 py-0.5 rounded-full text-white"
+              style={{ backgroundColor: event.color }}
+            >
+              {getEventLabel(event.type)}
+            </span>
+          </div>
+
+          {event.description && (
+            <p className="text-sm text-gray-600 dark:text-gray-400 mb-2 line-clamp-2">
+              {event.description}
+            </p>
+          )}
