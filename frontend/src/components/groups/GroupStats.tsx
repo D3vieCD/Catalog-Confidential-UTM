@@ -55,3 +55,31 @@ export const GroupStats: React.FC<GroupStatsProps> = ({
       bgColor: 'from-violet-400 to-violet-500',
     },
   ];
+    return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      {stats.map((stat, index) => (
+        <motion.div
+          key={stat.label}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: index * 0.1 }}
+          className={`bg-gradient-to-br ${stat.bgColor} rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow duration-200`}
+        >
+          <div className="flex items-center gap-4">
+            <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center text-white backdrop-blur-sm">
+              {stat.icon}
+            </div>
+            <div>
+              <div className="text-white/80 text-xs font-semibold uppercase tracking-wider mb-1">
+                {stat.label}
+              </div>
+              <div className="text-white text-3xl font-bold">
+                {stat.value}
+              </div>
+            </div>
+          </div>
+        </motion.div>
+      ))}
+    </div>
+  );
+};
