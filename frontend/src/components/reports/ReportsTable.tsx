@@ -23,3 +23,22 @@ const formatDate = (dateString: string) => {
       </div>
     );
   }
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden"
+    >
+      <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+        <h2 className="text-xl font-bold text-gray-900 dark:text-white">Rapoarte Recente</h2>
+      </div>
+      <div className="overflow-x-auto">
+        <table className="w-full">
+          <thead className="bg-gray-50 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700">
+            {/* ... Capetele de tabel ... */}
+          </thead>
+          {/* ... Body-ul va fi în commit-ul următor ... */}
+        </table>
+      </div>
+    </motion.div>
+  );
