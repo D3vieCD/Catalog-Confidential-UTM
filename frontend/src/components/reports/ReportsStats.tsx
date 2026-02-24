@@ -33,3 +33,13 @@ export const ReportStats = ({ stats }: ReportStatsProps) => {
     </div>
   );
 };
+// Actualizare în interiorul map-ului:
+<motion.div
+  key={card.title}
+  initial={{ opacity: 0, y: 20 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ delay: index * 0.1 }}
+  className={`relative ... hover:shadow-md transition-all`}
+>
+  {/* Conținutul animat */}
+</motion.div>
