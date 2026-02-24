@@ -298,3 +298,61 @@ export const GroupModal: React.FC<GroupModalProps> = ({
             )}
           </AnimatePresence>
         </div>
+                {/* Specializare cu inline add */}
+        <div>
+          <label className="block text-sm font-semibold text-gray-600 dark:text-gray-400 mb-2 uppercase tracking-wide">
+            Specializare *
+          </label>
+          <div className="flex gap-2">
+            <div className="flex-1">
+              <CustomDropdown
+                value={formData.specialization}
+                onChange={(value) => setFormData({ ...formData, specialization: value as string })}
+                disabled={!formData.faculty}
+                options={[
+                  { value: '', label: 'Selectează specializarea' },
+                  ...specializations.map(spec => ({ value: spec, label: spec }))
+                ]}
+                placeholder="Selectează specializarea"
+              />
+            </div>
+            <button
+              type="button"
+              onClick={() => setShowNewSpec(!showNewSpec)}
+              disabled={!formData.faculty}
+              className="px-4 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-xl transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              title="Adaugă specializare nouă"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4"/>
+              </svg>
+            </button>
+          </div>
+
+          <AnimatePresence>
+            {showNewSpec && formData.faculty && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                className="mt-2 flex gap-2"
+              >
+                <input
+                  type="text"
+                  value={newSpecInput}
+                  onChange={(e) => setNewSpecInput(e.target.value)}
+                  placeholder="Nume specializare nouă"
+                  className="flex-1 px-4 py-2 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 dark:text-white placeholder-gray-400"
+                  onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddSpecialization())}
+                />
+                <button
+                  type="button"
+                  onClick={handleAddSpecialization}
+                  className="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-xl transition-colors text-sm font-medium"
+                >
+                  Salvează
+                </button>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
