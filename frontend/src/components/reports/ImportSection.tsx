@@ -45,3 +45,17 @@ const [selectedFile, setSelectedFile] = useState<File | null>(null);
   };
 
   const handleSelectFile = () => fileInputRef.current?.click();
+  const [isProcessing, setIsProcessing] = useState(false);
+
+  const handleProcessFile = async () => {
+    if (!selectedFile) return;
+    setIsProcessing(true);
+
+    // Simulare procesare asincronă
+    setTimeout(() => {
+      alert(`Fișier "${selectedFile.name}" procesat cu succes!`);
+      setIsProcessing(false);
+      setSelectedFile(null);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    }, 2000);
+  };
