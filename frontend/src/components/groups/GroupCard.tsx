@@ -80,3 +80,24 @@ export const GroupCard: React.FC<GroupCardProps> = ({ group, onEdit, onDelete, i
         </svg>
         <span className="truncate">{group.coordinator}</span>
       </div>
+            <div className="space-y-2">
+        <div className="flex items-center justify-between text-sm">
+          <span className="text-gray-600 dark:text-gray-400 font-medium">Capacitate</span>
+          <span className={`font-bold ${
+            capacityPercentage >= 90 ? 'text-red-500' :
+            capacityPercentage >= 70 ? 'text-orange-500' :
+            'text-emerald-500'
+          }`}>
+            {group.currentCapacity}/{group.maxCapacity}
+          </span>
+        </div>
+        <div className="w-full h-2 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
+          <div
+            className={`h-full ${getCapacityColor()} transition-all duration-300 rounded-full`}
+            style={{ width: `${capacityPercentage}%` }}
+          />
+        </div>
+      </div>
+    </motion.div>
+  );
+};
