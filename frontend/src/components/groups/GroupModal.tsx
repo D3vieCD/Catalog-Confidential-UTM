@@ -169,3 +169,23 @@ export const GroupModal: React.FC<GroupModalProps> = ({
       setShowNewSpec(false);
     }
   };
+    const validate = (): boolean => {
+    const newErrors: string[] = [];
+
+    if (!formData.name.trim()) newErrors.push('Numele grupei este obligatoriu');
+    if (!formData.faculty) newErrors.push('Facultatea este obligatorie');
+    if (!formData.specialization.trim()) newErrors.push('Specializarea este obligatorie');
+    if (!formData.coordinator.trim()) newErrors.push('Coordinatorul este obligatoriu');
+    if (formData.maxCapacity < 1) newErrors.push('Capacitatea trebuie să fie mai mare decât 0');
+
+    setErrors(newErrors);
+    return newErrors.length === 0;
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!validate()) return;
+
+    onSave(formData);
+  };
