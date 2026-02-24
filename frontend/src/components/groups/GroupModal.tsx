@@ -189,3 +189,56 @@ export const GroupModal: React.FC<GroupModalProps> = ({
 
     onSave(formData);
   };
+    return (
+    <Modal isOpen={isOpen} onClose={onClose} title={group ? 'Editează Grupa' : 'Adaugă Grupă Nouă'} size="md">
+      <form onSubmit={handleSubmit} className="space-y-5">
+        {/* Scrollable content */}
+        <div className="max-h-[60vh] overflow-y-auto pr-2 space-y-5">
+        {/* Errors */}
+        {errors.length > 0 && (
+          <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-4">
+            <div className="flex gap-3">
+              <svg className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+              <div className="space-y-1">
+                {errors.map((error, idx) => (
+                  <p key={idx} className="text-sm text-red-600 dark:text-red-400">{error}</p>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          {/* Nume Grupă */}
+          <div>
+            <label className="block text-sm font-semibold text-gray-600 dark:text-gray-400 mb-2 uppercase tracking-wide">
+              Nume Grupă *
+            </label>
+            <input
+              type="text"
+              value={formData.name}
+              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              placeholder="ex: INF-211"
+              className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent text-gray-900 dark:text-white placeholder-gray-400 transition-all duration-200"
+            />
+          </div>
+
+          {/* An Studii */}
+          <div>
+            <label className="block text-sm font-semibold text-gray-600 dark:text-gray-400 mb-2 uppercase tracking-wide">
+              An Studii *
+            </label>
+            <CustomDropdown
+              value={formData.year}
+              onChange={(value) => setFormData({ ...formData, year: value as number })}
+              options={[
+                { value: 1, label: 'Anul 1' },
+                { value: 2, label: 'Anul 2' },
+                { value: 3, label: 'Anul 3' },
+                { value: 4, label: 'Anul 4' },
+              ]}
+            />
+          </div>
+        </div>
