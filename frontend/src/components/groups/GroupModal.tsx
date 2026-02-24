@@ -160,3 +160,12 @@ export const GroupModal: React.FC<GroupModalProps> = ({
       setShowNewFaculty(false);
     }
   };
+    const handleAddSpecialization = () => {
+    if (newSpecInput.trim() && formData.faculty) {
+      const updated = addSpecialization(formData.faculty, newSpecInput.trim());
+      setSpecializations(updated);
+      setFormData({ ...formData, specialization: newSpecInput.trim() });
+      setNewSpecInput('');
+      setShowNewSpec(false);
+    }
+  };
