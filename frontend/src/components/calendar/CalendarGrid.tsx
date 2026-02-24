@@ -60,3 +60,77 @@ export const CalendarGrid: React.FC<CalendarGridProps> = ({
       isCurrentMonth: false
     });
   }
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3, delay: 0.1 }}
+      className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6"
+    >
+      <div className="grid grid-cols-7 gap-3">
+        {days.map((day, index) => {
+          const dayEvents = getEventsForDate(day.date);
+          const isSelected = day.date.toDateString() === selectedDate.toDateString();
+          const isToday = day.date.toDateString() === new Date().toDateString();
+          const isWeekend = day.date.getDay() === 0 || day.date.getDay() === 6;
+
+          return (
+            <motion.button
+              key={index}
+              whileHover={{ scale: day.isCurrentMonth ? 1.03 : 1 }}
+              whileTap={{ scale: day.isCurrentMonth ? 0.97 : 1 }}
+              onClick={() => onDateSelect(day.date)}
+              className={`
+                relative p-3 rounded-xl transition-all min-h-[90px] flex flex-col items-start
+                ${!day.isCurrentMonth
+                  ? 'text-gray-300 dark:text-gray-600 bg-transparent cursor-default'
+                  : isToday
+                  ? 'bg-blue-600 text-white font-bold shadow-md'
+                  : isWeekend
+                  ? 'bg-gray-50 hover:bg-gray-100 text-red-500 dark:bg-gray-800 dark:hover:bg-gray-700 dark:text-red-400'
+                  : 'bg-gray-50 hover:bg-gray-100 text-gray-900 dark:bg-gray-800 dark:hover:bg-gray-700 dark:text-white'
+                }
+                ${isSelected && !isToday
+                  ? 'ring-2 ring-blue-500 ring-offset-2 dark:ring-offset-gray-800'
+                  : ''
+                }
+              `}
+            >
+              {/* Date Number */}
+              <div className={`text-base font-semibold mb-2 ${isToday ? 'text-white' : ''}`}>
+                {day.date.getDate()}
+              </div>
+
+              {/* Events */}
+              {day.isCurrentMonth && dayEvents.length > 0 && (
+                <div className="flex flex-col gap-1 w-full">
+                  {dayEvents.slice(0, 2).map((event, eventIndex) => (
+                    <div
+                      key={eventIndex}
+                      className={`text-xs px-2 py-0.5 rounded truncate ${
+                        isToday
+                          ? 'bg-white/20 text-white'
+                          : 'text-white'
+                      }`}
+                      style={{
+                        backgroundColor: isToday ? undefined : event.color
+                      }}
+                      title={event.title}
+                    >
+                      {event.title.substring(0, 8)}...
+                    </div>
+                  ))}
+                  {dayEvents.length > 2 && (
+                    <div className={`text-xs font-medium ${isToday ? 'text-white/80' : 'text-gray-500 dark:text-gray-400'}`}>
+                      +{dayEvents.length - 2} mai mult
+                    </div>
+                  )}
+                </div>
+              )}
+            </motion.button>
+          );
+        })}
+      </div>
+    </motion.div>
+  );
+};
