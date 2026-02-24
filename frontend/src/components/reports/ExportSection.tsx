@@ -79,3 +79,16 @@ export const ExportSection = ({ onReportGenerated }: ExportSectionProps) => {
           ))}
         </div>
       </div>
+      const handleExport = () => {
+    const group = groups.find(g => g.id === selectedGroup);
+    if (!group) return;
+
+    const data = generateExcelData(selectedGroup, reportType);
+    const report = addReport(selectedGroup, group.name, reportType);
+    onReportGenerated(report);
+
+    console.log('Exporting data:', data);
+    alert(`Raport generat pentru ${group.name}!\nTip: ${reportType}\n\nÎn producție, aici s-ar descărca fișierul Excel.`);
+  };
+
+  // + Secțiunea de butoane și Info Box de la finalul fișierului
