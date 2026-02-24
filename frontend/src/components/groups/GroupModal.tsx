@@ -112,3 +112,37 @@ export const GroupModal: React.FC<GroupModalProps> = ({
   const [showNewFaculty, setShowNewFaculty] = useState(false);
   const [showNewSpec, setShowNewSpec] = useState(false);
   const [errors, setErrors] = useState<string[]>([]);
+    useEffect(() => {
+    setFaculties(getFaculties());
+  }, []);
+
+  useEffect(() => {
+    if (group) {
+      setFormData({
+        name: group.name,
+        year: group.year,
+        faculty: group.faculty,
+        specialization: group.specialization,
+        coordinator: group.coordinator,
+        maxCapacity: group.maxCapacity,
+        semester: group.semester,
+        status: group.status,
+        subjects: group.subjects,
+      });
+      setSpecializations(getSpecializations(group.faculty));
+    } else {
+      setFormData({
+        name: '',
+        year: 1,
+        faculty: '',
+        specialization: '',
+        coordinator: '',
+        maxCapacity: 30,
+        semester: 'I',
+        status: 'ACTIV',
+        subjects: [],
+      });
+      setSpecializations([]);
+    }
+    setErrors([]);
+  }, [group, isOpen]);
