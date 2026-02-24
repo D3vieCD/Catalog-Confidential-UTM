@@ -81,3 +81,27 @@ const CustomDropdown: React.FC<{
     </div>
   );
 };
+export const GroupFilters: React.FC<GroupFiltersProps> = ({
+  searchQuery,
+  onSearchChange,
+  selectedYear,
+  onYearChange,
+  sortBy,
+  onSortChange,
+}) => {
+  const yearOptions: DropdownOption[] = [
+    { value: '', label: 'Toți Anii' },
+    { value: '1', label: 'Anul 1' },
+    { value: '2', label: 'Anul 2' },
+    { value: '3', label: 'Anul 3' },
+    { value: '4', label: 'Anul 4' },
+  ];
+
+  const sortOptions: DropdownOption[] = [
+    { value: 'az', label: 'Alfabetic' },
+    { value: 'za', label: 'Invers Alfabetic' },
+    { value: 'year-asc', label: 'An Crescător' },
+    { value: 'year-desc', label: 'An Descrescător' },
+    { value: 'capacity-asc', label: 'Capacitate Crescătoare' },
+    { value: 'capacity-desc', label: 'Capacitate Descrescătoare' },
+  ];
