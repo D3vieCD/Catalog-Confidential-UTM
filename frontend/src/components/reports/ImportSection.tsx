@@ -30,3 +30,18 @@ export const ImportSection = () => {
     </motion.div>
   );
 };
+const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (!file.name.endsWith('.xlsx') && !file.name.endsWith('.xls')) {
+        alert('Te rog selectează un fișier Excel (.xlsx sau .xls)');
+        return;
+      }
+      setSelectedFile(file);
+    }
+  };
+
+  const handleSelectFile = () => fileInputRef.current?.click();
