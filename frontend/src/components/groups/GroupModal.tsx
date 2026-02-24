@@ -87,3 +87,28 @@ const CustomDropdown: React.FC<{
     </div>
   );
 };
+export const GroupModal: React.FC<GroupModalProps> = ({
+  isOpen,
+  onClose,
+  onSave,
+  group,
+}) => {
+  const [formData, setFormData] = useState<GroupFormData>({
+    name: '',
+    year: 1,
+    faculty: '',
+    specialization: '',
+    coordinator: '',
+    maxCapacity: 30,
+    semester: 'I',
+    status: 'ACTIV',
+    subjects: [],
+  });
+
+  const [faculties, setFaculties] = useState<string[]>([]);
+  const [specializations, setSpecializations] = useState<string[]>([]);
+  const [newFacultyInput, setNewFacultyInput] = useState('');
+  const [newSpecInput, setNewSpecInput] = useState('');
+  const [showNewFaculty, setShowNewFaculty] = useState(false);
+  const [showNewSpec, setShowNewSpec] = useState(false);
+  const [errors, setErrors] = useState<string[]>([]);
