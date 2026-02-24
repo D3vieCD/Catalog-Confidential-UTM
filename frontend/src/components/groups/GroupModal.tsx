@@ -433,3 +433,23 @@ export const GroupModal: React.FC<GroupModalProps> = ({
         </div>
 
         </div> {/* End scrollable content */}
+                {/* Buttons - Outside scroll */}
+        <div className="flex gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
+          <button
+            type="button"
+            onClick={onClose}
+            className="flex-1 px-6 py-3 bg-gray-600 dark:bg-gray-700 hover:bg-gray-700 dark:hover:bg-gray-600 text-white font-semibold rounded-2xl transition-colors duration-200"
+          >
+            Anulează
+          </button>
+          <button
+            type="submit"
+            className="flex-1 px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-semibold rounded-2xl transition-all duration-200 shadow-lg hover:shadow-xl"
+          >
+            {group ? 'Salvează' : 'Adaugă'}
+          </button>
+        </div>
+      </form>
+    </Modal>
+  );
+};
