@@ -44,3 +44,19 @@ export const CalendarGrid: React.FC<CalendarGridProps> = ({
       isCurrentMonth: false
     });
   }
+  // Current month days
+  for (let i = 1; i <= daysInMonth; i++) {
+    days.push({
+      date: new Date(currentMonth.getFullYear(), currentMonth.getMonth(), i),
+      isCurrentMonth: true
+    });
+  }
+
+  // Next month days
+  const remainingDays = 42 - days.length;
+  for (let i = 1; i <= remainingDays; i++) {
+    days.push({
+      date: new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, i),
+      isCurrentMonth: false
+    });
+  }
