@@ -356,3 +356,80 @@ export const GroupModal: React.FC<GroupModalProps> = ({
             )}
           </AnimatePresence>
         </div>
+                {/* Coordinator */}
+        <div>
+          <label className="block text-sm font-semibold text-gray-600 dark:text-gray-400 mb-2 uppercase tracking-wide">
+            Coordinator *
+          </label>
+          <input
+            type="text"
+            value={formData.coordinator}
+            onChange={(e) => setFormData({ ...formData, coordinator: e.target.value })}
+            placeholder="ex: Prof. Dr. Ion Popescu"
+            className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent text-gray-900 dark:text-white placeholder-gray-400 transition-all duration-200"
+          />
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          {/* Capacitate Maximă */}
+          <div>
+            <label className="block text-sm font-semibold text-gray-600 dark:text-gray-400 mb-2 uppercase tracking-wide">
+              Capacitate Maximă *
+            </label>
+            <input
+              type="number"
+              value={formData.maxCapacity}
+              onChange={(e) => setFormData({ ...formData, maxCapacity: parseInt(e.target.value) || 0 })}
+              min="1"
+              className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent text-gray-900 dark:text-white transition-all duration-200"
+            />
+          </div>
+
+          {/* Semestru */}
+          <div>
+            <label className="block text-sm font-semibold text-gray-600 dark:text-gray-400 mb-2 uppercase tracking-wide">
+              Semestru *
+            </label>
+            <CustomDropdown
+              value={formData.semester}
+              onChange={(value) => setFormData({ ...formData, semester: value as 'I' | 'II' })}
+              options={[
+                { value: 'I', label: 'Semestrul I' },
+                { value: 'II', label: 'Semestrul II' },
+              ]}
+            />
+          </div>
+        </div>
+
+        {/* Status Grupă */}
+        <div>
+          <label className="block text-sm font-semibold text-gray-600 dark:text-gray-400 mb-3 uppercase tracking-wide">
+            Status Grupă *
+          </label>
+          <div className="flex gap-3">
+            <button
+              type="button"
+              onClick={() => setFormData({ ...formData, status: 'ACTIV' })}
+              className={`flex-1 px-4 py-3 rounded-2xl font-semibold transition-all duration-200 ${
+                formData.status === 'ACTIV'
+                  ? 'bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-md'
+                  : 'bg-gray-50 dark:bg-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-600'
+              }`}
+            >
+              ACTIV
+            </button>
+            <button
+              type="button"
+              onClick={() => setFormData({ ...formData, status: 'ARHIVAT' })}
+              className={`flex-1 px-4 py-3 rounded-2xl font-semibold transition-all duration-200 ${
+                formData.status === 'ARHIVAT'
+                  ? 'bg-gray-600 dark:bg-gray-500 text-white shadow-md'
+                  : 'bg-gray-50 dark:bg-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-600'
+              }`}
+            >
+              ARHIVAT
+            </button>
+          </div>
+        </div>
+
+        </div> {/* End scrollable content */}
