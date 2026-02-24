@@ -59,3 +59,12 @@ const [selectedFile, setSelectedFile] = useState<File | null>(null);
       if (fileInputRef.current) fileInputRef.current.value = '';
     }, 2000);
   };
+  {/* Secțiunea de descărcare template și cerințe format */}
+      <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-200 dark:border-blue-800">
+        <p className="text-blue-900 dark:text-blue-100 font-semibold mb-2">Cerințe format Excel:</p>
+        <ul className="list-disc list-inside space-y-1 text-sm text-blue-800 dark:text-blue-200">
+          {EXCEL_TEMPLATE_COLUMNS.map((col, index) => (
+            <li key={index}>Coloana {String.fromCharCode(65 + index)}: {col}</li>
+          ))}
+        </ul>
+      </div>
