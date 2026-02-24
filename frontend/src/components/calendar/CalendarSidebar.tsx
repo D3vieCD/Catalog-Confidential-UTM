@@ -63,3 +63,56 @@ export const CalendarSidebar: React.FC<CalendarSidebarProps> = ({
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
             </svg>
           </div>
+          {selectedDayEvents.length === 0 ? (
+            <div className="text-center">
+              <div className="text-2xl font-bold text-green-600 dark:text-green-400 mb-1">
+                LIBER!
+              </div>
+              <div className="text-sm text-gray-500 dark:text-gray-400">
+                Niciun eveniment planificat
+              </div>
+            </div>
+          ) : (
+            <div className="text-center">
+              <div className="text-2xl font-bold text-blue-600 dark:text-blue-400 mb-1">
+                {selectedDayEvents.length}
+              </div>
+              <div className="text-sm text-gray-500 dark:text-gray-400">
+                {selectedDayEvents.length === 1 ? 'eveniment programat' : 'evenimente programate'}
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* This Week Card */}
+      {weekEvents.length > 0 && (
+        <div className="bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700 rounded-2xl p-5 text-white shadow-lg">
+          <div className="flex items-center gap-2 mb-3">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+            </svg>
+            <h3 className="font-bold text-sm uppercase tracking-wider">
+              Săptămâna Aceasta
+            </h3>
+          </div>
+          <div className="space-y-2">
+            <div className="flex justify-between items-center">
+              <span className="text-sm opacity-90">Total evenimente:</span>
+              <span className="font-bold text-lg">{weekEvents.length}</span>
+            </div>
+            {weekEvents[0] && (
+              <div className="pt-2 border-t border-white/20">
+                <div className="text-xs opacity-75 mb-1">Următorul:</div>
+                <div className="font-medium text-sm">{weekEvents[0].title}</div>
+                <div className="text-xs opacity-75 mt-1">
+                  {new Date(weekEvents[0].date).toLocaleDateString('ro-RO', { weekday: 'long', day: 'numeric', month: 'long' })}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+    </motion.div>
+  );
+};
