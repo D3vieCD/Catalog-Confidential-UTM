@@ -4,3 +4,7 @@ interface NotificationsData {
   studentMessages: boolean;
   securityAlerts: boolean;
 }
+interface SettingsNotificationsProps {
+  notifications: NotificationsData;
+  setNotifications: (notifications: NotificationsData) => void;
+}
