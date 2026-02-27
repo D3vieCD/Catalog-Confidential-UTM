@@ -80,3 +80,14 @@ const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
   value={profile.role}
   onChange={(value) => setProfile({ ...profile, role: value })}
 />
+<div>
+  <label className="block text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">
+    Bio
+  </label>
+  <textarea
+    value={profile.bio}
+    onChange={(e) => setProfile({ ...profile, bio: e.target.value })}
+    rows={4}
+    className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200"
+  />
+</div>
