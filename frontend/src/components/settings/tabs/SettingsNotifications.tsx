@@ -28,3 +28,11 @@ export const SettingsNotifications: React.FC<SettingsNotificationsProps> = ({
     setNotifications({ ...notifications, emailUpdates: enabled })
   }
 />
+<SettingsToggle
+  label="Notificări push"
+  description="Alerte în timp real pe dispozitivul tău."
+  enabled={notifications.pushNotifications}
+  onChange={(enabled) =>
+    setNotifications({ ...notifications, pushNotifications: enabled })
+  }
+/>
