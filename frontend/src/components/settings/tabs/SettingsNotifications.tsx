@@ -20,3 +20,11 @@ export const SettingsNotifications: React.FC<SettingsNotificationsProps> = ({
     </div>
   );
 };
+<SettingsToggle
+  label="Email de actualizare"
+  description="Primește email-uri despre activitatea din catalog."
+  enabled={notifications.emailUpdates}
+  onChange={(enabled) =>
+    setNotifications({ ...notifications, emailUpdates: enabled })
+  }
+/>
