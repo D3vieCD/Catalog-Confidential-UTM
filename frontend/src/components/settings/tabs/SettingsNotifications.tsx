@@ -44,3 +44,11 @@ export const SettingsNotifications: React.FC<SettingsNotificationsProps> = ({
     setNotifications({ ...notifications, studentMessages: enabled })
   }
 />
+<SettingsToggle
+  label="Securitatea și login"
+  description="Alerte pentru autentificări noi sau suspecte."
+  enabled={notifications.securityAlerts}
+  onChange={(enabled) =>
+    setNotifications({ ...notifications, securityAlerts: enabled })
+  }
+/>
