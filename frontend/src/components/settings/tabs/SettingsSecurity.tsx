@@ -55,3 +55,28 @@ const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     />
   </div>
 </div>
+<SettingsInput
+  label="Nume Complet"
+  value={profile.name}
+  onChange={(value) => setProfile({ ...profile, name: value })}
+/>
+
+<SettingsInput
+  label="Adresă Email"
+  value={profile.email}
+  onChange={(value) => setProfile({ ...profile, email: value })}
+  type="email"
+/>
+
+<SettingsInput
+  label="Număr Telefon"
+  value={profile.phone}
+  onChange={(value) => setProfile({ ...profile, phone: value })}
+  type="tel"
+/>
+
+<SettingsInput
+  label="Rol / Ocupație"
+  value={profile.role}
+  onChange={(value) => setProfile({ ...profile, role: value })}
+/>
