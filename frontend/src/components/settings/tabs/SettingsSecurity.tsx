@@ -22,3 +22,14 @@ export const SettingsProfile: React.FC<SettingsProfileProps> = ({ profile, setPr
     </div>
   );
 };
+const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const file = e.target.files?.[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const imageUrl = reader.result as string;
+      updateUser({ ...currentUser, avatar: imageUrl });
+    };
+    reader.readAsDataURL(file);
+  }
+};
