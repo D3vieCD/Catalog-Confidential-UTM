@@ -1,0 +1,54 @@
+interface NotificationsData {
+  emailUpdates: boolean;
+  pushNotifications: boolean;
+  studentMessages: boolean;
+  securityAlerts: boolean;
+}
+interface SettingsNotificationsProps {
+  notifications: NotificationsData;
+  setNotifications: (notifications: NotificationsData) => void;
+}
+import React from 'react';
+import { SettingsToggle } from '../ui';
+
+export const SettingsNotifications: React.FC<SettingsNotificationsProps> = ({
+  notifications,
+  setNotifications
+}) => {
+  return (
+    <div className="divide-y divide-gray-200 dark:divide-gray-700">
+    </div>
+  );
+};
+<SettingsToggle
+  label="Email de actualizare"
+  description="Primește email-uri despre activitatea din catalog."
+  enabled={notifications.emailUpdates}
+  onChange={(enabled) =>
+    setNotifications({ ...notifications, emailUpdates: enabled })
+  }
+/>
+<SettingsToggle
+  label="Notificări push"
+  description="Alerte în timp real pe dispozitivul tău."
+  enabled={notifications.pushNotifications}
+  onChange={(enabled) =>
+    setNotifications({ ...notifications, pushNotifications: enabled })
+  }
+/>
+<SettingsToggle
+  label="Mesaje de la studenți"
+  description="Notificări când un student îți trimite un mesaj."
+  enabled={notifications.studentMessages}
+  onChange={(enabled) =>
+    setNotifications({ ...notifications, studentMessages: enabled })
+  }
+/>
+<SettingsToggle
+  label="Securitatea și login"
+  description="Alerte pentru autentificări noi sau suspecte."
+  enabled={notifications.securityAlerts}
+  onChange={(enabled) =>
+    setNotifications({ ...notifications, securityAlerts: enabled })
+  }
+/>
