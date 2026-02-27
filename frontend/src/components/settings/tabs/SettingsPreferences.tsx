@@ -33,3 +33,16 @@ export const SettingsPreferences: React.FC<SettingsPreferencesProps> = ({
     { value: 'en-US', label: 'English (US)' }
   ]}
 />
+<SettingsSelect
+  label="Fus Orar"
+  value={preferences.timezone}
+  onChange={(value) =>
+    setPreferences({ ...preferences, timezone: value })
+  }
+  options={[
+    { value: 'GMT+02:00', label: '(GMT+02:00) Chișinău' },
+    { value: 'GMT+03:00', label: '(GMT+03:00) București' },
+    { value: 'GMT+00:00', label: '(GMT+00:00) Londra' },
+    { value: 'GMT-05:00', label: '(GMT-05:00) New York' }
+  ]}
+/>
