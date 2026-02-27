@@ -33,3 +33,25 @@ const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     reader.readAsDataURL(file);
   }
 };
+<div className="flex flex-col sm:flex-row items-center gap-6 pb-6 border-b border-gray-200 dark:border-gray-700">
+  <div className="relative group">
+    {currentUser.avatar ? (
+      <img
+        src={currentUser.avatar}
+        alt={currentUser.name}
+        className="w-24 h-24 rounded-2xl object-cover shadow-lg"
+      />
+    ) : (
+      <div className="w-24 h-24 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center text-white text-3xl font-bold shadow-lg">
+        {currentUser.name.split(' ').map(n => n[0]).join('').toUpperCase()}
+      </div>
+    )}
+    <input
+      type="file"
+      id="avatar-upload"
+      accept="image/*"
+      onChange={handleImageUpload}
+      className="hidden"
+    />
+  </div>
+</div>
