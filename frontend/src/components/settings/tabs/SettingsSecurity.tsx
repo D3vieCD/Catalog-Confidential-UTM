@@ -5,3 +5,7 @@ interface ProfileData {
   role: string;
   bio: string;
 }
+interface SettingsProfileProps {
+  profile: ProfileData;
+  setProfile: (profile: ProfileData) => void;
+}
