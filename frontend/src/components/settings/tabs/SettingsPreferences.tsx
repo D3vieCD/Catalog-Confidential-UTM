@@ -20,3 +20,16 @@ export const SettingsPreferences: React.FC<SettingsPreferencesProps> = ({
     </div>
   );
 };
+<SettingsSelect
+  label="Limba Interfeței"
+  value={preferences.language}
+  onChange={(value) =>
+    setPreferences({ ...preferences, language: value })
+  }
+  options={[
+    { value: 'ro-MD', label: 'Română (Republica Moldova)' },
+    { value: 'ro-RO', label: 'Română (România)' },
+    { value: 'ru-RU', label: 'Русский' },
+    { value: 'en-US', label: 'English (US)' }
+  ]}
+/>
