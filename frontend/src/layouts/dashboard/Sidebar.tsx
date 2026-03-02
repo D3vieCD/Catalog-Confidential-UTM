@@ -218,3 +218,45 @@ export const Sidebar = () => {
             </button>
           ))}
         </nav>
+                {/* Buton de Logout */}
+        <div className="p-3 border-t border-gray-200 dark:border-gray-700">
+          <button
+            type="button"
+            onClick={handleLogoutClick}
+            className="w-full flex items-center gap-4 px-3 py-3.5 rounded-xl font-medium transition-all duration-200 hover:bg-red-50 dark:hover:bg-red-900/20"
+            style={{
+              color: isDark ? '#9CA3AF' : '#6B7280',
+              border: '1px solid transparent',
+            }}
+            title={!isExpanded ? 'Deconectare' : ''}
+          >
+            <span className="flex-shrink-0">
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+              </svg>
+            </span>
+
+            <motion.span
+              animate={{ opacity: isExpanded ? 1 : 0, width: isExpanded ? 'auto' : 0 }}
+              transition={{ duration: 0.2 }}
+              className="overflow-hidden whitespace-nowrap"
+            >
+              Deconectare
+            </motion.span>
+          </button>
+        </div>
+      </motion.aside>
+
+      {/* Modală de Confirmare Logout */}
+      <ConfirmModal
+        isOpen={showLogoutModal}
+        onClose={() => setShowLogoutModal(false)}
+        onConfirm={handleLogoutConfirm}
+        title="Confirmare Delogare"
+        message="Ești sigur că vrei să te delogheze din Academix Catalogul Digital?"
+        confirmText="Da, deloghează"
+        cancelText="Anulează"
+      />
+    </>
+  );
+};
