@@ -12,3 +12,10 @@ interface DashboardLayoutProps {
  */
 
 export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
+      return (
+    <div className="min-h-screen bg-white dark:bg-gray-900 transition-colors duration-200">
+      {/* Header - Fixed în top */}
+      <Header />
+
+      {/* Sidebar - Fixed în stânga */}
+      <Sidebar />
