@@ -143,3 +143,43 @@ export const RegisterForm = () => {
             disabled={loading}
           />
         </div>
+        {/* Terms & Privacy */}
+        <div className="flex items-center mb-5">
+          <Checkbox label="Sunt de acord cu termenii și condițiile" disabled={loading} />
+        </div>
+        
+        {/* Button */}
+        <Button 
+          variant="primary" 
+          fullWidth
+          onClick={handleRegister}
+          loading={loading}
+          disabled={!name || !email || !password || !confirmPassword}
+        >
+          Creează cont
+        </Button>
+        
+        {/* Divider */}
+        <Divider />
+        
+        {/* Social Buttons */}
+        <div className="space-y-3">
+          <SocialLoginButton provider="google" fullWidth />
+          <SocialLoginButton provider="microsoft" fullWidth />
+          <SocialLoginButton provider="github" fullWidth />
+        </div>
+        
+        {/* Login */}
+        <p className="text-center text-xs md:text-sm text-gray-600 dark:text-gray-400 mt-6 transition-colors">
+          Ai deja cont?{' '}
+          <button 
+            onClick={() => navigate(paths.login)}
+            className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-semibold transition-colors"
+          >
+            Intră în cont
+          </button>
+        </p>
+      </div>
+    </div>
+  );
+};
