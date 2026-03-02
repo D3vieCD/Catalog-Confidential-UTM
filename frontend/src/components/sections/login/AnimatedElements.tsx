@@ -53,3 +53,37 @@ export const AnimatedElements = () => {
       >
         001
       </div>
+      {/* Simboluri matematice - π, √, ∑, ∫, α */}
+      <div 
+        className="absolute text-white/50 text-2xl font-bold" 
+        style={{ top: '15%', left: '60%', animation: 'float-vertical 5s ease-in-out infinite' }}
+      >
+        π
+      </div>
+      <div 
+        className="absolute text-white/50 text-2xl font-bold" 
+        style={{ top: '50%', left: '25%', animation: 'float-vertical 5s ease-in-out infinite', animationDelay: '2s' }}
+      >
+        √
+      </div>
+      <div 
+        className="absolute text-white/50 text-2xl font-bold" 
+        style={{ top: '75%', left: '85%', animation: 'float-vertical 5s ease-in-out infinite', animationDelay: '3s' }}
+      >
+        ∑
+      </div>
+      <div 
+        className="absolute text-white/50 text-2xl font-bold" 
+        style={{ top: '40%', left: '90%', animation: 'float-vertical 5s ease-in-out infinite', animationDelay: '1s' }}
+      >
+        ∫
+      </div>
+      <div 
+        className="absolute text-white/50 text-2xl font-bold" 
+        style={{ top: '85%', left: '50%', animation: 'float-vertical 5s ease-in-out infinite', animationDelay: '4s' }}
+      >
+        α
+      </div>
+    </>
+  );
+};
