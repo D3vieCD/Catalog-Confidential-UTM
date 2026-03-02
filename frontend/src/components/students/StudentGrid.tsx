@@ -34,3 +34,18 @@ if (students.length === 0) {
     </div>
   );
 }
+if (viewMode === 'list') {
+  return (
+    <div className="space-y-3">
+      {students.map((student, index) => (
+        <StudentListItem
+          key={student.id}
+          student={student}
+          onEdit={onEdit}
+          onDelete={onDelete}
+          index={index}
+        />
+      ))}
+    </div>
+  );
+}
