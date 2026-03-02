@@ -23,3 +23,10 @@ export const SettingsSelect: React.FC<SettingsSelectProps> = ({
     </div>
   );
 };
+<div className="space-y-2">
+  <label className="block text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+    {label}
+  </label>
+  <div className="relative">
+  </div>
+</div>
