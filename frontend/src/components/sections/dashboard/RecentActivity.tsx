@@ -15,3 +15,21 @@ interface ActivityItem {
   time: string;
   type: 'grade' | 'absence' | 'other';
 }
+const activities: ActivityItem[] = [
+  {
+    id: '1',
+    studentName: 'Popescu Maria',
+    action: 'Notă adăugată: 9',
+    details: 'Grupa 9-B • Matematică',
+    time: 'acum 5 min',
+    type: 'grade',
+  },
+  {
+    id: '2',
+    studentName: 'Ionescu Alex',
+    action: 'Absență nemotivată',
+    details: 'Grupa 10-A • Fizică',
+    time: 'acum 15 min',
+    type: 'absence',
+  },
+];
