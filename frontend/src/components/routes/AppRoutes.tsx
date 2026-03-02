@@ -100,3 +100,46 @@ export const AppRoutes = () => {
     </ProtectedRoute>
   }
 />
+<Route
+  path={paths.dashboardRoutes.catalog}
+  element={
+    <ProtectedRoute>
+      <DashboardLayout>
+        <Catalog />
+      </DashboardLayout>
+    </ProtectedRoute>
+  }
+/>
+
+<Route
+  path="/dashboard/catalog/:groupId"
+  element={
+    <ProtectedRoute>
+      <DashboardLayout>
+        <GroupCatalog />
+      </DashboardLayout>
+    </ProtectedRoute>
+  }
+/>
+
+<Route
+  path={paths.dashboardRoutes.reports}
+  element={
+    <ProtectedRoute>
+      <DashboardLayout>
+        <Reports />
+      </DashboardLayout>
+    </ProtectedRoute>
+  }
+/>
+
+<Route
+  path={paths.dashboardRoutes.settings}
+  element={
+    <ProtectedRoute>
+      <DashboardLayout>
+        <Settings />
+      </DashboardLayout>
+    </ProtectedRoute>
+  }
+/>
