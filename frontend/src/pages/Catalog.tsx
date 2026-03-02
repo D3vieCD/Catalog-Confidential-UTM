@@ -15,3 +15,11 @@ export const Catalog = () => {
 };
 const [groups] = useState(() => getGroups().filter(g => g.status === 'ACTIV'));
 const [students] = useState(() => getStudents());
+const groupsWithStudentCount = useMemo(() => {
+  return groups.map(group => ({
+    ...group,
+    studentCount: students.filter(
+      s => s.group === group.name && s.status === 'active'
+    ).length,
+  }));
+}, [groups, students]);
