@@ -83,3 +83,17 @@ export const useTheme = () => {
     }
 
   }, []);
+    useEffect(() => {
+
+    applyTheme(theme);
+
+  }, [theme, applyTheme]);
+
+
+  const changeTheme = (themeType: ThemeType) => {
+
+    setTheme(themeType);
+    applyTheme(themeType);
+    localStorage.setItem('theme', themeType);
+
+  };
