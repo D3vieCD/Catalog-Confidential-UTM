@@ -8,3 +8,6 @@ export const paths = {
   register: '/register',
   dashboard: '/dashboard',
 };
+auth: {
+  login: '/login',
+},
