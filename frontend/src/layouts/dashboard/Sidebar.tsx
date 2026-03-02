@@ -83,3 +83,43 @@ const menuItems = [
     ),
   },
 ];
+/**
+ * Componenta Sidebar principală
+ * Include navigare completă, hover expand, dark mode și logout cu modală
+ */
+export const Sidebar = () => {
+  // Utilizarea hook-urilor pentru navigare și locație
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  // Starea componentei
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [isDark, setIsDark] = useState(false);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
+
+  // Detectarea schimbărilor de dark mode
+  useEffect(() => {
+    const checkDark = () => {
+      const hasDarkClass =
+        document.documentElement.classList.contains('dark') ||
+        document.body.classList.contains('dark');
+      setIsDark(hasDarkClass);
+    };
+
+    checkDark();
+
+    const observer = new MutationObserver(checkDark);
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['class'],
+    });
+    observer.observe(document.body, {
+      attributes: true,
+      attributeFilter: ['class'],
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
+  // Verifică dacă ruta este activă
+  const isActive = (path: string) => location.pathname === path;
