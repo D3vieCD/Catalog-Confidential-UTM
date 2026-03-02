@@ -169,3 +169,59 @@ export const Settings = () => {
           )}
         </div>
       </motion.div>
+      {/* Settings Content */}
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 pb-8">
+        {/* Sidebar */}
+        <motion.div
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          className="lg:col-span-1"
+        >
+          <div className="bg-white dark:bg-gray-800 rounded-2xl p-2 shadow-sm border border-gray-200 dark:border-gray-700">
+            {tabs.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all duration-200 ${
+                  activeTab === tab.id
+                    ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-md'
+                    : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'
+                }`}
+              >
+                {tab.icon}
+                <span>{tab.label}</span>
+              </button>
+            ))}
+          </div>
+        </motion.div>
+
+        {/* Content */}
+        <motion.div
+          key={activeTab}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
+          className="lg:col-span-3"
+        >
+          <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-sm border border-gray-200 dark:border-gray-700 min-h-[500px]">
+            {activeTab === 'profile' && (
+              <SettingsProfile profile={profile} setProfile={setProfile} />
+            )}
+
+            {activeTab === 'security' && (
+              <SettingsSecurity security={security} setSecurity={setSecurity} />
+            )}
+
+            {activeTab === 'notifications' && (
+              <SettingsNotifications notifications={notifications} setNotifications={setNotifications} />
+            )}
+
+            {activeTab === 'preferences' && (
+              <SettingsPreferences preferences={preferences} setPreferences={setPreferences} />
+            )}
+          </div>
+        </motion.div>
+      </div>
+    </div>
+  );
+};
