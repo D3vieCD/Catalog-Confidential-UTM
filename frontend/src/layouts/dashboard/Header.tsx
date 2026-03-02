@@ -14,3 +14,16 @@ export const Header = () => {
   const navigate = useNavigate();
   const { getUser } = useAuth();
   const currentUser = getUser();
+    useEffect(() => {
+    const checkDark = () =>
+      setIsDark(document.documentElement.classList.contains('dark'));
+    checkDark();
+
+    const observer = new MutationObserver(checkDark);
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['class'],
+    });
+
+    return () => observer.disconnect();
+  }, []);
