@@ -68,3 +68,66 @@ const activities: ActivityItem[] = [
         );
     }
   };
+  import { motion } from 'framer-motion';
+
+/**
+ * RecentActivity - Secțiunea de activitate recentă din dashboard
+ */
+
+export const RecentActivity = () => {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3, delay: 0.4 }}
+      className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-200 dark:border-gray-700"
+    >
+      {/* Header */}
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+          Activitate Recentă
+        </h2>
+        <button
+          type="button"
+          className="text-sm text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 font-medium transition-colors"
+        >
+          Vezi Tot →
+        </button>
+      </div>
+
+      {/* Activities List */}
+      <div className="space-y-4">
+        {activities.map((activity, index) => (
+          <motion.div
+            key={activity.id}
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.3, delay: 0.5 + index * 0.1 }}
+            className="flex items-start gap-4 p-3 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+          >
+            {/* Icon */}
+            {getActivityIcon(activity.type)}
+
+            {/* Content */}
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center justify-between mb-1">
+                <div className="text-sm font-medium text-gray-900 dark:text-white">
+                  {activity.studentName}
+                </div>
+                <div className="text-xs text-gray-500 dark:text-gray-400">
+                  {activity.time}
+                </div>
+              </div>
+              <div className="text-sm text-gray-600 dark:text-gray-300 mb-1">
+                {activity.action}
+              </div>
+              <div className="text-xs text-gray-500 dark:text-gray-400">
+                {activity.details}
+              </div>
+            </div>
+          </motion.div>
+        ))}
+      </div>
+    </motion.div>
+  );
+};
