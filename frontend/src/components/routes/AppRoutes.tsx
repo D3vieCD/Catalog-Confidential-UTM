@@ -143,3 +143,24 @@ export const AppRoutes = () => {
     </ProtectedRoute>
   }
 />
+<Route 
+  path={paths.error.page403} 
+  element={
+    <ProtectedRoute>
+      <Page403 />
+    </ProtectedRoute>
+  } 
+/>
+
+<Route path={paths.error.page404} element={<Page404 />} />
+
+<Route 
+  path={paths.error.page500} 
+  element={
+    <ProtectedRoute>
+      <Page500 />
+    </ProtectedRoute>
+  } 
+/>
+
+<Route path="*" element={<Page404 />} />
