@@ -15,3 +15,6 @@ export const AuthLayout = ({ children }: AuthLayoutProps) => {
     return <Navigate to={paths.dashboardRoutes.home} replace />;
 
   }
+    return <>{children}</>;
+
+};
