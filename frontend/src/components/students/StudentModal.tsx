@@ -34,3 +34,27 @@ const [form, setForm] = useState<StudentFormData>({
 const [errors, setErrors] = useState<{ name?: string; email?: string }>({});
 const [showNewGroup, setShowNewGroup] = useState(false);
 const [newGroupName, setNewGroupName] = useState('');
+useEffect(() => {
+  if (isOpen) {
+    if (student) {
+      setForm({
+        name: student.name,
+        email: student.email,
+        group: student.group,
+        year: student.year,
+        status: student.status,
+      });
+    } else {
+      setForm({
+        name: '',
+        email: '',
+        group: groups[0] || '',
+        year: 1,
+        status: 'active',
+      });
+    }
+    setErrors({});
+    setShowNewGroup(false);
+    setNewGroupName('');
+  }
+}, [isOpen, student, groups]);
