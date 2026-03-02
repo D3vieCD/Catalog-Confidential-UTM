@@ -43,3 +43,13 @@ export const useAuth = () => {
     return storage.get('isLoggedIn') === 'true';
 
   };
+    const getUser = () => {
+
+    return {
+      name: storage.get('userName') || '',
+      email: storage.get('userEmail') || '',
+      role: storage.get('userRole') || '',
+      avatar: storage.get('userAvatar') || '',
+    };
+
+  };
