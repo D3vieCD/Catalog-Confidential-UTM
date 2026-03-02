@@ -25,3 +25,5 @@ export const SettingsInput: React.FC<SettingsInputProps> = ({
     </div>
   );
 };
+const [showPassword, setShowPassword] = React.useState(false);
+const inputType = type === 'password' && showPassword ? 'text' : type;
