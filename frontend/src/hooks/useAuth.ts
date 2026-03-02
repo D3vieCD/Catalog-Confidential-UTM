@@ -75,3 +75,14 @@ export const useAuth = () => {
       storage.set('userAvatar', userData.avatar);
 
   };
+    return {
+
+    login,
+    logout,
+    isAuthenticated,
+    getUser,
+    updateUser,
+
+  };
+
+};
