@@ -128,3 +128,52 @@ export const StudentFilters: React.FC<StudentFiltersProps> = ({
 
   return <div></div>;
 };
+return (
+  <motion.div
+    initial={{ opacity: 0, y: 10 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.3, delay: 0.1 }}
+    className="bg-white dark:bg-gray-800 rounded-2xl p-4 shadow-sm border border-gray-200 dark:border-gray-700"
+  >
+    <div className="flex flex-col md:flex-row gap-3 items-stretch md:items-center">
+      <div className="flex-1 relative">
+        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+          <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+          </svg>
+        </div>
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={(e) => onSearchChange(e.target.value)}
+          placeholder="Cauta dupa nume sau email..."
+          className="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-xl text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 transition-all duration-200"
+        />
+      </div>
+
+      <div className="flex flex-col sm:flex-row gap-3">
+        <CustomDropdown
+          options={groupOptions}
+          value={selectedGroup}
+          onChange={onGroupChange}
+          placeholder="Toate Grupele"
+          icon={<span />}
+        />
+        <CustomDropdown
+          options={yearOptions}
+          value={selectedYear}
+          onChange={onYearChange}
+          placeholder="Toți Anii"
+          icon={<span />}
+        />
+        <CustomDropdown
+          options={sortOptions}
+          value={sortBy}
+          onChange={onSortChange}
+          placeholder="Alfabetic"
+          icon={<span />}
+        />
+      </div>
+    </div>
+  </motion.div>
+);
