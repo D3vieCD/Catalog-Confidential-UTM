@@ -23,3 +23,14 @@ export const StudentModal: React.FC<StudentModalProps> = ({
 
   return <div />;
 };
+const [form, setForm] = useState<StudentFormData>({
+  name: '',
+  email: '',
+  group: '',
+  year: 1,
+  status: 'active',
+});
+
+const [errors, setErrors] = useState<{ name?: string; email?: string }>({});
+const [showNewGroup, setShowNewGroup] = useState(false);
+const [newGroupName, setNewGroupName] = useState('');
