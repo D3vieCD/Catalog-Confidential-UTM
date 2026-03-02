@@ -24,3 +24,12 @@ export const SettingsToggle: React.FC<SettingsToggleProps> = ({
     {description && <p>{description}</p>}
   </div>
 </div>
+<h3 className="text-base font-semibold text-gray-900 dark:text-white">
+  {label}
+</h3>
+
+{description && (
+  <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+    {description}
+  </p>
+)}
