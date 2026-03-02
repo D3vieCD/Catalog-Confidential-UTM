@@ -37,3 +37,12 @@ export const Navbar = ({ onLogout }: NavbarProps) => {
     }
     setIsDark(!isDark);
   };
+    return (
+    <nav
+      className="fixed top-0 left-0 right-0 z-50 h-20 border-b transition-colors duration-300"
+      style={{
+        backgroundColor: isDark ? '#111827' : '#FFFFFF',
+        borderColor: isDark ? '#374151' : '#E5E7EB',
+      }}
+    >
+      <div className="px-6 h-full flex items-center justify-between"></div>
