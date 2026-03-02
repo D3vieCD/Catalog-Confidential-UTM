@@ -8,3 +8,20 @@ interface SettingsInputProps {
   disabled?: boolean;
   showPasswordToggle?: boolean;
 }
+import React from 'react';
+
+export const SettingsInput: React.FC<SettingsInputProps> = ({
+  label,
+  value,
+  onChange,
+  type = 'text',
+  placeholder,
+  icon,
+  disabled = false,
+  showPasswordToggle = false
+}) => {
+  return (
+    <div>
+    </div>
+  );
+};
