@@ -13,3 +13,9 @@ interface StatCard {
   icon: React.ReactNode;
   color: string;
 }
+export const SummaryCards = () => {
+  return (
+    <div>
+    </div>
+  );
+};
