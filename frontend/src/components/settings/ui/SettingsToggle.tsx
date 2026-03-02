@@ -40,3 +40,9 @@ export const SettingsToggle: React.FC<SettingsToggleProps> = ({
   }`}
 >
 </button>
+<motion.span
+  layout
+  className={`inline-block h-6 w-6 transform rounded-full bg-white shadow-lg transition-transform duration-300 ${
+    enabled ? 'translate-x-7' : 'translate-x-1'
+  }`}
+/>
