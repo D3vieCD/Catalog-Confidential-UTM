@@ -153,3 +153,49 @@ export const Calendar = () => {
       }
     });
   };
+    return (
+    <div className="space-y-6">
+      {/* Page Header */}
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3 }}
+      >
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+          Calendar Academic
+        </h1>
+        <p className="text-gray-600 dark:text-gray-400 mt-1">
+          Vizualizează orarul și evenimentele importante
+        </p>
+      </motion.div>
+
+      {/* Calendar Layout */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Main Calendar Area */}
+        <div className="lg:col-span-2 space-y-4">
+          <CalendarHeader
+            currentMonth={currentMonth}
+            onPreviousMonth={handlePreviousMonth}
+            onNextMonth={handleNextMonth}
+            onToday={handleToday}
+            onAdd={handleAddEvent}
+            onEdit={handleEditEvent}
+            onDelete={handleDeleteEvent}
+          />
+
+          <CalendarGrid
+            currentMonth={currentMonth}
+            selectedDate={selectedDate}
+            onDateSelect={handleDateSelect}
+            events={events}
+          />
+        </div>
+
+        {/* Sidebar */}
+        <div className="lg:col-span-1">
+          <CalendarSidebar
+            selectedDate={selectedDate}
+            events={events}
+          />
+        </div>
+      </div>
