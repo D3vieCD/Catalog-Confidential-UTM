@@ -142,3 +142,41 @@ export const Sidebar = () => {
 
     console.log('User logged out successfully');
   };
+    return (
+    <>
+      <motion.aside
+        animate={{ width: isExpanded ? 280 : 80 }}
+        transition={{ duration: 0.3, ease: 'easeInOut' }}
+        className="fixed left-0 top-0 h-full flex flex-col bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 transition-colors duration-300 overflow-hidden z-20 shadow-lg"
+        style={{ borderRadius: '0 24px 24px 0' }}
+        onMouseEnter={() => {
+          console.log('Mouse entered sidebar');
+          setIsExpanded(true);
+        }}
+        onMouseLeave={() => {
+          console.log('Mouse left sidebar');
+          setIsExpanded(false);
+        }}
+      >
+        {/* Logo */}
+        <div className="p-4 flex items-center justify-center">
+          <button
+            onClick={() => navigate(paths.dashboardRoutes.home)}
+            className="flex items-center gap-3 group transition-all duration-200 hover:scale-105 p-2 rounded-2xl hover:bg-gray-100 dark:hover:bg-gray-800"
+            title="Acasă"
+          >
+            <div className="w-12 h-12 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300">
+              <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
+              </svg>
+            </div>
+            <motion.span
+              animate={{ opacity: isExpanded ? 1 : 0 }}
+              transition={{ duration: 0.2 }}
+              className="font-bold text-lg whitespace-nowrap group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors"
+              style={{ color: isDark ? '#FFFFFF' : '#111827' }}
+            >
+              Academix
+            </motion.span>
+          </button>
+        </div>
