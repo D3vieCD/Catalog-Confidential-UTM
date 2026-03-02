@@ -27,3 +27,23 @@ export const LoginForm = () => {
     
     return () => observer.disconnect();
   }, []);
+  const handleLogin = () => {
+    setError('');
+    setLoading(true);
+
+    const user = MOCK_USERS.find(
+      (u) => u.email === email && u.password === password
+    );
+
+    if (user) {
+      storage.set('isLoggedIn', 'true');
+      storage.set('userEmail', email);
+      storage.set('userName', user.name);
+      storage.set('showAnimation', 'true');
+      
+      navigate('/dashboard');
+    } else {
+      setError('Email sau parolă incorectă!');
+      setLoading(false);
+    }
+  };
