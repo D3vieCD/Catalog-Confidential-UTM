@@ -12,3 +12,10 @@ const activities: ActivityItem[] = [
   { id: '3', studentName: 'Georgescu Ana', action: 'Notă adăugată: 8', details: 'Grupa 9-B • Chimie', time: 'acum 30 min', type: 'grade' },
   { id: '4', studentName: 'Vasile Radu', action: 'Notă adăugată: 10', details: 'Grupa 11-C • Română', time: 'acum 1 oră', type: 'grade' },
 ];
+const getActivityIcon = (type: ActivityItem['type']) => {
+  switch (type) {
+    case 'grade': return ( /* SVG notă */ );
+    case 'absence': return ( /* SVG absență */ );
+    default: return ( /* SVG general */ );
+  }
+};
