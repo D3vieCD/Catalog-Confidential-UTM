@@ -33,3 +33,13 @@ const activities: ActivityItem[] = [
     type: 'absence',
   },
 ];
+const getActivityIcon = (type: ActivityItem['type']) => {
+  switch (type) {
+    case 'grade':
+      return <div>✔</div>;
+    case 'absence':
+      return <div>⚠</div>;
+    default:
+      return <div>ℹ</div>;
+  }
+};
