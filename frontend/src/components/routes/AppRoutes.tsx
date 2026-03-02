@@ -57,3 +57,46 @@ export const AppRoutes = () => {
     </PublicRoute>
   } 
 />
+<Route 
+  path={paths.dashboard} 
+  element={
+    <ProtectedRoute>
+      <DashboardLayout>
+        <Dashboard />
+      </DashboardLayout>
+    </ProtectedRoute>
+  } 
+/>
+
+<Route
+  path={paths.dashboardRoutes.calendar}
+  element={
+    <ProtectedRoute>
+      <DashboardLayout>
+        <Calendar />
+      </DashboardLayout>
+    </ProtectedRoute>
+  }
+/>
+
+<Route
+  path={paths.dashboardRoutes.students}
+  element={
+    <ProtectedRoute>
+      <DashboardLayout>
+        <Students />
+      </DashboardLayout>
+    </ProtectedRoute>
+  }
+/>
+
+<Route
+  path={paths.dashboardRoutes.groups}
+  element={
+    <ProtectedRoute>
+      <DashboardLayout>
+        <Groups />
+      </DashboardLayout>
+    </ProtectedRoute>
+  }
+/>
