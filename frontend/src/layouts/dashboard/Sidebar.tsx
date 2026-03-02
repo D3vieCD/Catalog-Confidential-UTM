@@ -123,3 +123,22 @@ export const Sidebar = () => {
 
   // Verifică dacă ruta este activă
   const isActive = (path: string) => location.pathname === path;
+    /**
+   * Deschide modală de confirmare logout
+   */
+  const handleLogoutClick = () => {
+    setShowLogoutModal(true);
+  };
+
+  /**
+   * Confirmă logout-ul și navighează la login
+   */
+  const handleLogoutConfirm = () => {
+    // Șterge datele din localStorage
+    storage.clear();
+
+    // Navighează la login
+    navigate(paths.login);
+
+    console.log('User logged out successfully');
+  };
