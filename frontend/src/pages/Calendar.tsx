@@ -111,3 +111,45 @@ export const Calendar = () => {
       type: 'info'
     });
   };
+    const handleDeleteEvent = () => {
+    const selectedDayEvents = events.filter(event => {
+      const eventDate = new Date(event.date);
+      return eventDate.toDateString() === selectedDate.toDateString();
+    });
+
+    if (selectedDayEvents.length === 0) {
+      setModalState({
+        isOpen: true,
+        title: 'Niciun Eveniment',
+        message: 'Nu există evenimente de șters pentru această zi!',
+        type: 'warning'
+      });
+      return;
+    }
+
+    console.log('Șterge evenimente pentru:', selectedDate.toLocaleDateString('ro-RO'), selectedDayEvents);
+    setModalState({
+      isOpen: true,
+      title: 'Confirmare Ștergere',
+      message: `Sigur vrei să ștergi ${selectedDayEvents.length} eveniment(e) din ${selectedDate.toLocaleDateString('ro-RO', {
+        weekday: 'long',
+        day: 'numeric',
+        month: 'long'
+      })}? Această acțiune nu poate fi anulată.`,
+      type: 'confirm',
+      onConfirm: () => {
+        // TODO: Implementează logica de ștergere
+        console.log('Evenimente șterse!');
+        setModalState({ ...modalState, isOpen: false });
+
+        setTimeout(() => {
+          setModalState({
+            isOpen: true,
+            title: 'Succes!',
+            message: 'Evenimentele au fost șterse cu succes!',
+            type: 'success'
+          });
+        }, 300);
+      }
+    });
+  };
