@@ -95,3 +95,36 @@ return (
     </AnimatePresence>
   </div>
 );
+export const StudentFilters: React.FC<StudentFiltersProps> = ({
+  searchQuery,
+  onSearchChange,
+  selectedGroup,
+  onGroupChange,
+  selectedYear,
+  onYearChange,
+  sortBy,
+  onSortChange,
+  groups,
+}) => {
+  const groupOptions: DropdownOption[] = [
+    { value: '', label: 'Toate Grupele' },
+    ...groups.map(g => ({ value: g, label: g })),
+  ];
+
+  const yearOptions: DropdownOption[] = [
+    { value: '', label: 'Toți Anii' },
+    { value: '1', label: 'Anul 1' },
+    { value: '2', label: 'Anul 2' },
+    { value: '3', label: 'Anul 3' },
+    { value: '4', label: 'Anul 4' },
+  ];
+
+  const sortOptions: DropdownOption[] = [
+    { value: 'az', label: 'Alfabetic' },
+    { value: 'za', label: 'Z - A' },
+    { value: 'newest', label: 'Cel mai recent' },
+    { value: 'oldest', label: 'Cel mai vechi' },
+  ];
+
+  return <div></div>;
+};
