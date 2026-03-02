@@ -9,3 +9,8 @@ import { useAuth } from '../../hooks/useAuth';
  * Header - Bară de navigare superioară cu logo home, căutare și profil
  */
 export const Header = () => {
+      const [isDark, setIsDark] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const navigate = useNavigate();
+  const { getUser } = useAuth();
+  const currentUser = getUser();
