@@ -68,3 +68,12 @@ export const StudentCard: React.FC<StudentCardProps> = ({ student, onEdit, onDel
     {student.email}
   </span>
 </div>
+{/* Badges */}
+<div className="flex items-center gap-2 flex-wrap">
+  <span className="px-3 py-1 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-300 text-xs font-bold rounded-full">
+    {student.group}
+  </span>
+
+  <span className="px-3 py-1 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-xs font-medium rounded-full">
+    ANUL {student.year}
+  </span>
