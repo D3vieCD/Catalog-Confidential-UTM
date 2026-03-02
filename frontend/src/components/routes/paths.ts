@@ -11,3 +11,12 @@ export const paths = {
 auth: {
   login: '/login',
 },
+dashboardRoutes: {
+  home: '/dashboard',
+  students: '/dashboard/students',
+  groups: '/dashboard/groups',
+  catalog: '/dashboard/catalog',
+  reports: '/dashboard/reports',
+  calendar: '/dashboard/calendar',
+  settings: '/dashboard/settings',
+},
