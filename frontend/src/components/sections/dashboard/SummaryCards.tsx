@@ -43,3 +43,15 @@ const stats: StatCard[] = [
   className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-md transition-shadow"
 >
 </motion.div>
+<div className="flex items-center justify-between mb-4">
+  <div className={`w-12 h-12 bg-gradient-to-r ${stat.color} rounded-xl flex items-center justify-center text-white`}>
+    {stat.icon}
+  </div>
+  <div className={`flex items-center gap-1 text-sm font-medium ${
+    stat.changeType === 'increase'
+      ? 'text-green-600 dark:text-green-400'
+      : 'text-red-600 dark:text-red-400'
+  }`}>
+    {stat.change}
+  </div>
+</div>
