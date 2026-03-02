@@ -66,3 +66,45 @@ export const Students = () => {
 
     return result;
   }, [students, searchQuery, selectedGroup, selectedYear, sortBy]);
+  // Handlers
+  const handleOpenAdd = () => {
+    setEditingStudent(null);
+    setIsModalOpen(true);
+  };
+
+  const handleOpenEdit = (student: Student) => {
+    setEditingStudent(student);
+    setIsModalOpen(true);
+  };
+
+  const handleOpenDelete = (student: Student) => {
+    setDeletingStudent(student);
+  };
+
+  const handleSave = (data: StudentFormData) => {
+    if (editingStudent) {
+      const updated = updateStudent(editingStudent.id, data);
+      if (updated) {
+        setStudents(getStudents());
+      }
+    } else {
+      addStudent(data);
+      setStudents(getStudents());
+    }
+    setIsModalOpen(false);
+    setEditingStudent(null);
+  };
+
+  const handleDeleteConfirm = () => {
+    if (!deletingStudent) return;
+    const success = deleteStudent(deletingStudent.id);
+    if (success) {
+      setStudents(getStudents());
+    }
+    setDeletingStudent(null);
+  };
+
+  const handleAddGroup = (group: string) => {
+    const updated = addGroup(group);
+    setGroups(updated);
+  };
