@@ -27,3 +27,6 @@ export const Header = () => {
 
     return () => observer.disconnect();
   }, []);
+    const goToHome = () => {
+    navigate(paths.dashboard);
+  };
