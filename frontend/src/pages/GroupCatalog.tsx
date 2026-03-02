@@ -309,3 +309,99 @@ if (!group) {
           </table>
         </div>
       </div>
+<Modal
+        isOpen={showGradeModal}
+        onClose={() => { setShowGradeModal(false); setEditingGradeId(null); }}
+        title={editingGradeId ? "Editează Notă" : "Adaugă Notă"}
+        size="sm"
+      >
+        <div className="space-y-4">
+          <p className="text-gray-600 dark:text-gray-400">
+            Materia: <span className="font-semibold text-gray-900 dark:text-white">{selectedSubject}</span>
+          </p>
+          <div>
+            <label className="block text-sm font-semibold text-gray-600 dark:text-gray-400 mb-3 uppercase tracking-wide">Selectează Nota</label>
+            <div className="grid grid-cols-6 gap-2">
+              {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
+                <button
+                  key={num}
+                  onClick={() => setGradeValue(num)}
+                  className={`py-3 rounded-xl font-bold transition-all ${gradeValue === num ? 'bg-blue-500 text-white shadow-lg' : 'bg-gray-100 dark:bg-gray-700'}`}
+                >
+                  {num}
+                </button>
+              ))}
+              <button
+                onClick={() => setGradeValue(null)}
+                className={`col-span-2 py-3 rounded-xl font-bold transition-all ${gradeValue === null ? 'bg-orange-500 text-white' : 'bg-gray-100'}`}
+              >
+                Lipsă
+              </button>
+            </div>
+          </div>
+          <div className="flex gap-3 pt-4">
+            {editingGradeId && (
+              <button
+                onClick={() => { deleteGrade(editingGradeId); setShowGradeModal(false); setRefreshKey(prev => prev + 1); }}
+                className="px-6 py-3 bg-red-500 text-white font-semibold rounded-2xl"
+              >
+                Șterge
+              </button>
+            )}
+            <button onClick={() => setShowGradeModal(false)} className="flex-1 px-6 py-3 bg-gray-600 text-white font-semibold rounded-2xl">Anulează</button>
+            <button onClick={handleSaveGrade} className="flex-1 px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-semibold rounded-2xl shadow-lg">Salvează</button>
+          </div>
+        </div>
+      </Modal>
+    </div>
+  );
+};
+
+interface DropdownOption { value: string; label: string; }
+
+const CustomDropdown: React.FC<{
+  value: string;
+  onChange: (value: string) => void;
+  options: DropdownOption[];
+  icon: React.ReactNode;
+}> = ({ value, onChange, options, icon }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const selectedOption = options.find(opt => opt.value === value) || options[0];
+
+  return (
+    <div className="relative">
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl text-sm font-medium min-w-[200px]"
+      >
+        <span className="text-gray-400">{icon}</span>
+        <span className="flex-1 text-left">{selectedOption.label}</span>
+        <svg className={`w-4 h-4 transition-transform ${isOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"/></svg>
+      </button>
+
+      <AnimatePresence>
+        {isOpen && (
+          <>
+            <div className="fixed inset-0 z-10" onClick={() => setIsOpen(false)} />
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              className="absolute top-full left-0 mt-2 w-full bg-white dark:bg-gray-800 border border-gray-200 rounded-2xl shadow-lg z-20 overflow-hidden"
+            >
+              {options.map((option) => (
+                <button
+                  key={option.value}
+                  onClick={() => { onChange(option.value); setIsOpen(false); }}
+                  className={`w-full px-4 py-2.5 text-left text-sm ${option.value === value ? 'bg-blue-50 text-blue-600' : 'hover:bg-gray-50'}`}
+                >
+                  {option.label}
+                </button>
+              ))}
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+};
