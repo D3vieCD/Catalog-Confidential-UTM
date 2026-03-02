@@ -19,3 +19,11 @@ const getActivityIcon = (type: ActivityItem['type']) => {
     default: return ( /* SVG general */ );
   }
 };
+export const RecentActivity = () => {
+  return (
+    <motion.div ...>
+      {/* Header cu buton "Vezi Tot" */}
+      {/* Lista de activități cu animații Framer Motion */}
+    </motion.div>
+  );
+};
