@@ -40,3 +40,20 @@ export const AppRoutes = () => {
     </BrowserRouter>
   );
 };
+<Route 
+  path={paths.login} 
+  element={
+    <PublicRoute>
+      <Login />
+    </PublicRoute>
+  } 
+/>
+
+<Route 
+  path={paths.register} 
+  element={
+    <PublicRoute>
+      <Register />
+    </PublicRoute>
+  } 
+/>
