@@ -27,3 +27,13 @@ export const Navbar = ({ onLogout }: NavbarProps) => {
 
     return () => observer.disconnect();
   }, []);
+    const toggleDarkMode = () => {
+    if (isDark) {
+      document.documentElement.classList.remove('dark');
+      storage.set('theme', 'light');
+    } else {
+      document.documentElement.classList.add('dark');
+      storage.set('theme', 'dark');
+    }
+    setIsDark(!isDark);
+  };
