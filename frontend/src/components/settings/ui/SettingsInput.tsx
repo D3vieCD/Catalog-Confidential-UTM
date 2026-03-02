@@ -35,3 +35,8 @@ const inputType = type === 'password' && showPassword ? 'text' : type;
     <input />
   </div>
 </div>
+{icon && (
+  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400 dark:text-gray-500">
+    {icon}
+  </div>
+)}
