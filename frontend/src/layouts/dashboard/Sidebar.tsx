@@ -180,3 +180,41 @@ export const Sidebar = () => {
             </motion.span>
           </button>
         </div>
+                {/* Meniu de Navigare */}
+        <nav className="flex-1 p-3 space-y-2">
+          {menuItems.map((item) => (
+            <button
+              key={item.id}
+              type="button"
+              onClick={() => navigate(item.path)}
+              className={`w-full flex items-center gap-4 px-3 py-3.5 rounded-xl font-medium transition-all duration-200 ${
+                isActive(item.path)
+                  ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-lg'
+                  : 'hover:bg-gray-50 hover:border-blue-300 dark:hover:bg-gray-800'
+              }`}
+              style={
+                !isActive(item.path)
+                  ? {
+                      color: isDark ? '#9CA3AF' : '#6B7280',
+                      border: '1px solid transparent',
+                    }
+                  : {}
+              }
+              title={!isExpanded ? item.label : ''}
+            >
+              <span className="flex-shrink-0">{item.icon}</span>
+
+              <motion.span
+                animate={{
+                  opacity: isExpanded ? 1 : 0,
+                  width: isExpanded ? 'auto' : 0,
+                  x: isExpanded ? 0 : -10,
+                }}
+                transition={{ duration: 0.3, ease: 'easeInOut' }}
+                className="overflow-hidden whitespace-nowrap"
+              >
+                {item.label}
+              </motion.span>
+            </button>
+          ))}
+        </nav>
