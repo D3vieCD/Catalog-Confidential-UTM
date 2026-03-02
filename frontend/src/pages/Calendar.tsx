@@ -34,3 +34,34 @@ export const Calendar = () => {
     message: '',
     type: 'info'
   });
+    const handlePreviousMonth = () => {
+    const newMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1);
+    setCurrentMonth(newMonth);
+
+    const today = new Date();
+    if (
+      today.getMonth() === newMonth.getMonth() &&
+      today.getFullYear() === newMonth.getFullYear()
+    ) {
+      setSelectedDate(today);
+    }
+  };
+
+  const handleNextMonth = () => {
+    const newMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1);
+    setCurrentMonth(newMonth);
+
+    const today = new Date();
+    if (
+      today.getMonth() === newMonth.getMonth() &&
+      today.getFullYear() === newMonth.getFullYear()
+    ) {
+      setSelectedDate(today);
+    }
+  };
+
+  const handleToday = () => {
+    const today = new Date();
+    setCurrentMonth(today);
+    setSelectedDate(today);
+  };
