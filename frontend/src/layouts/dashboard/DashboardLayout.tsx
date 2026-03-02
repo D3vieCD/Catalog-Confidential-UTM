@@ -19,3 +19,20 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
 
       {/* Sidebar - Fixed în stânga */}
       <Sidebar />
+            {/* Main Content - Restul spațiului */}
+      <div
+        className="pt-20 transition-all duration-300 min-h-screen bg-white dark:bg-gray-900"
+        style={{ marginLeft: '80px' }}
+      >
+        <motion.main
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
+          className="p-8 min-h-screen"
+        >
+          {children}
+        </motion.main>
+      </div>
+    </div>
+  );
+};
