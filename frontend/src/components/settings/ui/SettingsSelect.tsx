@@ -35,3 +35,14 @@ export const SettingsSelect: React.FC<SettingsSelectProps> = ({
     {icon}
   </div>
 )}
+<select
+  value={value}
+  onChange={(e) => onChange(e.target.value)}
+  className={`w-full ${icon ? 'pl-12' : 'pl-4'} pr-10 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 appearance-none cursor-pointer`}
+>
+  {options.map((option) => (
+    <option key={option.value} value={option.value}>
+      {option.label}
+    </option>
+  ))}
+</select>
