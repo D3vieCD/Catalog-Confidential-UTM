@@ -23,3 +23,6 @@ const groupsWithStudentCount = useMemo(() => {
     ).length,
   }));
 }, [groups, students]);
+const handleGroupClick = (groupId: string) => {
+  navigate(`/dashboard/catalog/${groupId}`);
+};
