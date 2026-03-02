@@ -16,3 +16,15 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   
   return <>{children}</>;
 };
+/**
+ * Public Route - Redirect la dashboard dacă e deja logat
+ */
+const PublicRoute = ({ children }: { children: React.ReactNode }) => {
+  const isLoggedIn = storage.get('isLoggedIn') === 'true';
+  
+  if (isLoggedIn) {
+    return <Navigate to={paths.dashboard} replace />;
+  }
+  
+  return <>{children}</>;
+};
