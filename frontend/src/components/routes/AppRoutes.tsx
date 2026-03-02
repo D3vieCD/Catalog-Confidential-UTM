@@ -28,3 +28,15 @@ const PublicRoute = ({ children }: { children: React.ReactNode }) => {
   
   return <>{children}</>;
 };
+/**
+ * App Routes - Toate rutele aplicației
+ */
+export const AppRoutes = () => {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Navigate to={paths.login} replace />} />
+      </Routes>
+    </BrowserRouter>
+  );
+};
