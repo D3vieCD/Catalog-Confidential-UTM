@@ -38,3 +38,8 @@ export const useAuth = () => {
     navigate(paths.auth.login);
 
   };
+    const isAuthenticated = (): boolean => {
+
+    return storage.get('isLoggedIn') === 'true';
+
+  };
