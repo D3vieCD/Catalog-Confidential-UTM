@@ -13,3 +13,5 @@ export const Catalog = () => {
 
   return <div />;
 };
+const [groups] = useState(() => getGroups().filter(g => g.status === 'ACTIV'));
+const [students] = useState(() => getStudents());
