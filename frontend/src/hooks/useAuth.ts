@@ -32,3 +32,9 @@ export const useAuth = () => {
 
     return 'Email sau parolă incorectă!';
   };
+    const logout = () => {
+
+    storage.clear();
+    navigate(paths.auth.login);
+
+  };
