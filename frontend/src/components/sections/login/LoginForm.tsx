@@ -105,3 +105,49 @@ export const LoginForm = () => {
             disabled={loading}
           />
         </div>
+        {/* Remember & Forgot */}
+        <div className="flex items-center justify-between mb-5">
+          <Checkbox label="Ține-mă minte" disabled={loading} />
+          <button 
+            onClick={() => console.log('Forgot password')}
+            className="text-xs md:text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium transition-colors"
+          >
+            Ai uitat parola?
+          </button>
+        </div>
+        
+        {/* Button */}
+        <Button 
+          variant="primary" 
+          fullWidth
+          onClick={handleLogin}
+          loading={loading}
+          disabled={!email || !password}
+        >
+          Intră în cont
+        </Button>
+        
+        {/* Divider */}
+        <Divider />
+        
+        {/* Social Buttons */}
+        <div className="space-y-3">
+          <SocialLoginButton provider="google" fullWidth />
+          <SocialLoginButton provider="microsoft" fullWidth />
+          <SocialLoginButton provider="github" fullWidth />
+        </div>
+        
+        {/* Register */}
+        <p className="text-center text-xs md:text-sm text-gray-600 dark:text-gray-400 mt-6 transition-colors">
+          Nu ai cont?{' '}
+          <button 
+            onClick={() => navigate(paths.register)}
+            className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-semibold transition-colors"
+          >
+            Înregistrează-te
+          </button>
+        </p>
+      </div>
+    </div>
+  );
+};
