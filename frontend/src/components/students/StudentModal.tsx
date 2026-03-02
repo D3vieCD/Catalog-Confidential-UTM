@@ -58,3 +58,29 @@ useEffect(() => {
     setNewGroupName('');
   }
 }, [isOpen, student, groups]);
+const validate = (): boolean => {
+  const newErrors: { name?: string; email?: string } = {};
+  if (!form.name.trim()) newErrors.name = 'Numele este obligatoriu';
+  if (!form.email.trim()) {
+    newErrors.email = 'Email-ul este obligatoriu';
+  } else if (!form.email.includes('@')) {
+    newErrors.email = 'Email-ul nu este valid';
+  }
+  setErrors(newErrors);
+  return Object.keys(newErrors).length === 0;
+};
+
+const handleSubmit = () => {
+  if (!validate()) return;
+  onSave(form);
+};
+
+const handleAddNewGroup = () => {
+  const trimmed = newGroupName.trim().toUpperCase();
+  if (trimmed) {
+    onAddGroup(trimmed);
+    setForm({ ...form, group: trimmed });
+    setShowNewGroup(false);
+    setNewGroupName('');
+  }
+};
