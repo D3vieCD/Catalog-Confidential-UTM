@@ -79,3 +79,67 @@ export const RegisterForm = () => {
             Intră în comunitatea Academix
           </p>
         </div>
+        {/* Error Message */}
+        {error && (
+          <div className="mb-4 p-3 rounded-lg flex items-center gap-2 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400">
+            <svg className="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+            </svg>
+            <span className="text-sm font-medium">{error}</span>
+          </div>
+        )}
+        
+        {/* Name Input */}
+        <div className="mb-4">
+          <Input 
+            label="Nume complet"
+            type="text" 
+            placeholder="Ion Popescu" 
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            fullWidth
+            disabled={loading}
+          />
+        </div>
+
+        {/* Email Input */}
+        <div className="mb-4">
+          <Input 
+            label="Email"
+            type="email" 
+            placeholder="profesor@scoala.ro" 
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            fullWidth
+            disabled={loading}
+          />
+        </div>
+
+        {/* Password Input */}
+        <div className="mb-4">
+          <Input 
+            label="Parolă"
+            type="password" 
+            placeholder="Introdu parola" 
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            fullWidth
+            disabled={loading}
+          />
+        </div>
+
+        {/* Confirm Password Input */}
+        <div className="mb-4">
+          <Input 
+            label="Confirmă parola"
+            type="password" 
+            placeholder="Reintrodu parola" 
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            onKeyPress={(e) => {
+              if (e.key === 'Enter') handleRegister();
+            }}
+            fullWidth
+            disabled={loading}
+          />
+        </div>
