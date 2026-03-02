@@ -28,3 +28,34 @@ export const RegisterForm = () => {
     
     return () => observer.disconnect();
   }, []);
+  const handleRegister = () => {
+    setError('');
+    setLoading(true);
+
+    if (!name || !email || !password || !confirmPassword) {
+      setError('Toate câmpurile sunt obligatorii!');
+      setLoading(false);
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setError('Parolele nu se potrivesc!');
+      setLoading(false);
+      return;
+    }
+
+    if (password.length < 6) {
+      setError('Parola trebuie să aibă cel puțin 6 caractere!');
+      setLoading(false);
+      return;
+    }
+
+    setTimeout(() => {
+      storage.set('isRegistered', 'true');
+      storage.set('userName', name);
+      storage.set('userEmail', email);
+      
+      setLoading(false);
+      navigate(paths.login);
+    }, 1500);
+  };
