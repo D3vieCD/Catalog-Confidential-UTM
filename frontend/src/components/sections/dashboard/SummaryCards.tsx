@@ -19,3 +19,13 @@ export const SummaryCards = () => {
     </div>
   );
 };
+const stats: StatCard[] = [
+  {
+    title: 'Total Studenți',
+    value: 142,
+    change: '+12%',
+    changeType: 'increase',
+    icon: (<svg />),
+    color: 'from-blue-500 to-blue-600',
+  },
+];
