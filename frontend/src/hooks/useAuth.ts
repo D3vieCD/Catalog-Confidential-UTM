@@ -53,3 +53,25 @@ export const useAuth = () => {
     };
 
   };
+    const updateUser = (
+    userData: {
+      name?: string;
+      email?: string;
+      role?: string;
+      avatar?: string;
+    }
+  ) => {
+
+    if (userData.name)
+      storage.set('userName', userData.name);
+
+    if (userData.email)
+      storage.set('userEmail', userData.email);
+
+    if (userData.role)
+      storage.set('userRole', userData.role);
+
+    if (userData.avatar !== undefined)
+      storage.set('userAvatar', userData.avatar);
+
+  };
