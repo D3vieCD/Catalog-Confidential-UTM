@@ -5,3 +5,8 @@ import { paths } from '../../routes/paths';
 interface AuthLayoutProps {
   children: React.ReactNode;
 }
+
+
+export const AuthLayout = ({ children }: AuthLayoutProps) => {
+
+  const isLoggedIn = storage.get('isLoggedIn') === 'true';
