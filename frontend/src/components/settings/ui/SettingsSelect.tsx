@@ -9,3 +9,17 @@ interface SettingsSelectProps {
   options: SettingsSelectOption[];
   icon?: React.ReactNode;
 }
+import React from 'react';
+
+export const SettingsSelect: React.FC<SettingsSelectProps> = ({
+  label,
+  value,
+  onChange,
+  options,
+  icon
+}) => {
+  return (
+    <div>
+    </div>
+  );
+};
