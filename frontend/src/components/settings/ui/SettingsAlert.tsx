@@ -27,3 +27,18 @@ const icons = {
   success: ( <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">...</svg> ),
   error: ( <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">...</svg> )
 };
+<div className={`rounded-xl border p-4 ${colors[type]}`}>
+  <div className="flex items-start gap-3">
+    <div className="flex-shrink-0">
+      {icons[type]}
+    </div>
+    <div className="flex-1">
+      <h4 className="font-semibold text-sm">
+        {title}
+      </h4>
+      <p className="text-sm mt-1 opacity-90">
+        {message}
+      </p>
+    </div>
+  </div>
+</div>
