@@ -27,3 +27,11 @@ export const SettingsInput: React.FC<SettingsInputProps> = ({
 };
 const [showPassword, setShowPassword] = React.useState(false);
 const inputType = type === 'password' && showPassword ? 'text' : type;
+<div className="space-y-2">
+  <label className="block text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+    {label}
+  </label>
+  <div className="relative">
+    <input />
+  </div>
+</div>
