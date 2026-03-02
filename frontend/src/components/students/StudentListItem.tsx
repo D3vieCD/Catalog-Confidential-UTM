@@ -35,3 +35,12 @@ return (
   </div>
   <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-white dark:border-gray-800 bg-green-500" />
 </div>
+{/* Info */}
+<div className="flex-1 min-w-0">
+  <h3 className="text-sm font-semibold text-gray-900 dark:text-white truncate">
+    {student.name}
+  </h3>
+  <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
+    {student.email}
+  </p>
+</div>
