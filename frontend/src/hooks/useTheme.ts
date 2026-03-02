@@ -97,3 +97,13 @@ export const useTheme = () => {
     localStorage.setItem('theme', themeType);
 
   };
+    return {
+
+    theme,
+    setTheme: changeTheme,
+    availableThemes: Object.keys(themes) as ThemeType[],
+    currentThemeConfig: themes[theme]
+
+  };
+
+};
