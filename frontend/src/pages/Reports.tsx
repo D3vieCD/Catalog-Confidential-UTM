@@ -43,3 +43,17 @@ export const Reports = () => {
 
       {/* Stats Cards */}
       <ReportStats stats={stats} />
+      {/* Export & Import Sections */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        {/* Export Section */}
+        <ExportSection onReportGenerated={handleReportGenerated} />
+
+        {/* Import Section */}
+        <ImportSection />
+      </div>
+
+      {/* Reports Table */}
+      <ReportsTable reports={reports} />
+    </div>
+  );
+};
