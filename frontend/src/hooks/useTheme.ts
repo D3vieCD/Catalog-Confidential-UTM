@@ -58,3 +58,9 @@ const themes: Record<ThemeType, ThemeConfig> = {
     border: '#8b5cf6'
   }
 };
+export const useTheme = () => {
+
+  const [theme, setTheme] = useState<ThemeType>(() => {
+    const savedTheme = localStorage.getItem('theme') as ThemeType;
+    return savedTheme && themes[savedTheme] ? savedTheme : 'default';
+  });
