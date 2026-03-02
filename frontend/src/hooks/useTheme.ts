@@ -64,3 +64,22 @@ export const useTheme = () => {
     const savedTheme = localStorage.getItem('theme') as ThemeType;
     return savedTheme && themes[savedTheme] ? savedTheme : 'default';
   });
+    const applyTheme = useCallback((themeType: ThemeType) => {
+
+    const config = themes[themeType];
+    const root = document.documentElement;
+
+    root.style.setProperty('--color-primary', config.primary);
+    root.style.setProperty('--color-secondary', config.secondary);
+    root.style.setProperty('--color-background', config.background);
+    root.style.setProperty('--color-surface', config.surface);
+    root.style.setProperty('--color-text', config.text);
+    root.style.setProperty('--color-border', config.border);
+
+    if (themeType === 'dark') {
+      document.body.classList.add('dark');
+    } else {
+      document.body.classList.remove('dark');
+    }
+
+  }, []);
