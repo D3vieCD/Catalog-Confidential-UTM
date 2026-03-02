@@ -68,3 +68,46 @@ export const Calendar = () => {
     const handleDateSelect = (date: Date) => {
     setSelectedDate(date);
   };
+    const handleAddEvent = () => {
+    console.log('Adaugă eveniment pentru data:', selectedDate.toLocaleDateString('ro-RO'));
+    setModalState({
+      isOpen: true,
+      title: 'Adaugă Eveniment',
+      message: `Vrei să adaugi un eveniment nou pentru ${selectedDate.toLocaleDateString('ro-RO', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      })}?`,
+      type: 'info'
+    });
+  };
+
+  const handleEditEvent = () => {
+    const selectedDayEvents = events.filter(event => {
+      const eventDate = new Date(event.date);
+      return eventDate.toDateString() === selectedDate.toDateString();
+    });
+
+    if (selectedDayEvents.length === 0) {
+      setModalState({
+        isOpen: true,
+        title: 'Niciun Eveniment',
+        message: 'Nu există evenimente pentru această zi!',
+        type: 'warning'
+      });
+      return;
+    }
+
+    console.log('Editează evenimente pentru:', selectedDate.toLocaleDateString('ro-RO'), selectedDayEvents);
+    setModalState({
+      isOpen: true,
+      title: 'Editare Evenimente',
+      message: `Ai selectat ${selectedDayEvents.length} eveniment(e) din ${selectedDate.toLocaleDateString('ro-RO', {
+        weekday: 'long',
+        day: 'numeric',
+        month: 'long'
+      })} pentru editare.`,
+      type: 'info'
+    });
+  };
