@@ -47,3 +47,10 @@ export const StudentCard: React.FC<StudentCardProps> = ({ student, onEdit, onDel
     </svg>
   </button>
 </div>
+{/* Avatar with Status */}
+<div className="relative w-14 h-14 mb-4">
+  <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-white text-lg font-bold bg-gradient-to-br from-blue-500 to-indigo-600">
+    {initials}
+  </div>
+  <span className="absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full border-2 border-white dark:border-gray-800 bg-green-500" />
+</div>
