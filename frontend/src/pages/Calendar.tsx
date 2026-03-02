@@ -199,3 +199,43 @@ export const Calendar = () => {
           />
         </div>
       </div>
+            {/* Modal */}
+      <Modal
+        isOpen={modalState.isOpen}
+        onClose={() => setModalState({ ...modalState, isOpen: false })}
+        title={modalState.title}
+        footer={
+          <div className="flex items-center justify-end gap-3">
+            {modalState.type === 'confirm' ? (
+              <>
+                <button
+                  onClick={() => setModalState({ ...modalState, isOpen: false })}
+                  className="px-5 py-2.5 border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-xl font-medium transition-all duration-200"
+                >
+                  Anulează
+                </button>
+                <button
+                  onClick={() => modalState.onConfirm?.()}
+                  className="px-5 py-2.5 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white rounded-xl font-medium transition-all duration-200 shadow-md hover:shadow-lg"
+                >
+                  Confirmă Ștergerea
+                </button>
+              </>
+            ) : (
+              <button
+                onClick={() => setModalState({ ...modalState, isOpen: false })}
+                className="px-6 py-2.5 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white rounded-xl font-medium transition-all duration-200 shadow-md hover:shadow-lg"
+              >
+                OK
+              </button>
+            )}
+          </div>
+        }
+      >
+        <div className="text-gray-700 dark:text-gray-300 text-base leading-relaxed">
+          {modalState.message}
+        </div>
+      </Modal>
+    </div>
+  );
+};
