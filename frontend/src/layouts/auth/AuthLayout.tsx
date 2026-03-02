@@ -10,3 +10,8 @@ interface AuthLayoutProps {
 export const AuthLayout = ({ children }: AuthLayoutProps) => {
 
   const isLoggedIn = storage.get('isLoggedIn') === 'true';
+    if (isLoggedIn) {
+
+    return <Navigate to={paths.dashboardRoutes.home} replace />;
+
+  }
