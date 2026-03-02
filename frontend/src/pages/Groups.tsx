@@ -73,3 +73,46 @@ export const Groups = () => {
 
     return result;
   }, [groups, searchQuery, selectedYear, sortBy]);
+  // Handlers
+  const handleOpenAdd = () => {
+    setEditingGroup(null);
+    setIsModalOpen(true);
+  };
+
+  const handleOpenEdit = (group: Group) => {
+    setEditingGroup(group);
+    setIsModalOpen(true);
+  };
+
+  const handleOpenDelete = (group: Group) => {
+    setDeletingGroup(group);
+  };
+
+  const handleSave = (data: GroupFormData) => {
+    if (editingGroup) {
+      const updated = updateGroup(editingGroup.id, data);
+      if (updated) {
+        setGroups(prev => prev.map(g => (g.id === updated.id ? updated : g)));
+      }
+    } else {
+      const newGroup = addGroup(data);
+      setGroups(prev => [...prev, newGroup]);
+    }
+    setIsModalOpen(false);
+    setEditingGroup(null);
+  };
+
+  const handleDeleteConfirm = () => {
+    if (!deletingGroup) return;
+
+    // Check if group has students
+    if (deletingGroup.currentCapacity > 0) {
+      alert('Nu poți șterge o grupă care are studenți înscriși!');
+      setDeletingGroup(null);
+      return;
+    }
+
+    deleteGroup(deletingGroup.id);
+    setGroups(prev => prev.filter(g => g.id !== deletingGroup.id));
+    setDeletingGroup(null);
+  };
