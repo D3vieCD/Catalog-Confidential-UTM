@@ -43,3 +43,7 @@ export const testTheme = () => {
   };
   
   return { testToggle };
+  // Export pentru a putea fi folosit în consolă
+if (typeof window !== 'undefined') {
+  window.testTheme = testTheme;
+}
