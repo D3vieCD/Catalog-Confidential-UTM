@@ -20,3 +20,14 @@ export const storage = {
     }
   },
 };
+export const storage = {
+  // ... anterior
+  // Remove item
+  remove: (key: string): void => {
+    try {
+      localStorage.removeItem(key);
+    } catch (error) {
+      console.error('Error removing localStorage:', error);
+    }
+  },
+};
