@@ -31,3 +31,14 @@ export const storage = {
     }
   },
 };
+export const storage = {
+  // ... anterior
+  // Clear all
+  clear: (): void => {
+    try {
+      localStorage.clear();
+    } catch (error) {
+      console.error('Error clearing localStorage:', error);
+    }
+  },
+};
