@@ -32,3 +32,20 @@ export const debugTheme = () => {
   console.log('Test element background:', testBg);
   
   document.body.removeChild(testElement);
+  // În interiorul debugTheme:
+  console.log('🔄 Testing manual toggle...');
+  
+  if (html.classList.contains('dark')) {
+    html.classList.remove('dark');
+    body.classList.remove('dark');
+  } else {
+    html.classList.add('dark');
+    body.classList.add('dark');
+  }
+  
+  setTimeout(() => {
+    console.log('After toggle - HTML background:', window.getComputedStyle(html).backgroundColor);
+    console.log('🔍 DEBUG THEME END');
+  }, 100);
+
+window.debugTheme = debugTheme;
