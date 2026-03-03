@@ -48,6 +48,14 @@ export const colors = {
   // Semantic Colors
   success: '#10B981',
   error: '#EF4444',
-  warning: '#F59E0B',
+  warning: '#ffa200',
   info: '#3B82F6',
+};
+export const colors = {
+  // ... anterior
+  // Gradient Backgrounds
+  gradients: {
+    primary: 'linear-gradient(-45deg, #4F46E5, #7C3AED, #2563EB, #6366F1, #8B5CF6)',
+    dark: 'linear-gradient(-45deg, #1E1B4B, #312E81, #1E3A8A, #3730A3, #4C1D95)',
+  },
 };
