@@ -23,3 +23,12 @@ export const debugTheme = () => {
   
   console.log('HTML background:', htmlBg);
   console.log('Body background:', bodyBg);
+  // În interiorul debugTheme:
+  const testElement = document.createElement('div');
+  testElement.className = 'bg-white dark:bg-gray-900';
+  document.body.appendChild(testElement);
+  
+  const testBg = window.getComputedStyle(testElement).backgroundColor;
+  console.log('Test element background:', testBg);
+  
+  document.body.removeChild(testElement);
