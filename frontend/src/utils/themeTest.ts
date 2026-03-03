@@ -23,3 +23,23 @@ export const testTheme = () => {
   
   return { testToggle: () => {} }; // Placeholder pentru pasul următor
 };
+// În interiorul funcției testTheme:
+  const testToggle = () => {
+    const isDark = document.documentElement.classList.contains('dark');
+    console.log(`Before toggle: ${isDark ? 'dark' : 'light'}`);
+
+    // Simulează click pe butonul de dark mode
+    const darkModeButton = document.querySelector<HTMLButtonElement>('[aria-label="Toggle Dark Mode"]');
+    if (darkModeButton) {
+      darkModeButton.click();
+      setTimeout(() => {
+        const newIsDark = document.documentElement.classList.contains('dark');
+        console.log(`After toggle: ${newIsDark ? 'dark' : 'light'}`);
+        console.log('✅ Dark mode toggle working!');
+      }, 100);
+    } else {
+      console.log('❌ Dark mode button not found');
+    }
+  };
+  
+  return { testToggle };
