@@ -43,3 +43,11 @@ export const colors = {
     900: '#1E3A8A',
   },
 };
+export const colors = {
+  // ... anterior
+  // Semantic Colors
+  success: '#10B981',
+  error: '#EF4444',
+  warning: '#F59E0B',
+  info: '#3B82F6',
+};
