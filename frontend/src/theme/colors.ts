@@ -59,3 +59,4 @@ export const colors = {
     dark: 'linear-gradient(-45deg, #1E1B4B, #312E81, #1E3A8A, #3730A3, #4C1D95)',
   },
 };
+export type ColorTheme = typeof colors;
