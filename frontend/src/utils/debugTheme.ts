@@ -17,3 +17,9 @@ export const debugTheme = () => {
   console.log('HTML classes:', html.className);
   console.log('Body classes:', body.className);
 };
+// În interiorul debugTheme:
+  const htmlBg = window.getComputedStyle(html).backgroundColor;
+  const bodyBg = window.getComputedStyle(body).backgroundColor;
+  
+  console.log('HTML background:', htmlBg);
+  console.log('Body background:', bodyBg);
