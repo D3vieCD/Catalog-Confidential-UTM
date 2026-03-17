@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { paths } from '../../routes/paths';
@@ -9,6 +9,7 @@ import { storage } from '../../utils';
  * Sidebar - Navigare principală cu hover expand
  * Include meniu complet, logout cu modală și animații smooth
  */
+
 // Definirea itemelor din meniu
 const menuItems = [
   {
@@ -83,86 +84,44 @@ const menuItems = [
     ),
   },
 ];
+
 /**
  * Componenta Sidebar principală
  * Include navigare completă, hover expand, dark mode și logout cu modală
  */
 export const Sidebar = () => {
-  // Utilizarea hook-urilor pentru navigare și locație
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Starea componentei
   const [isExpanded, setIsExpanded] = useState(false);
-  const [isDark, setIsDark] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
 
-  // Detectarea schimbărilor de dark mode
-  useEffect(() => {
-    const checkDark = () => {
-      const hasDarkClass =
-        document.documentElement.classList.contains('dark') ||
-        document.body.classList.contains('dark');
-      setIsDark(hasDarkClass);
-    };
-
-    checkDark();
-
-    const observer = new MutationObserver(checkDark);
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ['class'],
-    });
-    observer.observe(document.body, {
-      attributes: true,
-      attributeFilter: ['class'],
-    });
-
-    return () => observer.disconnect();
-  }, []);
-
-  // Verifică dacă ruta este activă
   const isActive = (path: string) => location.pathname === path;
-    /**
-   * Deschide modală de confirmare logout
-   */
+
   const handleLogoutClick = () => {
     setShowLogoutModal(true);
   };
 
-  /**
-   * Confirmă logout-ul și navighează la login
-   */
   const handleLogoutConfirm = () => {
-    // Șterge datele din localStorage
     storage.clear();
-
-    // Navighează la login
     navigate(paths.login);
-
-    console.log('User logged out successfully');
   };
-    return (
+
+  return (
     <>
       <motion.aside
         animate={{ width: isExpanded ? 280 : 80 }}
         transition={{ duration: 0.3, ease: 'easeInOut' }}
         className="fixed left-0 top-0 h-full flex flex-col bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 transition-colors duration-300 overflow-hidden z-20 shadow-lg"
         style={{ borderRadius: '0 24px 24px 0' }}
-        onMouseEnter={() => {
-          console.log('Mouse entered sidebar');
-          setIsExpanded(true);
-        }}
-        onMouseLeave={() => {
-          console.log('Mouse left sidebar');
-          setIsExpanded(false);
-        }}
+        onMouseEnter={() => setIsExpanded(true)}
+        onMouseLeave={() => setIsExpanded(false)}
       >
         {/* Logo */}
         <div className="p-4 flex items-center justify-center">
           <button
             onClick={() => navigate(paths.dashboardRoutes.home)}
-            className="flex items-center gap-3 group transition-all duration-200 hover:scale-105 p-2 rounded-2xl hover:bg-gray-100 dark:hover:bg-gray-800"
+            className="flex items-center gap-3 group transition-all duration-200 hover:scale-105 p-2 rounded-2xl hover:bg-gray-100 dark:hover:bg-gray-700"
             title="Acasă"
           >
             <div className="w-12 h-12 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300">
@@ -173,14 +132,14 @@ export const Sidebar = () => {
             <motion.span
               animate={{ opacity: isExpanded ? 1 : 0 }}
               transition={{ duration: 0.2 }}
-              className="font-bold text-lg whitespace-nowrap group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors"
-              style={{ color: isDark ? '#FFFFFF' : '#111827' }}
+              className="font-bold text-lg whitespace-nowrap text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors"
             >
               Academix
             </motion.span>
           </button>
         </div>
-                {/* Meniu de Navigare */}
+
+        {/* Meniu de Navigare */}
         <nav className="flex-1 p-3 space-y-2">
           {menuItems.map((item) => (
             <button
@@ -190,16 +149,8 @@ export const Sidebar = () => {
               className={`w-full flex items-center gap-4 px-3 py-3.5 rounded-xl font-medium transition-all duration-200 ${
                 isActive(item.path)
                   ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-lg'
-                  : 'hover:bg-gray-50 hover:border-blue-300 dark:hover:bg-gray-800'
+                  : 'text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700'
               }`}
-              style={
-                !isActive(item.path)
-                  ? {
-                      color: isDark ? '#9CA3AF' : '#6B7280',
-                      border: '1px solid transparent',
-                    }
-                  : {}
-              }
               title={!isExpanded ? item.label : ''}
             >
               <span className="flex-shrink-0">{item.icon}</span>
@@ -218,16 +169,13 @@ export const Sidebar = () => {
             </button>
           ))}
         </nav>
-                {/* Buton de Logout */}
+
+        {/* Buton de Logout */}
         <div className="p-3 border-t border-gray-200 dark:border-gray-700">
           <button
             type="button"
             onClick={handleLogoutClick}
-            className="w-full flex items-center gap-4 px-3 py-3.5 rounded-xl font-medium transition-all duration-200 hover:bg-red-50 dark:hover:bg-red-900/20"
-            style={{
-              color: isDark ? '#9CA3AF' : '#6B7280',
-              border: '1px solid transparent',
-            }}
+            className="w-full flex items-center gap-4 px-3 py-3.5 rounded-xl font-medium transition-all duration-200 text-gray-500 dark:text-gray-400 hover:bg-red-50 dark:hover:bg-red-900/20"
             title={!isExpanded ? 'Deconectare' : ''}
           >
             <span className="flex-shrink-0">

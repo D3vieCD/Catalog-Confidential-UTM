@@ -5,8 +5,8 @@
 
 export const AnimatedElements = () => {
   return (
-    <></>
-    {/* Forme geometrice - Hexagoane, pătrate, cercuri */}
+    <>
+      {/* Forme geometrice - Hexagoane, pătrate, cercuri */}
       <div 
         className="absolute w-5 h-5 bg-white/30" 
         style={{ 
@@ -24,10 +24,11 @@ export const AnimatedElements = () => {
         className="absolute w-4 h-4 bg-white/30" 
         style={{ top: '60%', left: '20%', animation: 'float-slow 7s ease-in-out infinite', animationDelay: '2s' }} 
       />
-      <div 
-        className="absolute w-5 h-5 bg-white/30" 
-        style={{ top: '75%', left: '70%', animation: 'float-slow 8s ease-in-out infinite', animationDelay: '3s' }} 
+      <div
+        className="absolute w-5 h-5 bg-white/30"
+        style={{ top: '75%', left: '70%', animation: 'float-slow 8s ease-in-out infinite', animationDelay: '3s' }}
       />
+
       {/* Cod binar - 101, 010, 110, 001 */}
       <div 
         className="absolute text-white/40 font-mono text-sm font-bold" 
@@ -53,6 +54,7 @@ export const AnimatedElements = () => {
       >
         001
       </div>
+
       {/* Simboluri matematice - π, √, ∑, ∫, α */}
       <div 
         className="absolute text-white/50 text-2xl font-bold" 

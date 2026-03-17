@@ -15,6 +15,7 @@ interface DropdownOption {
   value: string;
   label: string;
 }
+
 const CustomDropdown: React.FC<{
   value: string;
   onChange: (value: string) => void;
@@ -43,7 +44,8 @@ const CustomDropdown: React.FC<{
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7"/>
         </svg>
       </button>
-            <AnimatePresence>
+
+      <AnimatePresence>
         {isOpen && (
           <>
             <div
@@ -81,6 +83,7 @@ const CustomDropdown: React.FC<{
     </div>
   );
 };
+
 export const GroupFilters: React.FC<GroupFiltersProps> = ({
   searchQuery,
   onSearchChange,
@@ -105,7 +108,8 @@ export const GroupFilters: React.FC<GroupFiltersProps> = ({
     { value: 'capacity-asc', label: 'Capacitate Crescătoare' },
     { value: 'capacity-desc', label: 'Capacitate Descrescătoare' },
   ];
-    return (
+
+  return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
@@ -130,7 +134,8 @@ export const GroupFilters: React.FC<GroupFiltersProps> = ({
           className="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent text-gray-900 dark:text-white placeholder-gray-400 transition-all duration-200"
         />
       </div>
-            {/* Filters */}
+
+      {/* Filters */}
       <div className="flex flex-wrap gap-3">
         <CustomDropdown
           value={selectedYear}

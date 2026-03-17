@@ -16,6 +16,7 @@ interface DropdownOption {
   value: string | number;
   label: string;
 }
+
 const CustomDropdown: React.FC<{
   value: string | number;
   onChange: (value: any) => void;
@@ -49,7 +50,8 @@ const CustomDropdown: React.FC<{
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7"/>
         </svg>
       </button>
-            <AnimatePresence>
+
+      <AnimatePresence>
         {isOpen && (
           <>
             <div
@@ -87,6 +89,7 @@ const CustomDropdown: React.FC<{
     </div>
   );
 };
+
 export const GroupModal: React.FC<GroupModalProps> = ({
   isOpen,
   onClose,
@@ -112,7 +115,8 @@ export const GroupModal: React.FC<GroupModalProps> = ({
   const [showNewFaculty, setShowNewFaculty] = useState(false);
   const [showNewSpec, setShowNewSpec] = useState(false);
   const [errors, setErrors] = useState<string[]>([]);
-    useEffect(() => {
+
+  useEffect(() => {
     setFaculties(getFaculties());
   }, []);
 
@@ -146,7 +150,8 @@ export const GroupModal: React.FC<GroupModalProps> = ({
     }
     setErrors([]);
   }, [group, isOpen]);
-    const handleFacultyChange = (faculty: string) => {
+
+  const handleFacultyChange = (faculty: string) => {
     setFormData({ ...formData, faculty, specialization: '' });
     setSpecializations(getSpecializations(faculty));
   };
@@ -160,7 +165,8 @@ export const GroupModal: React.FC<GroupModalProps> = ({
       setShowNewFaculty(false);
     }
   };
-    const handleAddSpecialization = () => {
+
+  const handleAddSpecialization = () => {
     if (newSpecInput.trim() && formData.faculty) {
       const updated = addSpecialization(formData.faculty, newSpecInput.trim());
       setSpecializations(updated);
@@ -169,7 +175,8 @@ export const GroupModal: React.FC<GroupModalProps> = ({
       setShowNewSpec(false);
     }
   };
-    const validate = (): boolean => {
+
+  const validate = (): boolean => {
     const newErrors: string[] = [];
 
     if (!formData.name.trim()) newErrors.push('Numele grupei este obligatoriu');
@@ -189,7 +196,8 @@ export const GroupModal: React.FC<GroupModalProps> = ({
 
     onSave(formData);
   };
-    return (
+
+  return (
     <Modal isOpen={isOpen} onClose={onClose} title={group ? 'Editează Grupa' : 'Adaugă Grupă Nouă'} size="md">
       <form onSubmit={handleSubmit} className="space-y-5">
         {/* Scrollable content */}
@@ -242,7 +250,8 @@ export const GroupModal: React.FC<GroupModalProps> = ({
             />
           </div>
         </div>
-                {/* Facultate cu inline add */}
+
+        {/* Facultate cu inline add */}
         <div>
           <label className="block text-sm font-semibold text-gray-600 dark:text-gray-400 mb-2 uppercase tracking-wide">
             Facultate *
@@ -298,7 +307,8 @@ export const GroupModal: React.FC<GroupModalProps> = ({
             )}
           </AnimatePresence>
         </div>
-                {/* Specializare cu inline add */}
+
+        {/* Specializare cu inline add */}
         <div>
           <label className="block text-sm font-semibold text-gray-600 dark:text-gray-400 mb-2 uppercase tracking-wide">
             Specializare *
@@ -356,7 +366,8 @@ export const GroupModal: React.FC<GroupModalProps> = ({
             )}
           </AnimatePresence>
         </div>
-                {/* Coordinator */}
+
+        {/* Coordinator */}
         <div>
           <label className="block text-sm font-semibold text-gray-600 dark:text-gray-400 mb-2 uppercase tracking-wide">
             Coordinator *
@@ -433,7 +444,8 @@ export const GroupModal: React.FC<GroupModalProps> = ({
         </div>
 
         </div> {/* End scrollable content */}
-                {/* Buttons - Outside scroll */}
+
+        {/* Buttons - Outside scroll */}
         <div className="flex gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
           <button
             type="button"

@@ -30,6 +30,7 @@ export const Students = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingStudent, setEditingStudent] = useState<Student | null>(null);
   const [deletingStudent, setDeletingStudent] = useState<Student | null>(null);
+
   // Filtered & sorted students
   const filteredStudents = useMemo(() => {
     let result = [...students];
@@ -66,6 +67,7 @@ export const Students = () => {
 
     return result;
   }, [students, searchQuery, selectedGroup, selectedYear, sortBy]);
+
   // Handlers
   const handleOpenAdd = () => {
     setEditingStudent(null);
@@ -85,10 +87,12 @@ export const Students = () => {
     if (editingStudent) {
       const updated = updateStudent(editingStudent.id, data);
       if (updated) {
+        // Reîmprospătează lista din localStorage
         setStudents(getStudents());
       }
     } else {
       addStudent(data);
+      // Reîmprospătează lista din localStorage
       setStudents(getStudents());
     }
     setIsModalOpen(false);
@@ -99,6 +103,7 @@ export const Students = () => {
     if (!deletingStudent) return;
     const success = deleteStudent(deletingStudent.id);
     if (success) {
+      // Reîmprospătează lista din localStorage
       setStudents(getStudents());
     }
     setDeletingStudent(null);
@@ -108,6 +113,7 @@ export const Students = () => {
     const updated = addGroup(group);
     setGroups(updated);
   };
+
   return (
     <div className="space-y-6 min-h-full pb-8">
       {/* Header */}
@@ -131,29 +137,47 @@ export const Students = () => {
           <div className="flex bg-white dark:bg-gray-700 rounded-xl p-1 border border-gray-200 dark:border-gray-600 shadow-sm">
             <button
               onClick={() => setViewMode('grid')}
-              className={`p-2 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white' : 'text-gray-400'}`}
+              className={`p-2 rounded-lg transition-all duration-200 ${
+                viewMode === 'grid'
+                  ? 'bg-gradient-to-r from-indigo-500 to-purple-600 shadow-sm text-white'
+                  : 'text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300'
+              }`}
+              title="Vizualizare grid"
             >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/>
+              </svg>
             </button>
             <button
               onClick={() => setViewMode('list')}
-              className={`p-2 rounded-lg transition-all ${viewMode === 'list' ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white' : 'text-gray-400'}`}
+              className={`p-2 rounded-lg transition-all duration-200 ${
+                viewMode === 'list'
+                  ? 'bg-gradient-to-r from-indigo-500 to-purple-600 shadow-sm text-white'
+                  : 'text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300'
+              }`}
+              title="Vizualizare listă"
             >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16"/></svg>
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16"/>
+              </svg>
             </button>
           </div>
 
+          {/* Add Student Button */}
           <button
             onClick={handleOpenAdd}
-            className="px-4 sm:px-6 py-2.5 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-xl font-medium transition-all shadow-lg hover:scale-105 flex items-center gap-2"
+            className="px-4 sm:px-6 py-2.5 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white rounded-xl font-medium transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105 flex items-center gap-2"
           >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/></svg>
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/>
+            </svg>
             <span className="hidden sm:inline">Adaugă Student</span>
             <span className="sm:hidden">Adaugă</span>
           </button>
         </div>
       </motion.div>
 
+      {/* Filters */}
       <StudentFilters
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
@@ -166,6 +190,7 @@ export const Students = () => {
         groups={groups}
       />
 
+      {/* Student Grid/List */}
       <StudentGrid
         students={filteredStudents}
         viewMode={viewMode}
@@ -173,6 +198,7 @@ export const Students = () => {
         onDelete={handleOpenDelete}
       />
 
+      {/* Add/Edit Modal */}
       <StudentModal
         isOpen={isModalOpen}
         onClose={() => { setIsModalOpen(false); setEditingStudent(null); }}
@@ -182,6 +208,7 @@ export const Students = () => {
         onAddGroup={handleAddGroup}
       />
 
+      {/* Delete Confirmation */}
       <ConfirmModal
         isOpen={!!deletingStudent}
         onClose={() => setDeletingStudent(null)}

@@ -21,7 +21,7 @@ export interface StudentFormData {
 
 const STORAGE_KEYS = {
   students: 'academix_students',
-  groups: 'academix_groups',
+  groups: 'academix_group_names',
 } as const;
 
 const DEFAULT_GROUPS: string[] = [

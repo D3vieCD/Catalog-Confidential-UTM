@@ -1,1 +1,14 @@
 @import "tailwindcss";
+
+/* Activare dark mode bazat pe clasa .dark pe <html> */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Hover effects custom */
+button:hover {
+  transition: all 0.2s ease !important;
+}
+
+.hover-lift:hover {
+  transform: translateY(-6px) !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}

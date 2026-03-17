@@ -12,9 +12,7 @@ export const colors = {
     800: '#3730A3',
     900: '#312E81',
   },
-};
-export const colors = {
-  // ... anterior
+
   // Secondary Colors (Violet)
   secondary: {
     50: '#FAF5FF',
@@ -42,21 +40,18 @@ export const colors = {
     800: '#1E40AF',
     900: '#1E3A8A',
   },
-};
-export const colors = {
-  // ... anterior
+
   // Semantic Colors
   success: '#10B981',
   error: '#EF4444',
-  warning: '#ffa200',
+  warning: '#F59E0B',
   info: '#3B82F6',
-};
-export const colors = {
-  // ... anterior
+
   // Gradient Backgrounds
   gradients: {
     primary: 'linear-gradient(-45deg, #4F46E5, #7C3AED, #2563EB, #6366F1, #8B5CF6)',
     dark: 'linear-gradient(-45deg, #1E1B4B, #312E81, #1E3A8A, #3730A3, #4C1D95)',
   },
 };
+
 export type ColorTheme = typeof colors;

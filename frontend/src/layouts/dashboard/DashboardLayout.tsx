@@ -12,14 +12,15 @@ interface DashboardLayoutProps {
  */
 
 export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
-      return (
+  return (
     <div className="min-h-screen bg-white dark:bg-gray-900 transition-colors duration-200">
       {/* Header - Fixed în top */}
       <Header />
 
       {/* Sidebar - Fixed în stânga */}
       <Sidebar />
-            {/* Main Content - Restul spațiului */}
+
+      {/* Main Content - Restul spațiului */}
       <div
         className="pt-20 transition-all duration-300 min-h-screen bg-white dark:bg-gray-900"
         style={{ marginLeft: '80px' }}

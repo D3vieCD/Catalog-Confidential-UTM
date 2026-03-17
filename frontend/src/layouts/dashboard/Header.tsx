@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { DarkModeToggle } from '../../components/ui';
@@ -9,36 +9,24 @@ import { useAuth } from '../../hooks/useAuth';
  * Header - Bară de navigare superioară cu logo home, căutare și profil
  */
 export const Header = () => {
-      const [isDark, setIsDark] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
   const { getUser } = useAuth();
   const currentUser = getUser();
-    useEffect(() => {
-    const checkDark = () =>
-      setIsDark(document.documentElement.classList.contains('dark'));
-    checkDark();
 
-    const observer = new MutationObserver(checkDark);
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ['class'],
-    });
-
-    return () => observer.disconnect();
-  }, []);
-    const goToHome = () => {
+  const goToHome = () => {
     navigate(paths.dashboard);
   };
-    return (
+
+  return (
     <motion.header
       initial={{ y: -20, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.3 }}
       className="fixed top-0 left-0 right-0 h-20 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 transition-colors duration-300 z-30 shadow-sm"
     >
-      <div className="flex items-center justify-between h-full px-6"></div>
-              {/* Logo Home Button */}
+      <div className="flex items-center justify-between h-full px-6">
+        {/* Logo Home Button */}
         <button
           onClick={goToHome}
           className="flex items-center gap-3 p-2 rounded-2xl hover:scale-105 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200 group"
@@ -53,19 +41,18 @@ export const Header = () => {
             initial={{ opacity: 0, x: -10 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.3, delay: 0.1 }}
-            className="font-bold text-lg whitespace-nowrap group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors"
-            style={{ color: isDark ? '#FFFFFF' : '#111827' }}
+            className="font-bold text-lg whitespace-nowrap text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors"
           >
             Academix Catalogul Digital
           </motion.span>
         </button>
-                {/* Search Bar */}
+
+        {/* Search Bar */}
         <div className="flex-1 max-w-xl">
           <div className="relative">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
               <svg
-                className="w-5 h-5"
-                style={{ color: isDark ? '#9CA3AF' : '#6B7280' }}
+                className="w-5 h-5 text-gray-400 dark:text-gray-500"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -82,7 +69,8 @@ export const Header = () => {
             />
           </div>
         </div>
-                {/* Right Side Actions */}
+
+        {/* Right Side Actions */}
         <div className="flex items-center gap-4 ml-6">
           {/* Notifications */}
           <button
@@ -90,8 +78,7 @@ export const Header = () => {
             className="relative p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
           >
             <svg
-              className="w-6 h-6"
-              style={{ color: isDark ? '#9CA3AF' : '#6B7280' }}
+              className="w-6 h-6 text-gray-500 dark:text-gray-400"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -107,14 +94,13 @@ export const Header = () => {
           {/* User Profile */}
           <div className="flex items-center gap-3">
             <div className="text-right hidden sm:block">
-              <div className="text-sm font-medium" style={{ color: isDark ? '#FFFFFF' : '#111827' }}>
+              <div className="text-sm font-medium text-gray-900 dark:text-white">
                 {currentUser.name}
               </div>
-              <div className="text-xs" style={{ color: isDark ? '#9CA3AF' : '#6B7280' }}>
+              <div className="text-xs text-gray-500 dark:text-gray-400">
                 {currentUser.role === 'admin' ? 'Administrator' : 'Profesor'}
               </div>
             </div>
-
             {currentUser.avatar ? (
               <img
                 src={currentUser.avatar}

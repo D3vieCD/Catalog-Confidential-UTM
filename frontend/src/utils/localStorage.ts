@@ -7,9 +7,7 @@ export const storage = {
       console.error('Error setting localStorage:', error);
     }
   },
-};
-export const storage = {
-  // ... anterior
+
   // Get item
   get: (key: string): string | null => {
     try {
@@ -19,9 +17,7 @@ export const storage = {
       return null;
     }
   },
-};
-export const storage = {
-  // ... anterior
+
   // Remove item
   remove: (key: string): void => {
     try {
@@ -30,9 +26,7 @@ export const storage = {
       console.error('Error removing localStorage:', error);
     }
   },
-};
-export const storage = {
-  // ... anterior
+
   // Clear all
   clear: (): void => {
     try {

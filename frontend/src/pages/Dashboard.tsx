@@ -27,7 +27,8 @@ export const Dashboard = () => {
   };
   
   console.log('Formatted user data:', user);
-return (
+
+  return (
     <div className="space-y-6">
       {/* Welcome Section */}
       <motion.div

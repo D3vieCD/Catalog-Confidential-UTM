@@ -1,14 +1,15 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button, Input, Checkbox } from '../../components/ui';
-import { SocialLoginButton, Divider } from '../../components/auth';
-import { storage } from '../../utils';
+import { Button, Input, Checkbox } from '../../ui';
+import { SocialLoginButton, Divider } from '../../auth';
+import { storage } from '../../../utils';
 import { paths } from '../../routes/paths';
 
 /**
  * Register Form - Formularul de înregistrare
  * RESPONSIVE: Full width pe mobile, 1/2 pe desktop
  */
+
 export const RegisterForm = () => {
   const navigate = useNavigate();
   const [name, setName] = useState('');
@@ -17,21 +18,12 @@ export const RegisterForm = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const [isDark, setIsDark] = useState(false);
 
-  useEffect(() => {
-    const checkDark = () => setIsDark(document.documentElement.classList.contains('dark'));
-    checkDark();
-    
-    const observer = new MutationObserver(checkDark);
-    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
-    
-    return () => observer.disconnect();
-  }, []);
   const handleRegister = () => {
     setError('');
     setLoading(true);
 
+    // Validări
     if (!name || !email || !password || !confirmPassword) {
       setError('Toate câmpurile sunt obligatorii!');
       setLoading(false);
@@ -50,20 +42,26 @@ export const RegisterForm = () => {
       return;
     }
 
+    // Simulare înregistrare reușită
+    // Aici ar trebui să faci call la API
     setTimeout(() => {
+      // Salvăm datele (simulare)
       storage.set('isRegistered', 'true');
       storage.set('userName', name);
       storage.set('userEmail', email);
-      
+
       setLoading(false);
+      // Redirecționăm la login
       navigate(paths.login);
     }, 1500);
   };
+
   return (
-    <div 
-      className="w-full lg:w-1/2 flex items-center justify-center p-4 sm:p-6 md:p-8 relative min-h-screen transition-colors duration-300"
-      style={{ backgroundColor: isDark ? '#111827' : '#FFFFFF' }}
-    >
+  <div
+    className="w-full lg:w-1/2 flex items-center justify-center p-4 sm:p-6 md:p-8 relative min-h-screen bg-white dark:bg-gray-900 transition-colors duration-300"
+  >
+
+
       <div className="w-full max-w-md">
         {/* Header */}
         <div className="mb-6 md:mb-8">
@@ -79,6 +77,7 @@ export const RegisterForm = () => {
             Intră în comunitatea Academix
           </p>
         </div>
+
         {/* Error Message */}
         {error && (
           <div className="mb-4 p-3 rounded-lg flex items-center gap-2 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400">
@@ -88,13 +87,13 @@ export const RegisterForm = () => {
             <span className="text-sm font-medium">{error}</span>
           </div>
         )}
-        
+
         {/* Name Input */}
         <div className="mb-4">
-          <Input 
+          <Input
             label="Nume complet"
-            type="text" 
-            placeholder="Ion Popescu" 
+            type="text"
+            placeholder="Ion Popescu"
             value={name}
             onChange={(e) => setName(e.target.value)}
             fullWidth
@@ -104,10 +103,10 @@ export const RegisterForm = () => {
 
         {/* Email Input */}
         <div className="mb-4">
-          <Input 
+          <Input
             label="Email"
-            type="email" 
-            placeholder="profesor@scoala.ro" 
+            type="email"
+            placeholder="profesor@scoala.ro"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             fullWidth
@@ -117,10 +116,10 @@ export const RegisterForm = () => {
 
         {/* Password Input */}
         <div className="mb-4">
-          <Input 
+          <Input
             label="Parolă"
-            type="password" 
-            placeholder="Introdu parola" 
+            type="password"
+            placeholder="Introdu parola"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             fullWidth
@@ -130,27 +129,28 @@ export const RegisterForm = () => {
 
         {/* Confirm Password Input */}
         <div className="mb-4">
-          <Input 
+          <Input
             label="Confirmă parola"
-            type="password" 
-            placeholder="Reintrodu parola" 
+            type="password"
+            placeholder="Reintrodu parola"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
-            onKeyPress={(e) => {
+            onKeyDown={(e) => {
               if (e.key === 'Enter') handleRegister();
             }}
             fullWidth
             disabled={loading}
           />
         </div>
+
         {/* Terms & Privacy */}
         <div className="flex items-center mb-5">
           <Checkbox label="Sunt de acord cu termenii și condițiile" disabled={loading} />
         </div>
-        
+
         {/* Button */}
-        <Button 
-          variant="primary" 
+        <Button
+          variant="primary"
           fullWidth
           onClick={handleRegister}
           loading={loading}
@@ -158,21 +158,21 @@ export const RegisterForm = () => {
         >
           Creează cont
         </Button>
-        
+
         {/* Divider */}
         <Divider />
-        
+
         {/* Social Buttons */}
         <div className="space-y-3">
           <SocialLoginButton provider="google" fullWidth />
           <SocialLoginButton provider="microsoft" fullWidth />
           <SocialLoginButton provider="github" fullWidth />
         </div>
-        
+
         {/* Login */}
         <p className="text-center text-xs md:text-sm text-gray-600 dark:text-gray-400 mt-6 transition-colors">
           Ai deja cont?{' '}
-          <button 
+          <button
             onClick={() => navigate(paths.login)}
             className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-semibold transition-colors"
           >

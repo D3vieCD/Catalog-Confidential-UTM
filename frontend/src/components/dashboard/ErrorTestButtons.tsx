@@ -35,6 +35,7 @@ export const ErrorTestButtons: React.FC = () => {
       route: '/pagina-inexistenta'
     }
   ];
+
   const handleTestError = (route: string) => {
     navigate(route);
   };

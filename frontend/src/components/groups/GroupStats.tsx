@@ -13,7 +13,7 @@ export const GroupStats: React.FC<GroupStatsProps> = ({
   avgStudentsPerGroup,
   totalFaculties,
 }) => {
-      const stats = [
+  const stats = [
     {
       label: 'TOTAL GRUPE',
       value: totalGroups,
@@ -55,7 +55,8 @@ export const GroupStats: React.FC<GroupStatsProps> = ({
       bgColor: 'from-violet-400 to-violet-500',
     },
   ];
-    return (
+
+  return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
       {stats.map((stat, index) => (
         <motion.div
