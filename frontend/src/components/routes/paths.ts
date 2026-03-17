@@ -19,6 +19,7 @@ export const paths = {
     reports: '/dashboard/reports',
     calendar: '/dashboard/calendar',
     settings: '/dashboard/settings',
+    activity: '/dashboard/activity',
   },
 
   error: {

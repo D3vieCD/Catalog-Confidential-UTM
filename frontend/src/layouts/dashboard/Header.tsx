@@ -1,18 +1,33 @@
 import { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { DarkModeToggle } from '../../components/ui';
 import { paths } from '../../routes/paths';
 import { useAuth } from '../../hooks/useAuth';
+import { mockCalendarEvents } from '../../_mock/mockCalendar';
+import type { CalendarEvent } from '../../_mock/mockCalendar';
+
+const TYPE_CONFIG: Record<CalendarEvent['type'], { label: string; bg: string; text: string; icon: string }> = {
+  exam:     { label: 'Examen',   bg: 'bg-red-100 dark:bg-red-900/30',    text: 'text-red-600 dark:text-red-400',    icon: '📝' },
+  class:    { label: 'Curs',     bg: 'bg-blue-100 dark:bg-blue-900/30',   text: 'text-blue-600 dark:text-blue-400',   icon: '📚' },
+  meeting:  { label: 'Ședință',  bg: 'bg-purple-100 dark:bg-purple-900/30', text: 'text-purple-600 dark:text-purple-400', icon: '👥' },
+  deadline: { label: 'Deadline', bg: 'bg-amber-100 dark:bg-amber-900/30', text: 'text-amber-600 dark:text-amber-400', icon: '⏰' },
+  holiday:  { label: 'Zi liberă', bg: 'bg-gray-100 dark:bg-gray-700',    text: 'text-gray-600 dark:text-gray-400',  icon: '🎉' },
+};
 
 /**
  * Header - Bară de navigare superioară cu logo home, căutare și profil
  */
 export const Header = () => {
   const [searchQuery, setSearchQuery] = useState('');
+  const [showNotifications, setShowNotifications] = useState(false);
   const navigate = useNavigate();
   const { getUser } = useAuth();
   const currentUser = getUser();
+
+  const sortedEvents = [...mockCalendarEvents].sort(
+    (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+  );
 
   const goToHome = () => {
     navigate(paths.dashboard);
@@ -73,20 +88,88 @@ export const Header = () => {
         {/* Right Side Actions */}
         <div className="flex items-center gap-4 ml-6">
           {/* Notifications */}
-          <button
-            type="button"
-            className="relative p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-          >
-            <svg
-              className="w-6 h-6 text-gray-500 dark:text-gray-400"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
+          <div className="relative">
+            {showNotifications && (
+              <div className="fixed inset-0 z-10" onClick={() => setShowNotifications(false)} />
+            )}
+            <motion.button
+              type="button"
+              onClick={() => setShowNotifications(!showNotifications)}
+              className="relative w-10 h-10 rounded-lg flex items-center justify-center transition-colors duration-200 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-700 dark:hover:text-gray-200"
+              whileHover={{ rotate: [0, -20, 20, -15, 15, -8, 8, 0] }}
+              transition={{ duration: 0.6, ease: 'easeInOut' }}
             >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
-            </svg>
-            <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
-          </button>
+              <svg className="w-6 h-6 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+              </svg>
+              <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full" />
+            </motion.button>
+
+            <AnimatePresence>
+              {showNotifications && (
+                <motion.div
+                  initial={{ opacity: 0, y: -8, scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: -8, scale: 0.95 }}
+                  transition={{ duration: 0.15 }}
+                  className="absolute right-0 top-full mt-2 w-80 bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 z-20 overflow-hidden"
+                >
+                  {/* Header dropdown */}
+                  <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between">
+                    <h3 className="font-bold text-gray-900 dark:text-white text-sm">Notificări Calendar</h3>
+                    <span className="px-2 py-0.5 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 text-xs font-bold rounded-full">
+                      {sortedEvents.length}
+                    </span>
+                  </div>
+
+                  {/* Events list */}
+                  <div className="max-h-96 overflow-y-auto divide-y divide-gray-100 dark:divide-gray-700">
+                    {sortedEvents.map((event) => {
+                      const cfg = TYPE_CONFIG[event.type];
+                      const dateStr = new Date(event.date).toLocaleDateString('ro-RO', {
+                        day: '2-digit', month: 'short', year: 'numeric',
+                      });
+                      return (
+                        <div
+                          key={event.id}
+                          onClick={() => { setShowNotifications(false); navigate(paths.dashboardRoutes.calendar); }}
+                          className="flex items-start gap-3 px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700/50 cursor-pointer transition-colors"
+                        >
+                          <div className={`w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 text-base ${cfg.bg}`}>
+                            {cfg.icon}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-semibold text-gray-900 dark:text-white truncate">{event.title}</p>
+                            <div className="flex items-center gap-2 mt-0.5">
+                              <span className={`text-xs font-medium ${cfg.text}`}>{cfg.label}</span>
+                              <span className="text-xs text-gray-400 dark:text-gray-500">•</span>
+                              <span className="text-xs text-gray-500 dark:text-gray-400">{dateStr}</span>
+                            </div>
+                            {event.startTime !== '00:00' && (
+                              <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">
+                                {event.startTime} – {event.endTime}
+                                {event.location ? ` · ${event.location}` : ''}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  {/* Footer */}
+                  <div className="px-4 py-3 border-t border-gray-100 dark:border-gray-700">
+                    <button
+                      onClick={() => { setShowNotifications(false); navigate(paths.dashboardRoutes.calendar); }}
+                      className="w-full py-2 text-sm font-semibold text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 transition-colors"
+                    >
+                      Vezi tot calendarul →
+                    </button>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
 
           {/* Dark Mode Toggle */}
           <DarkModeToggle variant="inline" />
