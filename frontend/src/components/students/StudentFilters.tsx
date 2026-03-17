@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface StudentFiltersProps {
@@ -26,22 +26,11 @@ const CustomDropdown: React.FC<{
   placeholder: string;
 }> = ({ options, value, onChange, icon, placeholder }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
 
   const selectedLabel = options.find(o => o.value === value)?.label || placeholder;
 
-  useEffect(() => {
-    const handleClick = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) {
-        setIsOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClick);
-    return () => document.removeEventListener('mousedown', handleClick);
-  }, []);
-
   return (
-    <div ref={ref} className="relative">
+    <div className="relative">
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
@@ -56,6 +45,8 @@ const CustomDropdown: React.FC<{
 
       <AnimatePresence>
         {isOpen && (
+          <>
+            <div className="fixed inset-0 z-10" onClick={() => setIsOpen(false)} />
           <motion.div
             initial={{ opacity: 0, y: -4 }}
             animate={{ opacity: 1, y: 0 }}
@@ -80,6 +71,7 @@ const CustomDropdown: React.FC<{
               ))}
             </div>
           </motion.div>
+          </>
         )}
       </AnimatePresence>
     </div>
