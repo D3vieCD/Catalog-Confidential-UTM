@@ -5,10 +5,11 @@ interface GroupCardProps {
   group: Group;
   onEdit: (group: Group) => void;
   onDelete: (group: Group) => void;
+  onView: (group: Group) => void;
   index: number;
 }
 
-export const GroupCard: React.FC<GroupCardProps> = ({ group, onEdit, onDelete, index }) => {
+export const GroupCard: React.FC<GroupCardProps> = ({ group, onEdit, onDelete, onView, index }) => {
   const capacityPercentage = (group.currentCapacity / group.maxCapacity) * 100;
 
   // Determină culoarea progress bar-ului bazat pe capacitate
@@ -24,12 +25,13 @@ export const GroupCard: React.FC<GroupCardProps> = ({ group, onEdit, onDelete, i
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3, delay: Math.min(index * 0.05, 0.6) }}
       whileHover={{ y: -4 }}
-      className="group bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-shadow duration-300 relative"
+      onClick={() => onView(group)}
+      className="group bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-shadow duration-300 relative cursor-pointer"
     >
       {/* Hover Actions */}
       <div className="absolute top-4 right-4 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
         <button
-          onClick={() => onEdit(group)}
+          onClick={(e) => { e.stopPropagation(); onEdit(group); }}
           className="p-1.5 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20 text-gray-400 dark:text-gray-500 hover:text-blue-500 dark:hover:text-blue-400 transition-all duration-200"
           title="Editează"
         >
@@ -38,7 +40,7 @@ export const GroupCard: React.FC<GroupCardProps> = ({ group, onEdit, onDelete, i
           </svg>
         </button>
         <button
-          onClick={() => onDelete(group)}
+          onClick={(e) => { e.stopPropagation(); onDelete(group); }}
           className="p-1.5 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 text-gray-400 dark:text-gray-500 hover:text-red-500 dark:hover:text-red-400 transition-all duration-200"
           title="Șterge"
         >

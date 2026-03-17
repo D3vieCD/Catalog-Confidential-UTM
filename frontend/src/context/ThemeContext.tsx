@@ -18,12 +18,6 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
   });
 
   useEffect(() => {
-    const html = document.documentElement;
-    if (theme === 'dark') {
-      html.classList.add('dark');
-    } else {
-      html.classList.remove('dark');
-    }
     localStorage.setItem('theme', theme);
   }, [theme]);
 
@@ -31,7 +25,9 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <ThemeContext.Provider value={{ theme, isDark: theme === 'dark', toggleTheme }}>
-      {children}
+      <div className={theme === 'dark' ? 'dark' : undefined}>
+        {children}
+      </div>
     </ThemeContext.Provider>
   );
 };

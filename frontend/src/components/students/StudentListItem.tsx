@@ -6,10 +6,11 @@ interface StudentListItemProps {
   student: Student;
   onEdit: (student: Student) => void;
   onDelete: (student: Student) => void;
+  onView: (student: Student) => void;
   index: number;
 }
 
-export const StudentListItem: React.FC<StudentListItemProps> = ({ student, onEdit, onDelete, index }) => {
+export const StudentListItem: React.FC<StudentListItemProps> = ({ student, onEdit, onDelete, onView, index }) => {
   const initials = getInitials(student.name);
 
   return (
@@ -17,7 +18,8 @@ export const StudentListItem: React.FC<StudentListItemProps> = ({ student, onEdi
       initial={{ opacity: 0, x: -20 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.3, delay: Math.min(index * 0.03, 0.4) }}
-      className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors duration-200 flex items-center gap-4"
+      onClick={() => onView(student)}
+      className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors duration-200 flex items-center gap-4 cursor-pointer"
     >
       {/* Avatar */}
       <div className="relative flex-shrink-0">
@@ -46,7 +48,7 @@ export const StudentListItem: React.FC<StudentListItemProps> = ({ student, onEdi
       {/* Actions */}
       <div className="flex gap-2 flex-shrink-0">
         <button
-          onClick={() => onEdit(student)}
+          onClick={(e) => { e.stopPropagation(); onEdit(student); }}
           className="p-2 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/30 text-gray-400 dark:text-gray-500 hover:text-blue-500 dark:hover:text-blue-400 transition-all duration-200"
           title="Editează"
         >
@@ -55,7 +57,7 @@ export const StudentListItem: React.FC<StudentListItemProps> = ({ student, onEdi
           </svg>
         </button>
         <button
-          onClick={() => onDelete(student)}
+          onClick={(e) => { e.stopPropagation(); onDelete(student); }}
           className="p-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/30 text-gray-400 dark:text-gray-500 hover:text-red-500 dark:hover:text-red-400 transition-all duration-200"
           title="Șterge"
         >

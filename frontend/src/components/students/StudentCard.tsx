@@ -6,10 +6,11 @@ interface StudentCardProps {
   student: Student;
   onEdit: (student: Student) => void;
   onDelete: (student: Student) => void;
+  onView: (student: Student) => void;
   index: number;
 }
 
-export const StudentCard: React.FC<StudentCardProps> = ({ student, onEdit, onDelete, index }) => {
+export const StudentCard: React.FC<StudentCardProps> = ({ student, onEdit, onDelete, onView, index }) => {
   const initials = getInitials(student.name);
 
   return (
@@ -18,12 +19,13 @@ export const StudentCard: React.FC<StudentCardProps> = ({ student, onEdit, onDel
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3, delay: Math.min(index * 0.05, 0.6) }}
       whileHover={{ y: -4 }}
-      className="group bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-shadow duration-300 relative"
+      onClick={() => onView(student)}
+      className="group bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-shadow duration-300 relative cursor-pointer"
     >
       {/* Hover Actions */}
       <div className="absolute top-4 right-4 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
         <button
-          onClick={() => onEdit(student)}
+          onClick={(e) => { e.stopPropagation(); onEdit(student); }}
           className="p-1.5 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20 text-gray-400 dark:text-gray-500 hover:text-blue-500 dark:hover:text-blue-400 transition-all duration-200"
           title="Editează"
         >
@@ -32,7 +34,7 @@ export const StudentCard: React.FC<StudentCardProps> = ({ student, onEdit, onDel
           </svg>
         </button>
         <button
-          onClick={() => onDelete(student)}
+          onClick={(e) => { e.stopPropagation(); onDelete(student); }}
           className="p-1.5 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 text-gray-400 dark:text-gray-500 hover:text-red-500 dark:hover:text-red-400 transition-all duration-200"
           title="Șterge"
         >

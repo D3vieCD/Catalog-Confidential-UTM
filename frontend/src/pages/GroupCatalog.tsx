@@ -287,52 +287,50 @@ export const GroupCatalog = () => {
 
                     {/* Note */}
                     <td className={`px-6 py-4 transition-all ${notesHidden && !isRowVisible ? 'blur-sm' : ''}`}>
-                      <div className="flex items-center gap-2 flex-wrap">
-                        {grades.map((grade) => (
+                      <div className="flex items-center gap-3 flex-wrap">
+                        {grades.map((grade) => {
+                          const dateStr = new Date(grade.date).toLocaleDateString('ro-RO', { day: '2-digit', month: 'short' });
+                          return (
+                            <div key={grade.id} className="flex flex-col items-center gap-1">
+                              <span className="text-xs text-gray-400 dark:text-gray-500 whitespace-nowrap">{dateStr}</span>
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleEditGrade(student.id, grade.id, grade.value);
+                                }}
+                                className={`w-10 h-10 rounded-full text-base font-extrabold shadow-sm hover:shadow-md transition-all cursor-pointer border ${
+                                  grade.value === null
+                                    ? 'bg-gray-100 dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-400'
+                                    : 'bg-blue-500 hover:bg-blue-600 border-blue-500 text-white'
+                                }`}
+                                title="Click pentru a edita nota"
+                              >
+                                {grade.value ?? '-'}
+                              </button>
+                            </div>
+                          );
+                        })}
+                        <div className="flex flex-col items-center gap-1">
+                          <span className="text-xs text-transparent select-none">—</span>
                           <button
-                            key={grade.id}
                             onClick={(e) => {
-                              e.stopPropagation(); // Previne triggerarea click-ului pe rând
-                              handleEditGrade(student.id, grade.id, grade.value);
+                              e.stopPropagation();
+                              handleAddGrade(student.id);
                             }}
-                            className={`w-10 h-10 rounded-full bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 text-base font-extrabold shadow-sm hover:shadow-md transition-all cursor-pointer border border-gray-200 dark:border-gray-600 ${
-                              grade.value === null
-                                ? 'text-gray-400 dark:text-gray-400'
-                                : grade.value >= 9
-                                ? 'text-emerald-600 dark:text-emerald-400'
-                                : grade.value >= 7
-                                ? 'text-sky-600 dark:text-sky-400'
-                                : 'text-rose-600 dark:text-rose-400'
-                            }`}
-                            title="Click pentru a edita nota"
+                            className="w-10 h-10 rounded-full border-2 border-dashed border-gray-300 dark:border-gray-600 hover:border-blue-500 dark:hover:border-blue-400 flex items-center justify-center text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 transition-colors"
                           >
-                            {grade.value ?? '-'}
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4"/>
+                            </svg>
                           </button>
-                        ))}
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation(); // Previne triggerarea click-ului pe rând
-                            handleAddGrade(student.id);
-                          }}
-                          className="w-7 h-7 rounded-full border-2 border-dashed border-gray-300 dark:border-gray-600 hover:border-blue-500 dark:hover:border-blue-400 flex items-center justify-center text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 transition-colors"
-                        >
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4"/>
-                          </svg>
-                        </button>
+                        </div>
                       </div>
                     </td>
 
                     {/* Medie */}
                     <td className={`px-6 py-4 transition-all ${notesHidden && !isRowVisible ? 'blur-sm' : ''}`}>
                       <span className={`text-lg font-bold ${
-                        average === 0
-                          ? 'text-gray-400'
-                          : average >= 9
-                          ? 'text-green-600 dark:text-green-400'
-                          : average >= 7
-                          ? 'text-blue-600 dark:text-blue-400'
-                          : 'text-red-600 dark:text-red-400'
+                        average === 0 ? 'text-gray-400' : 'text-blue-600 dark:text-blue-400'
                       }`}>
                         {average > 0 ? average.toFixed(2) : '-'}
                       </span>

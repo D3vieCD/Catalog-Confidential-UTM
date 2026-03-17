@@ -9,7 +9,7 @@ import {
   getGroups,
   addGroup,
 } from '../_mock/mockStudents';
-import { StudentGrid, StudentFilters, StudentModal } from '../components/students';
+import { StudentGrid, StudentFilters, StudentModal, StudentDetailPanel } from '../components/students';
 import { ConfirmModal } from '../components/ui/ConfirmModal';
 
 export const Students = () => {
@@ -30,6 +30,7 @@ export const Students = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingStudent, setEditingStudent] = useState<Student | null>(null);
   const [deletingStudent, setDeletingStudent] = useState<Student | null>(null);
+  const [viewingStudent, setViewingStudent] = useState<Student | null>(null);
 
   // Filtered & sorted students
   const filteredStudents = useMemo(() => {
@@ -81,6 +82,10 @@ export const Students = () => {
 
   const handleOpenDelete = (student: Student) => {
     setDeletingStudent(student);
+  };
+
+  const handleView = (student: Student) => {
+    setViewingStudent(student);
   };
 
   const handleSave = (data: StudentFormData) => {
@@ -196,6 +201,7 @@ export const Students = () => {
         viewMode={viewMode}
         onEdit={handleOpenEdit}
         onDelete={handleOpenDelete}
+        onView={handleView}
       />
 
       {/* Add/Edit Modal */}
@@ -217,6 +223,13 @@ export const Students = () => {
         message={`Ești sigur că vrei să ștergi studentul ${deletingStudent?.name}? Această acțiune nu poate fi anulată.`}
         confirmText="Da, șterge"
         cancelText="Anulează"
+      />
+
+      {/* Student Detail Panel */}
+      <StudentDetailPanel
+        student={viewingStudent}
+        onClose={() => setViewingStudent(null)}
+        onEdit={(student) => { setViewingStudent(null); handleOpenEdit(student); }}
       />
     </div>
   );

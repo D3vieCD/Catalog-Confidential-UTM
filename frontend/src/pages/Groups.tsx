@@ -8,7 +8,7 @@ import {
   deleteGroup,
   getGroupStats,
 } from '../_mock/mockGroups';
-import { GroupStats, GroupCard, GroupFilters, GroupModal } from '../components/groups';
+import { GroupStats, GroupCard, GroupFilters, GroupModal, GroupDetailPanel } from '../components/groups';
 import { ConfirmModal } from '../components/ui/ConfirmModal';
 
 export const Groups = () => {
@@ -25,6 +25,7 @@ export const Groups = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingGroup, setEditingGroup] = useState<Group | null>(null);
   const [deletingGroup, setDeletingGroup] = useState<Group | null>(null);
+  const [viewingGroup, setViewingGroup] = useState<Group | null>(null);
   // Filtered & sorted groups
   const filteredGroups = useMemo(() => {
     let result = [...groups];
@@ -87,6 +88,10 @@ export const Groups = () => {
 
   const handleOpenDelete = (group: Group) => {
     setDeletingGroup(group);
+  };
+
+  const handleView = (group: Group) => {
+    setViewingGroup(group);
   };
 
   const handleSave = (data: GroupFormData) => {
@@ -207,6 +212,7 @@ export const Groups = () => {
                 group={group}
                 onEdit={handleOpenEdit}
                 onDelete={handleOpenDelete}
+                onView={handleView}
                 index={index}
               />
             ))}
@@ -234,6 +240,13 @@ export const Groups = () => {
         message={`Ești sigur că vrei să ștergi grupa ${deletingGroup?.name}? Această acțiune nu poate fi anulată.`}
         confirmText="Da, șterge"
         cancelText="Anulează"
+      />
+
+      {/* Group Detail Panel */}
+      <GroupDetailPanel
+        group={viewingGroup}
+        onClose={() => setViewingGroup(null)}
+        onEdit={(group) => { setViewingGroup(null); handleOpenEdit(group); }}
       />
     </div>
   );
