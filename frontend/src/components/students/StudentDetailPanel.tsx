@@ -1,7 +1,10 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import * as XLSX from 'xlsx';
 import type { Student } from '../../_mock/mockStudents';
 import { getInitials } from '../../_mock/mockStudents';
+import { getStudentGrades, getStudentAbsences } from '../../_mock/mockGrades';
+import { getGroupByName } from '../../_mock/mockGroups';
 
 interface StudentDetailPanelProps {
   student: Student | null;
@@ -56,6 +59,76 @@ const getMockData = (student: Student) => {
 };
 
 type Tab = 'note' | 'absente' | 'realizari';
+
+const fmt = (iso: string) =>
+  new Date(iso).toLocaleDateString('ro-RO', { day: '2-digit', month: '2-digit', year: 'numeric' });
+
+const generateStudentReport = (student: Student) => {
+  const group = getGroupByName(student.group);
+  const subjects = group?.subjects ?? [];
+  const today = fmt(new Date().toISOString());
+  const wb = XLSX.utils.book_new();
+
+  const allSubjects = subjects.length > 0 ? subjects : ['General'];
+
+  allSubjects.forEach(subject => {
+    const grades = getStudentGrades(student.id, subject)
+      .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+    const absences = getStudentAbsences(student.id, subject)
+      .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+
+    const validGrades = grades.filter(g => g.value !== null);
+    const avg = validGrades.length > 0
+      ? (validGrades.reduce((s, g) => s + (g.value || 0), 0) / validGrades.length).toFixed(2)
+      : '—';
+
+    const aoa: (string | number)[][] = [];
+
+    // META
+    aoa.push(['RAPORT STUDENT — ' + student.name]);
+    aoa.push(['Student:', student.name, '', 'Email:', student.email]);
+    aoa.push(['Grupă:', student.group, '', 'An studiu:', `Anul ${student.year}`]);
+    aoa.push(['Materie:', subject, '', 'Data raport:', today]);
+    aoa.push(['Coordonator:', group?.coordinator ?? '—', '', 'Facultate:', group?.faculty ?? '—']);
+    aoa.push([]);
+
+    // NOTE
+    aoa.push(['NOTE']);
+    aoa.push(['#', 'Valoare', 'Data', 'Semestru']);
+    if (grades.length === 0) {
+      aoa.push(['', 'Nu există note înregistrate', '', '']);
+    } else {
+      grades.forEach((g, i) => {
+        aoa.push([i + 1, g.value ?? '—', fmt(g.date), subject]);
+      });
+    }
+    aoa.push(['', 'MEDIE:', avg, '']);
+    aoa.push([]);
+
+    // ABSENȚE
+    aoa.push(['ABSENȚE']);
+    aoa.push(['#', 'Data', 'Motivată']);
+    if (absences.length === 0) {
+      aoa.push(['', 'Nu există absențe înregistrate', '']);
+    } else {
+      absences.forEach((ab, i) => {
+        aoa.push([i + 1, fmt(ab.date), ab.motivated ? 'Da' : 'Nu']);
+      });
+    }
+    aoa.push(['', 'TOTAL:', absences.length]);
+    aoa.push(['', 'Motivate:', absences.filter(a => a.motivated).length]);
+    aoa.push(['', 'Nemotivate:', absences.filter(a => !a.motivated).length]);
+
+    const ws = XLSX.utils.aoa_to_sheet(aoa);
+    ws['!cols'] = [{ wch: 4 }, { wch: 24 }, { wch: 18 }, { wch: 14 }, { wch: 28 }];
+    ws['!merges'] = [{ s: { r: 0, c: 0 }, e: { r: 0, c: 4 } }];
+
+    XLSX.utils.book_append_sheet(wb, ws, subject.slice(0, 30));
+  });
+
+  const fileName = `raport_${student.name.replace(/\s+/g, '_')}_${new Date().toISOString().slice(0, 10)}.xlsx`;
+  XLSX.writeFile(wb, fileName);
+};
 
 export const StudentDetailPanel: React.FC<StudentDetailPanelProps> = ({ student, onClose, onEdit }) => {
   const [activeTab, setActiveTab] = useState<Tab>('note');
@@ -262,9 +335,12 @@ export const StudentDetailPanel: React.FC<StudentDetailPanelProps> = ({ student,
                   </svg>
                   Editează
                 </button>
-                <button className="flex items-center justify-center gap-2 flex-1 py-3 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white rounded-xl font-semibold transition-all shadow-lg text-sm">
+                <button
+                  onClick={() => generateStudentReport(student)}
+                  className="flex items-center justify-center gap-2 flex-1 py-3 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white rounded-xl font-semibold transition-all shadow-lg text-sm"
+                >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
                   </svg>
                   Generează Raport
                 </button>

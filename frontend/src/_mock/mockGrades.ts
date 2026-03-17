@@ -114,9 +114,9 @@ export function getGrades(): Grade[] {
 /**
  * Obține notele unui student pentru o materie specifică
  */
-export function getStudentGrades(studentId: string, subject: string): Grade[] {
+export function getStudentGrades(studentId: string, subject?: string): Grade[] {
   const grades = getGrades();
-  return grades.filter(g => g.studentId === studentId && g.subject === subject);
+  return grades.filter(g => g.studentId === studentId && (!subject || g.subject === subject));
 }
 
 /**
@@ -203,9 +203,9 @@ export function getAbsences(): Absence[] {
 /**
  * Obține absențele unui student pentru o materie
  */
-export function getStudentAbsences(studentId: string, subject: string): Absence[] {
+export function getStudentAbsences(studentId: string, subject?: string): Absence[] {
   const absences = getAbsences();
-  return absences.filter(a => a.studentId === studentId && a.subject === subject);
+  return absences.filter(a => a.studentId === studentId && (!subject || a.subject === subject));
 }
 
 /**

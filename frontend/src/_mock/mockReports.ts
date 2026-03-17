@@ -167,10 +167,10 @@ export function generateExcelData(_groupId: string, _type: Report['type']): Exce
  * Template Excel pentru import
  */
 export const EXCEL_TEMPLATE_COLUMNS = [
-  'Nume student',
-  'Prenume student',
+  'Nume',
+  'Prenume',
   'Email',
-  'Număr matricol',
+  'Telefon',
 ];
 
 /**

@@ -28,7 +28,7 @@ export const QuickActions: React.FC<QuickActionsProps> = ({ actions }) => {
         </svg>
       ),
       color: 'from-blue-500 to-blue-600',
-      route: '/catalog/add-grade'
+      route: '/dashboard/catalog'
     },
     {
       id: 'add-absence',
@@ -40,7 +40,7 @@ export const QuickActions: React.FC<QuickActionsProps> = ({ actions }) => {
         </svg>
       ),
       color: 'from-orange-500 to-orange-600',
-      route: '/catalog/add-absence'
+      route: '/dashboard/catalog'
     },
     {
       id: 'generate-report',
@@ -52,7 +52,7 @@ export const QuickActions: React.FC<QuickActionsProps> = ({ actions }) => {
         </svg>
       ),
       color: 'from-green-500 to-green-600',
-      route: '/reports'
+      route: '/dashboard/reports'
     },
     {
       id: 'view-schedule',
