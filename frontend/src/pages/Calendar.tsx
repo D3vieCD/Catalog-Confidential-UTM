@@ -7,8 +7,9 @@ import { Modal } from '../components/ui/Modal';
 import { mockCalendarEvents, type CalendarEvent } from '../_mock/mockCalendar';
 
 export const Calendar = () => {
-      const [currentMonth, setCurrentMonth] = useState(new Date(2026, 1, 1)); // Februarie 2026, 1 Feb
+  const [currentMonth, setCurrentMonth] = useState(new Date(2026, 1, 1)); // Februarie 2026, 1 Feb
   const [selectedDate, setSelectedDate] = useState(() => {
+    // Initialize selected date to today if it's in the current month
     const today = new Date();
     const initialMonth = new Date(2026, 1, 1);
     if (
@@ -19,9 +20,7 @@ export const Calendar = () => {
     }
     return new Date(2026, 1, 17); // 17 Feb 2026
   });
-
   const [events] = useState<CalendarEvent[]>(mockCalendarEvents);
-
   const [modalState, setModalState] = useState<{
     isOpen: boolean;
     title: string;
@@ -34,10 +33,12 @@ export const Calendar = () => {
     message: '',
     type: 'info'
   });
-    const handlePreviousMonth = () => {
+
+  const handlePreviousMonth = () => {
     const newMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1);
     setCurrentMonth(newMonth);
 
+    // If navigating to current month, select today
     const today = new Date();
     if (
       today.getMonth() === newMonth.getMonth() &&
@@ -51,6 +52,7 @@ export const Calendar = () => {
     const newMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1);
     setCurrentMonth(newMonth);
 
+    // If navigating to current month, select today
     const today = new Date();
     if (
       today.getMonth() === newMonth.getMonth() &&
@@ -65,10 +67,12 @@ export const Calendar = () => {
     setCurrentMonth(today);
     setSelectedDate(today);
   };
-    const handleDateSelect = (date: Date) => {
+
+  const handleDateSelect = (date: Date) => {
     setSelectedDate(date);
   };
-    const handleAddEvent = () => {
+
+  const handleAddEvent = () => {
     console.log('Adaugă eveniment pentru data:', selectedDate.toLocaleDateString('ro-RO'));
     setModalState({
       isOpen: true,
@@ -111,7 +115,8 @@ export const Calendar = () => {
       type: 'info'
     });
   };
-    const handleDeleteEvent = () => {
+
+  const handleDeleteEvent = () => {
     const selectedDayEvents = events.filter(event => {
       const eventDate = new Date(event.date);
       return eventDate.toDateString() === selectedDate.toDateString();
@@ -141,7 +146,7 @@ export const Calendar = () => {
         // TODO: Implementează logica de ștergere
         console.log('Evenimente șterse!');
         setModalState({ ...modalState, isOpen: false });
-
+        // Afișează mesaj de succes
         setTimeout(() => {
           setModalState({
             isOpen: true,
@@ -153,7 +158,8 @@ export const Calendar = () => {
       }
     });
   };
-    return (
+
+  return (
     <div className="space-y-6">
       {/* Page Header */}
       <motion.div
@@ -199,7 +205,8 @@ export const Calendar = () => {
           />
         </div>
       </div>
-            {/* Modal */}
+
+      {/* Modal */}
       <Modal
         isOpen={modalState.isOpen}
         onClose={() => setModalState({ ...modalState, isOpen: false })}

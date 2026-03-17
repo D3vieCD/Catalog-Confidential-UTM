@@ -25,7 +25,7 @@ export const CalendarHeader: React.FC<CalendarHeaderProps> = ({
     'Iulie', 'August', 'Septembrie', 'Octombrie', 'Noiembrie', 'Decembrie'
   ];
 
-  const monthYear = ${monthNames[currentMonth.getMonth()]} ${currentMonth.getFullYear()};
+  const monthYear = `${monthNames[currentMonth.getMonth()]} ${currentMonth.getFullYear()}`;
 
   return (
     <motion.div

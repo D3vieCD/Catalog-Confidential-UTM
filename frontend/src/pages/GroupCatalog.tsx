@@ -36,6 +36,7 @@ export const GroupCatalog = () => {
   const [refreshKey, setRefreshKey] = useState(0); // Pentru a forța re-render
   const [editingGradeId, setEditingGradeId] = useState<string | null>(null); // Pentru editare notă
   const [selectedStudentRow, setSelectedStudentRow] = useState<string | null>(null); // Pentru deblurare la click
+
   // Calculează statistici
   const stats = useMemo(() => {
     if (!group || !selectedSubject) return { totalStudents: 0, groupAverage: 0, totalAbsences: 0 };
@@ -87,7 +88,8 @@ export const GroupCatalog = () => {
     // Force re-render fără reload
     setRefreshKey(prev => prev + 1);
   };
-if (!group) {
+
+  if (!group) {
     return (
       <div className="flex items-center justify-center h-96">
         <div className="text-center">
@@ -128,6 +130,7 @@ if (!group) {
 
         {/* Dropdown Materie + Buton Ascunde */}
         <div className="flex items-center gap-3">
+          {/* Dropdown Materie */}
           <CustomDropdown
             value={selectedSubject}
             onChange={setSelectedSubject}
@@ -139,10 +142,11 @@ if (!group) {
             }
           />
 
+          {/* Buton Ascunde Notele */}
           <button
             onClick={() => {
               setNotesHidden(!notesHidden);
-              setSelectedStudentRow(null); 
+              setSelectedStudentRow(null); // Reset selection când schimbăm starea
             }}
             className={`px-6 py-3 rounded-2xl font-semibold transition-all duration-200 flex items-center gap-2 shadow-md ${
               notesHidden
@@ -158,6 +162,7 @@ if (!group) {
         </div>
       </div>
 
+      {/* Stat Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -216,16 +221,27 @@ if (!group) {
         </motion.div>
       </div>
 
+      {/* Tabel Studenți */}
       <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead className="bg-gray-50 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700">
               <tr>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">Student</th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">Note</th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">Medie</th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">Absențe</th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">Acțiuni</th>
+                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
+                  Student
+                </th>
+                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
+                  Note
+                </th>
+                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
+                  Medie
+                </th>
+                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
+                  Absențe
+                </th>
+                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
+                  Acțiuni
+                </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
@@ -233,18 +249,22 @@ if (!group) {
                 const grades = getStudentGrades(student.id, selectedSubject);
                 const average = calculateAverage(student.id, selectedSubject);
                 const absences = getStudentAbsences(student.id, selectedSubject);
+
                 const isRowVisible = selectedStudentRow === student.id;
 
                 return (
                   <tr
                     key={student.id}
                     onClick={() => {
-                      if (notesHidden) setSelectedStudentRow(isRowVisible ? null : student.id);
+                      if (notesHidden) {
+                        setSelectedStudentRow(isRowVisible ? null : student.id);
+                      }
                     }}
                     className={`group hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors ${
                       notesHidden && !isRowVisible ? 'cursor-pointer' : ''
                     }`}
                   >
+                    {/* Student - Mereu vizibil */}
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full flex items-center justify-center text-white font-bold text-sm">
@@ -257,46 +277,77 @@ if (!group) {
                       </div>
                     </td>
 
+                    {/* Note */}
                     <td className={`px-6 py-4 transition-all ${notesHidden && !isRowVisible ? 'blur-sm' : ''}`}>
                       <div className="flex items-center gap-2 flex-wrap">
                         {grades.map((grade) => (
                           <button
                             key={grade.id}
                             onClick={(e) => {
-                              e.stopPropagation();
+                              e.stopPropagation(); // Previne triggerarea click-ului pe rând
                               handleEditGrade(student.id, grade.id, grade.value);
                             }}
                             className={`w-10 h-10 rounded-full bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 text-base font-extrabold shadow-sm hover:shadow-md transition-all cursor-pointer border border-gray-200 dark:border-gray-600 ${
-                              grade.value === null ? 'text-gray-400' : grade.value >= 9 ? 'text-emerald-600' : grade.value >= 7 ? 'text-sky-600' : 'text-rose-600'
+                              grade.value === null
+                                ? 'text-gray-400 dark:text-gray-400'
+                                : grade.value >= 9
+                                ? 'text-emerald-600 dark:text-emerald-400'
+                                : grade.value >= 7
+                                ? 'text-sky-600 dark:text-sky-400'
+                                : 'text-rose-600 dark:text-rose-400'
                             }`}
+                            title="Click pentru a edita nota"
                           >
                             {grade.value ?? '-'}
                           </button>
                         ))}
                         <button
-                          onClick={(e) => { e.stopPropagation(); handleAddGrade(student.id); }}
-                          className="w-7 h-7 rounded-full border-2 border-dashed border-gray-300 flex items-center justify-center text-gray-400 hover:text-blue-500 transition-colors"
+                          onClick={(e) => {
+                            e.stopPropagation(); // Previne triggerarea click-ului pe rând
+                            handleAddGrade(student.id);
+                          }}
+                          className="w-7 h-7 rounded-full border-2 border-dashed border-gray-300 dark:border-gray-600 hover:border-blue-500 dark:hover:border-blue-400 flex items-center justify-center text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 transition-colors"
                         >
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4"/></svg>
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4"/>
+                          </svg>
                         </button>
                       </div>
                     </td>
 
+                    {/* Medie */}
                     <td className={`px-6 py-4 transition-all ${notesHidden && !isRowVisible ? 'blur-sm' : ''}`}>
-                      <span className={`text-lg font-bold ${average === 0 ? 'text-gray-400' : average >= 9 ? 'text-green-600' : 'text-blue-600'}`}>
+                      <span className={`text-lg font-bold ${
+                        average === 0
+                          ? 'text-gray-400'
+                          : average >= 9
+                          ? 'text-green-600 dark:text-green-400'
+                          : average >= 7
+                          ? 'text-blue-600 dark:text-blue-400'
+                          : 'text-red-600 dark:text-red-400'
+                      }`}>
                         {average > 0 ? average.toFixed(2) : '-'}
                       </span>
                     </td>
 
+                    {/* Absențe */}
                     <td className={`px-6 py-4 transition-all ${notesHidden && !isRowVisible ? 'blur-sm' : ''}`}>
-                      <span className="px-3 py-1 rounded-full text-sm font-bold bg-red-100 text-red-700">
+                      <span className={`px-3 py-1 rounded-full text-sm font-bold ${
+                        absences.length === 0
+                          ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400'
+                          : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400'
+                      }`}>
                         {absences.length}
                       </span>
                     </td>
 
+                    {/* Acțiuni */}
                     <td className={`px-6 py-4 transition-all ${notesHidden && !isRowVisible ? 'blur-sm' : ''}`}>
                       <button
-                        onClick={(e) => { e.stopPropagation(); handleAddGrade(student.id); }}
+                        onClick={(e) => {
+                          e.stopPropagation(); // Previne triggerarea click-ului pe rând
+                          handleAddGrade(student.id);
+                        }}
                         className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-xl transition-colors text-sm"
                       >
                         Adaugă Notă
@@ -309,9 +360,14 @@ if (!group) {
           </table>
         </div>
       </div>
-<Modal
+
+      {/* Modal Adăugare/Editare Notă */}
+      <Modal
         isOpen={showGradeModal}
-        onClose={() => { setShowGradeModal(false); setEditingGradeId(null); }}
+        onClose={() => {
+          setShowGradeModal(false);
+          setEditingGradeId(null);
+        }}
         title={editingGradeId ? "Editează Notă" : "Adaugă Notă"}
         size="sm"
       >
@@ -319,37 +375,74 @@ if (!group) {
           <p className="text-gray-600 dark:text-gray-400">
             Materia: <span className="font-semibold text-gray-900 dark:text-white">{selectedSubject}</span>
           </p>
+
+          {/* Grid de note */}
           <div>
-            <label className="block text-sm font-semibold text-gray-600 dark:text-gray-400 mb-3 uppercase tracking-wide">Selectează Nota</label>
+            <label className="block text-sm font-semibold text-gray-600 dark:text-gray-400 mb-3 uppercase tracking-wide">
+              Selectează Nota
+            </label>
             <div className="grid grid-cols-6 gap-2">
               {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
                 <button
                   key={num}
+                  type="button"
                   onClick={() => setGradeValue(num)}
-                  className={`py-3 rounded-xl font-bold transition-all ${gradeValue === num ? 'bg-blue-500 text-white shadow-lg' : 'bg-gray-100 dark:bg-gray-700'}`}
+                  className={`py-3 rounded-xl font-bold transition-all duration-200 ${
+                    gradeValue === num
+                      ? 'bg-blue-500 text-white shadow-lg scale-105'
+                      : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                  }`}
                 >
                   {num}
                 </button>
               ))}
               <button
+                type="button"
                 onClick={() => setGradeValue(null)}
-                className={`col-span-2 py-3 rounded-xl font-bold transition-all ${gradeValue === null ? 'bg-orange-500 text-white' : 'bg-gray-100'}`}
+                className={`col-span-2 py-3 rounded-xl font-bold transition-all duration-200 ${
+                  gradeValue === null
+                    ? 'bg-orange-500 text-white shadow-lg scale-105'
+                    : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                }`}
               >
                 Lipsă
               </button>
             </div>
           </div>
+
+          {/* Butoane */}
           <div className="flex gap-3 pt-4">
             {editingGradeId && (
               <button
-                onClick={() => { deleteGrade(editingGradeId); setShowGradeModal(false); setRefreshKey(prev => prev + 1); }}
-                className="px-6 py-3 bg-red-500 text-white font-semibold rounded-2xl"
+                onClick={() => {
+                  if (editingGradeId) {
+                    deleteGrade(editingGradeId);
+                    setShowGradeModal(false);
+                    setEditingGradeId(null);
+                    setRefreshKey(prev => prev + 1);
+                  }
+                }}
+                className="px-6 py-3 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-2xl transition-colors"
+                title="Șterge nota"
               >
                 Șterge
               </button>
             )}
-            <button onClick={() => setShowGradeModal(false)} className="flex-1 px-6 py-3 bg-gray-600 text-white font-semibold rounded-2xl">Anulează</button>
-            <button onClick={handleSaveGrade} className="flex-1 px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-semibold rounded-2xl shadow-lg">Salvează</button>
+            <button
+              onClick={() => {
+                setShowGradeModal(false);
+                setEditingGradeId(null);
+              }}
+              className="flex-1 px-6 py-3 bg-gray-600 hover:bg-gray-700 text-white font-semibold rounded-2xl transition-colors"
+            >
+              Anulează
+            </button>
+            <button
+              onClick={handleSaveGrade}
+              className="flex-1 px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-semibold rounded-2xl transition-all shadow-lg"
+            >
+              Salvează
+            </button>
           </div>
         </div>
       </Modal>
@@ -357,7 +450,11 @@ if (!group) {
   );
 };
 
-interface DropdownOption { value: string; label: string; }
+// Custom Dropdown Component (refolosit din GroupFilters)
+interface DropdownOption {
+  value: string;
+  label: string;
+}
 
 const CustomDropdown: React.FC<{
   value: string;
@@ -366,34 +463,55 @@ const CustomDropdown: React.FC<{
   icon: React.ReactNode;
 }> = ({ value, onChange, options, icon }) => {
   const [isOpen, setIsOpen] = useState(false);
+
   const selectedOption = options.find(opt => opt.value === value) || options[0];
 
   return (
     <div className="relative">
       <button
+        type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl text-sm font-medium min-w-[200px]"
+        className="flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl hover:border-gray-300 dark:hover:border-gray-600 transition-colors duration-200 text-sm font-medium text-gray-700 dark:text-gray-300 min-w-[200px]"
       >
         <span className="text-gray-400">{icon}</span>
         <span className="flex-1 text-left">{selectedOption.label}</span>
-        <svg className={`w-4 h-4 transition-transform ${isOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"/></svg>
+        <svg
+          className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7"/>
+        </svg>
       </button>
 
       <AnimatePresence>
         {isOpen && (
           <>
-            <div className="fixed inset-0 z-10" onClick={() => setIsOpen(false)} />
+            <div
+              className="fixed inset-0 z-10"
+              onClick={() => setIsOpen(false)}
+            />
             <motion.div
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
-              className="absolute top-full left-0 mt-2 w-full bg-white dark:bg-gray-800 border border-gray-200 rounded-2xl shadow-lg z-20 overflow-hidden"
+              transition={{ duration: 0.2 }}
+              className="absolute top-full left-0 mt-2 w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-lg overflow-hidden z-20"
             >
               {options.map((option) => (
                 <button
                   key={option.value}
-                  onClick={() => { onChange(option.value); setIsOpen(false); }}
-                  className={`w-full px-4 py-2.5 text-left text-sm ${option.value === value ? 'bg-blue-50 text-blue-600' : 'hover:bg-gray-50'}`}
+                  type="button"
+                  onClick={() => {
+                    onChange(option.value);
+                    setIsOpen(false);
+                  }}
+                  className={`w-full px-4 py-2.5 text-left text-sm transition-colors duration-150 ${
+                    option.value === value
+                      ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 font-medium'
+                      : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
+                  }`}
                 >
                   {option.label}
                 </button>

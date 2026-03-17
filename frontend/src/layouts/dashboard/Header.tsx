@@ -9,36 +9,35 @@ import { useAuth } from '../../hooks/useAuth';
  * Header - Bară de navigare superioară cu logo home, căutare și profil
  */
 export const Header = () => {
-      const [isDark, setIsDark] = useState(false);
+  const [isDark, setIsDark] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
   const { getUser } = useAuth();
   const currentUser = getUser();
-    useEffect(() => {
-    const checkDark = () =>
-      setIsDark(document.documentElement.classList.contains('dark'));
+
+  useEffect(() => {
+    const checkDark = () => setIsDark(document.documentElement.classList.contains('dark'));
     checkDark();
 
     const observer = new MutationObserver(checkDark);
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ['class'],
-    });
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
 
     return () => observer.disconnect();
   }, []);
-    const goToHome = () => {
+
+  const goToHome = () => {
     navigate(paths.dashboard);
   };
-    return (
+
+  return (
     <motion.header
       initial={{ y: -20, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.3 }}
       className="fixed top-0 left-0 right-0 h-20 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 transition-colors duration-300 z-30 shadow-sm"
     >
-      <div className="flex items-center justify-between h-full px-6"></div>
-              {/* Logo Home Button */}
+      <div className="flex items-center justify-between h-full px-6">
+        {/* Logo Home Button */}
         <button
           onClick={goToHome}
           className="flex items-center gap-3 p-2 rounded-2xl hover:scale-105 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200 group"
@@ -59,7 +58,8 @@ export const Header = () => {
             Academix Catalogul Digital
           </motion.span>
         </button>
-                {/* Search Bar */}
+
+        {/* Search Bar */}
         <div className="flex-1 max-w-xl">
           <div className="relative">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -82,7 +82,8 @@ export const Header = () => {
             />
           </div>
         </div>
-                {/* Right Side Actions */}
+
+        {/* Right Side Actions */}
         <div className="flex items-center gap-4 ml-6">
           {/* Notifications */}
           <button
@@ -114,7 +115,6 @@ export const Header = () => {
                 {currentUser.role === 'admin' ? 'Administrator' : 'Profesor'}
               </div>
             </div>
-
             {currentUser.avatar ? (
               <img
                 src={currentUser.avatar}

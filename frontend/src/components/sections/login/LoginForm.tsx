@@ -1,15 +1,16 @@
-import { useEffect, useState } from 'react';
+import {  useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button, Input, Checkbox } from '../../components/ui';
-import { SocialLoginButton, Divider } from '../../components/auth';
-import { MOCK_USERS } from '../../_mock/mockUsers';
-import { storage } from '../../utils';
+import { Button, Input, Checkbox } from '../../ui';
+import { SocialLoginButton, Divider } from '../../auth';
+import { MOCK_USERS } from '../../../_mock/mockUsers';
+import { storage } from '../../../utils';
 import { paths } from '../../routes/paths';
 
 /**
  * Login Form - Formularul de autentificare
  * RESPONSIVE: Full width pe mobile, 1/2 pe desktop
  */
+
 export const LoginForm = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
@@ -18,40 +19,48 @@ export const LoginForm = () => {
   const [loading, setLoading] = useState(false);
   const [isDark, setIsDark] = useState(false);
 
-  useEffect(() => {
-    const checkDark = () => setIsDark(document.documentElement.classList.contains('dark'));
-    checkDark();
-    
-    const observer = new MutationObserver(checkDark);
-    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
-    
-    return () => observer.disconnect();
-  }, []);
+useEffect(() => {
+  const checkDark = () => setIsDark(document.documentElement.classList.contains('dark'));
+  checkDark();
+
+  const observer = new MutationObserver(checkDark);
+  observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+
+  return () => observer.disconnect();
+}, []);
+
   const handleLogin = () => {
     setError('');
     setLoading(true);
 
+    // Verificăm dacă există utilizatorul în mock data
     const user = MOCK_USERS.find(
       (u) => u.email === email && u.password === password
     );
 
     if (user) {
+      // Login reușit
       storage.set('isLoggedIn', 'true');
       storage.set('userEmail', email);
       storage.set('userName', user.name);
       storage.set('showAnimation', 'true');
-      
+
+      // Redirecționăm
       navigate('/dashboard');
     } else {
+      // Login eșuat
       setError('Email sau parolă incorectă!');
       setLoading(false);
     }
   };
+
   return (
-    <div 
-      className="w-full lg:w-1/2 flex items-center justify-center p-4 sm:p-6 md:p-8 relative min-h-screen transition-colors duration-300"
-      style={{ backgroundColor: isDark ? '#111827' : '#FFFFFF' }}
-    >
+  <div
+    className="w-full lg:w-1/2 flex items-center justify-center p-4 sm:p-6 md:p-8 relative min-h-screen transition-colors duration-300"
+    style={{ backgroundColor: isDark ? '#111827' : '#FFFFFF' }}
+  >
+
+
       <div className="w-full max-w-md">
         {/* Header */}
         <div className="mb-6 md:mb-8">
@@ -67,6 +76,7 @@ export const LoginForm = () => {
             Intră în cont pentru a accesa catalogul
           </p>
         </div>
+
         {/* Error Message */}
         {error && (
           <div className="mb-4 p-3 rounded-lg flex items-center gap-2 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400">
@@ -76,13 +86,13 @@ export const LoginForm = () => {
             <span className="text-sm font-medium">{error}</span>
           </div>
         )}
-        
+
         {/* Email Input */}
         <div className="mb-4">
-          <Input 
+          <Input
             label="Email"
-            type="email" 
-            placeholder="profesor@scoala.ro" 
+            type="email"
+            placeholder="profesor@scoala.ro"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             fullWidth
@@ -92,10 +102,10 @@ export const LoginForm = () => {
 
         {/* Password Input */}
         <div className="mb-4">
-          <Input 
+          <Input
             label="Parolă"
-            type="password" 
-            placeholder="Introdu parola" 
+            type="password"
+            placeholder="Introdu parola"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             onKeyPress={(e) => {
@@ -105,20 +115,21 @@ export const LoginForm = () => {
             disabled={loading}
           />
         </div>
+
         {/* Remember & Forgot */}
         <div className="flex items-center justify-between mb-5">
           <Checkbox label="Ține-mă minte" disabled={loading} />
-          <button 
+          <button
             onClick={() => console.log('Forgot password')}
             className="text-xs md:text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium transition-colors"
           >
             Ai uitat parola?
           </button>
         </div>
-        
+
         {/* Button */}
-        <Button 
-          variant="primary" 
+        <Button
+          variant="primary"
           fullWidth
           onClick={handleLogin}
           loading={loading}
@@ -126,21 +137,21 @@ export const LoginForm = () => {
         >
           Intră în cont
         </Button>
-        
+
         {/* Divider */}
         <Divider />
-        
+
         {/* Social Buttons */}
         <div className="space-y-3">
           <SocialLoginButton provider="google" fullWidth />
           <SocialLoginButton provider="microsoft" fullWidth />
           <SocialLoginButton provider="github" fullWidth />
         </div>
-        
+
         {/* Register */}
         <p className="text-center text-xs md:text-sm text-gray-600 dark:text-gray-400 mt-6 transition-colors">
           Nu ai cont?{' '}
-          <button 
+          <button
             onClick={() => navigate(paths.register)}
             className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-semibold transition-colors"
           >

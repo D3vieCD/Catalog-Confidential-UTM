@@ -6,28 +6,21 @@ interface NavbarProps {
 }
 
 export const Navbar = ({ onLogout }: NavbarProps) => {
-      const [isDark, setIsDark] = useState(false);
+  const [isDark, setIsDark] = useState(false);
   const userName = storage.get('userName') || '';
-  const initials = userName
-    .split(' ')
-    .map((n) => n[0])
-    .join('')
-    .toUpperCase()
-    .slice(0, 2);
-      useEffect(() => {
-    const checkDark = () =>
-      setIsDark(document.documentElement.classList.contains('dark'));
+  const initials = userName.split(' ').map((n) => n[0]).join('').toUpperCase().slice(0, 2);
+
+  useEffect(() => {
+    const checkDark = () => setIsDark(document.documentElement.classList.contains('dark'));
     checkDark();
 
     const observer = new MutationObserver(checkDark);
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ['class'],
-    });
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
 
     return () => observer.disconnect();
   }, []);
-    const toggleDarkMode = () => {
+
+  const toggleDarkMode = () => {
     if (isDark) {
       document.documentElement.classList.remove('dark');
       storage.set('theme', 'light');
@@ -37,7 +30,8 @@ export const Navbar = ({ onLogout }: NavbarProps) => {
     }
     setIsDark(!isDark);
   };
-    return (
+
+  return (
     <nav
       className="fixed top-0 left-0 right-0 z-50 h-20 border-b transition-colors duration-300"
       style={{
@@ -45,8 +39,8 @@ export const Navbar = ({ onLogout }: NavbarProps) => {
         borderColor: isDark ? '#374151' : '#E5E7EB',
       }}
     >
-      <div className="px-6 h-full flex items-center justify-between"></div>
-              {/* Logo */}
+      <div className="px-6 h-full flex items-center justify-between">
+        {/* Logo */}
         <div className="flex items-center gap-4">
           <div className="w-12 h-12 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
             <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -63,7 +57,8 @@ export const Navbar = ({ onLogout }: NavbarProps) => {
             </p>
           </div>
         </div>
-                {/* Search Bar */}
+
+        {/* Search Bar */}
         <div className="flex-1 max-w-xl mx-8">
           <div className="relative">
             <svg className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -80,7 +75,8 @@ export const Navbar = ({ onLogout }: NavbarProps) => {
             />
           </div>
         </div>
-                {/* Right Icons */}
+
+        {/* Right Icons */}
         <div className="flex items-center gap-2">
           {/* Notifications */}
           <button
@@ -102,7 +98,7 @@ export const Navbar = ({ onLogout }: NavbarProps) => {
           >
             {isDark ? (
               <svg className="w-6 h-6 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 0 018 0z"/>
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
               </svg>
             ) : (
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -111,7 +107,7 @@ export const Navbar = ({ onLogout }: NavbarProps) => {
             )}
           </button>
 
-          {/* User Avatar + Logout */}
+          {/* User Avatar + Logout Dropdown */}
           <button
             type="button"
             onClick={onLogout}

@@ -45,7 +45,7 @@ export const SocialLoginButton = ({
           <path fill="#ffba08" d="M12 12h10v10H12z"/>
         </svg>
       ),
-    },;
+    },
     github: {
       name: 'GitHub',
       icon: (
@@ -77,4 +77,4 @@ export const SocialLoginButton = ({
       </span>
     </button>
   );
-}
+};

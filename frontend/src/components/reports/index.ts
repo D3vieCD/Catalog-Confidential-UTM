@@ -1,4 +1,4 @@
-export { ReportStats } from './ReportStats';
+export { ReportStats } from './ReportsStats';
 export { ExportSection } from './ExportSection';
 export { ImportSection } from './ImportSection';
 export { ReportsTable } from './ReportsTable';

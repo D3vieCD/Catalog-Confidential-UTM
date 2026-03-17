@@ -26,7 +26,7 @@ export const GroupCard: React.FC<GroupCardProps> = ({ group, onEdit, onDelete, i
       whileHover={{ y: -4 }}
       className="group bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-shadow duration-300 relative"
     >
-              {/* Hover Actions */}
+      {/* Hover Actions */}
       <div className="absolute top-4 right-4 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
         <button
           onClick={() => onEdit(group)}
@@ -47,7 +47,8 @@ export const GroupCard: React.FC<GroupCardProps> = ({ group, onEdit, onDelete, i
           </svg>
         </button>
       </div>
-            {/* Icon & Group Name */}
+
+      {/* Icon & Group Name */}
       <div className="relative w-14 h-14 mb-4">
         <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-white text-lg font-bold bg-gradient-to-br from-blue-400 to-indigo-500">
           <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -55,16 +56,21 @@ export const GroupCard: React.FC<GroupCardProps> = ({ group, onEdit, onDelete, i
           </svg>
         </div>
       </div>
-            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-1 pr-16">
+
+      {/* Group Name */}
+      <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-1 pr-16">
         {group.name}
       </h3>
 
+      {/* Year Badge */}
       <div className="mb-4">
         <span className="px-3 py-1 bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-300 text-xs font-medium rounded-full">
           ANUL {group.year}
         </span>
       </div>
-            <div className="space-y-2 mb-4">
+
+      {/* Subjects */}
+      <div className="space-y-2 mb-4">
         {group.subjects.map((subject, idx) => (
           <div key={idx} className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
             <svg className="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -74,13 +80,17 @@ export const GroupCard: React.FC<GroupCardProps> = ({ group, onEdit, onDelete, i
           </div>
         ))}
       </div>
-            <div className="flex items-center gap-2 mb-4 text-sm text-gray-600 dark:text-gray-400">
+
+      {/* Coordinator */}
+      <div className="flex items-center gap-2 mb-4 text-sm text-gray-600 dark:text-gray-400">
         <svg className="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
         </svg>
         <span className="truncate">{group.coordinator}</span>
       </div>
-            <div className="space-y-2">
+
+      {/* Capacity */}
+      <div className="space-y-2">
         <div className="flex items-center justify-between text-sm">
           <span className="text-gray-600 dark:text-gray-400 font-medium">Capacitate</span>
           <span className={`font-bold ${

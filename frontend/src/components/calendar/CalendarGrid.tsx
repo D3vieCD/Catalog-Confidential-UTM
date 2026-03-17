@@ -24,6 +24,7 @@ export const CalendarGrid: React.FC<CalendarGridProps> = ({
     // Convert Sunday (0) to 7, and subtract 1 to make Monday = 0
     return firstDay === 0 ? 6 : firstDay - 1;
   };
+
   const getEventsForDate = (date: Date) => {
     return events.filter(event => {
       const eventDate = new Date(event.date);
@@ -44,6 +45,7 @@ export const CalendarGrid: React.FC<CalendarGridProps> = ({
       isCurrentMonth: false
     });
   }
+
   // Current month days
   for (let i = 1; i <= daysInMonth; i++) {
     days.push({
@@ -60,6 +62,7 @@ export const CalendarGrid: React.FC<CalendarGridProps> = ({
       isCurrentMonth: false
     });
   }
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}

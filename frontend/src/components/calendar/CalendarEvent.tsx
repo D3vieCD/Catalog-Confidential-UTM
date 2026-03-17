@@ -50,6 +50,7 @@ export const CalendarEventCard: React.FC<CalendarEventCardProps> = ({
         );
     }
   };
+
   const getEventLabel = (type: CalendarEvent['type']) => {
     switch (type) {
       case 'exam': return 'Examen';
@@ -72,12 +73,13 @@ export const CalendarEventCard: React.FC<CalendarEventCardProps> = ({
     >
       <div className="flex items-start gap-3">
         {/* Event Icon */}
-        <div 
+        <div
           className="p-2 rounded-lg text-white flex-shrink-0"
           style={{ backgroundColor: event.color }}
         >
           {getEventIcon(event.type)}
         </div>
+
         {/* Event Details */}
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1">
@@ -97,6 +99,7 @@ export const CalendarEventCard: React.FC<CalendarEventCardProps> = ({
               {event.description}
             </p>
           )}
+
           <div className="flex items-center gap-4 text-xs text-gray-500 dark:text-gray-400">
             <div className="flex items-center gap-1">
               <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">

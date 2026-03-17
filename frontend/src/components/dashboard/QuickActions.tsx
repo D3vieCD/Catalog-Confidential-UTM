@@ -54,7 +54,7 @@ export const QuickActions: React.FC<QuickActionsProps> = ({ actions }) => {
       color: 'from-green-500 to-green-600',
       route: '/reports'
     },
-     {
+    {
       id: 'view-schedule',
       title: 'Vezi Orar',
       description: 'Accesează orarul complet',
@@ -67,6 +67,7 @@ export const QuickActions: React.FC<QuickActionsProps> = ({ actions }) => {
       route: '/calendar'
     }
   ];
+
   const actionsToRender = actions || defaultActions;
 
   const handleActionClick = (route: string) => {

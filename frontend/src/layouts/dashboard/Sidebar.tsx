@@ -9,6 +9,7 @@ import { storage } from '../../utils';
  * Sidebar - Navigare principală cu hover expand
  * Include meniu complet, logout cu modală și animații smooth
  */
+
 // Definirea itemelor din meniu
 const menuItems = [
   {
@@ -83,6 +84,7 @@ const menuItems = [
     ),
   },
 ];
+
 /**
  * Componenta Sidebar principală
  * Include navigare completă, hover expand, dark mode și logout cu modală
@@ -100,30 +102,24 @@ export const Sidebar = () => {
   // Detectarea schimbărilor de dark mode
   useEffect(() => {
     const checkDark = () => {
-      const hasDarkClass =
-        document.documentElement.classList.contains('dark') ||
-        document.body.classList.contains('dark');
+      const hasDarkClass = document.documentElement.classList.contains('dark') ||
+                           document.body.classList.contains('dark');
       setIsDark(hasDarkClass);
     };
 
     checkDark();
 
     const observer = new MutationObserver(checkDark);
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ['class'],
-    });
-    observer.observe(document.body, {
-      attributes: true,
-      attributeFilter: ['class'],
-    });
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+    observer.observe(document.body, { attributes: true, attributeFilter: ['class'] });
 
     return () => observer.disconnect();
   }, []);
 
   // Verifică dacă ruta este activă
   const isActive = (path: string) => location.pathname === path;
-    /**
+
+  /**
    * Deschide modală de confirmare logout
    */
   const handleLogoutClick = () => {
@@ -142,13 +138,16 @@ export const Sidebar = () => {
 
     console.log('User logged out successfully');
   };
-    return (
+
+  return (
     <>
       <motion.aside
         animate={{ width: isExpanded ? 280 : 80 }}
         transition={{ duration: 0.3, ease: 'easeInOut' }}
         className="fixed left-0 top-0 h-full flex flex-col bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 transition-colors duration-300 overflow-hidden z-20 shadow-lg"
-        style={{ borderRadius: '0 24px 24px 0' }}
+        style={{
+          borderRadius: '0 24px 24px 0'
+        }}
         onMouseEnter={() => {
           console.log('Mouse entered sidebar');
           setIsExpanded(true);
@@ -160,6 +159,7 @@ export const Sidebar = () => {
       >
         {/* Logo */}
         <div className="p-4 flex items-center justify-center">
+          {/* Logo/Home Button */}
           <button
             onClick={() => navigate(paths.dashboardRoutes.home)}
             className="flex items-center gap-3 group transition-all duration-200 hover:scale-105 p-2 rounded-2xl hover:bg-gray-100 dark:hover:bg-gray-800"
@@ -180,7 +180,8 @@ export const Sidebar = () => {
             </motion.span>
           </button>
         </div>
-                {/* Meniu de Navigare */}
+
+        {/* Meniu de Navigare */}
         <nav className="flex-1 p-3 space-y-2">
           {menuItems.map((item) => (
             <button
@@ -204,11 +205,12 @@ export const Sidebar = () => {
             >
               <span className="flex-shrink-0">{item.icon}</span>
 
+              {/* Label vizibil doar când sidebar-ul este extins */}
               <motion.span
                 animate={{
                   opacity: isExpanded ? 1 : 0,
                   width: isExpanded ? 'auto' : 0,
-                  x: isExpanded ? 0 : -10,
+                  x: isExpanded ? 0 : -10
                 }}
                 transition={{ duration: 0.3, ease: 'easeInOut' }}
                 className="overflow-hidden whitespace-nowrap"
@@ -218,7 +220,8 @@ export const Sidebar = () => {
             </button>
           ))}
         </nav>
-                {/* Buton de Logout */}
+
+        {/* Buton de Logout */}
         <div className="p-3 border-t border-gray-200 dark:border-gray-700">
           <button
             type="button"
