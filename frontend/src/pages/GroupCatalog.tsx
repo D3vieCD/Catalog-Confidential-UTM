@@ -1,4 +1,5 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
+import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { getGroupById } from '../_mock/mockGroups';
@@ -29,6 +30,13 @@ export const GroupCatalog = () => {
   }, [group]);
 
   const [selectedSubject, setSelectedSubject] = useState(group?.subjects[0] || '');
+
+  // Resetează materia selectată când se schimbă grupa
+  useEffect(() => {
+    if (group && group.subjects.length > 0) {
+      setSelectedSubject(group.subjects[0]);
+    }
+  }, [groupId]);
   const [notesHidden, setNotesHidden] = useState(false);
   const [showGradeModal, setShowGradeModal] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState<string | null>(null);
