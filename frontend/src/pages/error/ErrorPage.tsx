@@ -31,11 +31,11 @@ export const ErrorPage = ({
 
   const gradients: Record<number, string> = {
     403: 'from-orange-500 to-red-600',
-    404: 'from-indigo-500 to-purple-600',
+    404: 'from-emerald-500 to-emerald-600',
     500: 'from-red-500 to-pink-600',
   };
 
-  const gradient = gradients[code] || 'from-indigo-500 to-purple-600';
+  const gradient = gradients[code] || 'from-emerald-500 to-emerald-600';
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center p-4 sm:p-6 lg:p-8">

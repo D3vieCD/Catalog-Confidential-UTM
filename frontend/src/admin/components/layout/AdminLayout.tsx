@@ -1,26 +1,21 @@
 import { motion } from 'framer-motion';
-import { Header } from './Header';
-import { Sidebar } from './Sidebar';
+import { AdminHeader } from './AdminHeader';
+import { AdminSidebar } from './AdminSidebar';
 
-interface DashboardLayoutProps {
+interface AdminLayoutProps {
   children: React.ReactNode;
 }
 
 /**
- * DashboardLayout - Layout principal pentru dashboard
- * Include Header fixed + Sidebar hover expand + Content alături
+ * AdminLayout - Wrapper cu AdminHeader + AdminSidebar
  */
-
-export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
+export const AdminLayout = ({ children }: AdminLayoutProps) => {
   return (
     <div className="min-h-screen bg-stone-50 dark:bg-gray-900 transition-colors duration-200">
-      {/* Header - Fixed în top */}
-      <Header />
+      <AdminHeader />
+      <AdminSidebar />
 
-      {/* Sidebar - Fixed în stânga */}
-      <Sidebar />
-
-      {/* Main Content - Restul spațiului */}
+      {/* Conținut principal — marginLeft fix 80px (sidebar collapsed) */}
       <div
         className="pt-20 transition-all duration-300 min-h-screen bg-stone-50 dark:bg-gray-900"
         style={{ marginLeft: '80px' }}

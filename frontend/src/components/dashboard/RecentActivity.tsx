@@ -36,8 +36,8 @@ const getActivityIcon = (type: Activity['type']) => {
       );
     default:
       return (
-        <div className="w-9 h-9 rounded-2xl bg-blue-100 dark:bg-blue-900/20 flex items-center justify-center flex-shrink-0">
-          <svg className="w-4 h-4 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div className="w-9 h-9 rounded-2xl bg-stone-100 dark:bg-stone-700 flex items-center justify-center flex-shrink-0">
+          <svg className="w-4 h-4 text-stone-500 dark:text-stone-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
           </svg>
         </div>
@@ -59,7 +59,7 @@ export const RecentActivity: React.FC<RecentActivityProps> = ({ activities }) =>
         {hasMore && (
           <button
             onClick={() => setShowAll(prev => !prev)}
-            className="text-sm text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-medium transition-colors"
+            className="text-sm text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 dark:hover:text-emerald-300 font-medium transition-colors"
           >
             {showAll ? 'Vezi mai puțin' : 'Vezi toate'}
           </button>

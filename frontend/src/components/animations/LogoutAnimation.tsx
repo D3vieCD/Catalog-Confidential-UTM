@@ -21,7 +21,7 @@ export const LogoutAnimation = ({ onComplete }: LogoutAnimationProps) => {
 
   return (
     <div 
-      className="fixed inset-0 bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center slide-down-curtain"
+      className="fixed inset-0 bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center slide-down-curtain"
       style={{ zIndex: 9999 }}
     >
       <div className="text-center">

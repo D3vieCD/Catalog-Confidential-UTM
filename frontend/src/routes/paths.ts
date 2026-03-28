@@ -21,6 +21,16 @@ export const paths = {
     settings: '/dashboard/settings',
   },
 
+  admin: '/admin',
+
+  adminRoutes: {
+    home: '/admin',
+    users: '/admin/users',
+    groups: '/admin/groups',
+    students: '/admin/students',
+    settings: '/admin/settings',
+  },
+
   error: {
     page403: '/403',
     page404: '/404',

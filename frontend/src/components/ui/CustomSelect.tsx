@@ -51,7 +51,7 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
         ref={buttonRef}
         type="button"
         onClick={() => setIsOpen(v => !v)}
-        className="w-full flex items-center justify-between gap-2 px-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-2xl text-gray-900 dark:text-white text-sm font-medium hover:border-gray-300 dark:hover:border-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all"
+        className="w-full flex items-center justify-between gap-2 px-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-2xl text-gray-900 dark:text-white text-sm font-medium hover:border-gray-300 dark:hover:border-gray-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all"
       >
         <span className={selected ? '' : 'text-gray-400 dark:text-gray-500'}>
           {selected ? selected.label : placeholder}
@@ -87,7 +87,7 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
                     onClick={() => { onChange(opt.value); setIsOpen(false); }}
                     className={`w-full px-4 py-2.5 text-left text-sm transition-colors ${
                       opt.value === value
-                        ? 'bg-purple-50 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 font-semibold'
+                        ? 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 font-semibold'
                         : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/70'
                     }`}
                   >

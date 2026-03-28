@@ -23,7 +23,7 @@ export const StudentListItem: React.FC<StudentListItemProps> = ({ student, onEdi
     >
       {/* Avatar */}
       <div className="relative flex-shrink-0">
-        <div className="w-10 h-10 rounded-xl flex items-center justify-center text-white text-sm font-bold bg-gradient-to-br from-blue-500 to-indigo-600">
+        <div className="w-10 h-10 rounded-xl flex items-center justify-center text-white text-sm font-bold bg-gradient-to-br from-emerald-500 to-emerald-600">
           {initials}
         </div>
         <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-white dark:border-gray-800 bg-green-500" />
@@ -49,7 +49,7 @@ export const StudentListItem: React.FC<StudentListItemProps> = ({ student, onEdi
       <div className="flex gap-2 flex-shrink-0">
         <button
           onClick={(e) => { e.stopPropagation(); onEdit(student); }}
-          className="p-2 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/30 text-gray-400 dark:text-gray-500 hover:text-blue-500 dark:hover:text-blue-400 transition-all duration-200"
+          className="p-2 rounded-lg hover:bg-emerald-50 dark:hover:bg-blue-900/30 text-gray-400 dark:text-gray-500 hover:text-emerald-600 dark:hover:text-emerald-400 transition-all duration-200"
           title="Editează"
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

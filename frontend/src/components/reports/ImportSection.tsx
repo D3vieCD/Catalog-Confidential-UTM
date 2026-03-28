@@ -240,7 +240,7 @@ export const ImportSection = () => {
                   { col: 'D', label: 'Telefon', eg: '0712345678' },
                 ].map(({ col, label, eg }) => (
                   <div key={col} className="px-3 py-3 text-center">
-                    <span className="inline-block w-6 h-6 mb-1 rounded-md bg-indigo-100 dark:bg-indigo-500/20 text-indigo-600 dark:text-indigo-300 text-xs font-bold leading-6">
+                    <span className="inline-block w-6 h-6 mb-1 rounded-md bg-emerald-100 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-300 text-xs font-bold leading-6">
                       {col}
                     </span>
                     <p className="text-xs font-semibold text-gray-800 dark:text-gray-200">{label}</p>
@@ -256,7 +256,7 @@ export const ImportSection = () => {
                 </p>
                 <button
                   onClick={(e) => { e.stopPropagation(); handleDownloadTemplate(); }}
-                  className="flex items-center gap-1.5 px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold rounded-lg transition-colors shadow-sm whitespace-nowrap"
+                  className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold rounded-lg transition-colors shadow-sm whitespace-nowrap"
                 >
                   <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>

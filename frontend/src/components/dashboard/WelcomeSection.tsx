@@ -30,23 +30,23 @@ export const WelcomeSection: React.FC<WelcomeSectionProps> = ({ user }) => {
   };
 
   return (
-    <div className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl shadow-lg p-8 text-white">
+    <div className="bg-gradient-to-r from-emerald-500 to-emerald-600 rounded-2xl shadow-lg p-8 text-white">
       <div className="flex items-center justify-between">
         <div className="flex-1">
           <h1 className="text-2xl font-bold mb-2">
             Bun venit, {user.name.split(' ')[1] || user.name}!
           </h1>
-          <p className="text-blue-100 mb-4">
+          <p className="text-emerald-100 mb-4">
             Sperăm că aveți o zi productivă {getCurrentTime()}.
           </p>
-          <p className="text-sm text-blue-200">
+          <p className="text-sm text-emerald-200">
             {getCurrentDate()}
           </p>
         </div>
         
         <div className="flex items-center space-x-4">
           <div className="text-right">
-            <p className="text-sm text-blue-100">Rol</p>
+            <p className="text-sm text-emerald-100">Rol</p>
             <p className="font-medium">{user.role}</p>
           </div>
           <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center border-2 border-white/30">

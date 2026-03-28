@@ -167,7 +167,7 @@ export const StudentDetailPanel: React.FC<StudentDetailPanelProps> = ({ student,
               {/* Header */}
               <div className="flex items-start justify-between p-6 border-b border-gray-100 dark:border-gray-800">
                 <div className="flex items-center gap-4">
-                  <div className="w-16 h-16 rounded-2xl flex items-center justify-center text-white text-xl font-bold bg-gradient-to-br from-blue-500 to-indigo-600 flex-shrink-0">
+                  <div className="w-16 h-16 rounded-2xl flex items-center justify-center text-white text-xl font-bold bg-gradient-to-br from-emerald-500 to-emerald-600 flex-shrink-0">
                     {initials}
                   </div>
                   <div>
@@ -211,7 +211,7 @@ export const StudentDetailPanel: React.FC<StudentDetailPanelProps> = ({ student,
                   <div className="space-y-3">
                     <div className="flex items-center gap-3">
                       <div className="w-8 h-8 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center flex-shrink-0">
-                        <svg className="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
                         </svg>
                       </div>
@@ -232,8 +232,8 @@ export const StudentDetailPanel: React.FC<StudentDetailPanelProps> = ({ student,
                       </div>
                     </div>
                     <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-lg bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center flex-shrink-0">
-                        <svg className="w-4 h-4 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <div className="w-8 h-8 rounded-lg bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center flex-shrink-0">
+                        <svg className="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                         </svg>
                       </div>
@@ -272,7 +272,7 @@ export const StudentDetailPanel: React.FC<StudentDetailPanelProps> = ({ student,
                     {activeTab === 'note' && data.grades.map((g, i) => (
                       <div key={i} className="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700">
                         <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-white font-bold text-sm flex-shrink-0 ${
-                          g.grade >= 9 ? 'bg-green-500' : g.grade >= 7 ? 'bg-blue-500' : 'bg-orange-500'
+                          g.grade >= 9 ? 'bg-green-500' : g.grade >= 7 ? 'bg-emerald-500' : 'bg-orange-500'
                         }`}>
                           {g.grade}
                         </div>
@@ -337,7 +337,7 @@ export const StudentDetailPanel: React.FC<StudentDetailPanelProps> = ({ student,
                 </button>
                 <button
                   onClick={() => generateStudentReport(student)}
-                  className="flex items-center justify-center gap-2 flex-1 py-3 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white rounded-xl font-semibold transition-all shadow-lg text-sm"
+                  className="flex items-center justify-center gap-2 flex-1 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-semibold transition-all shadow-lg text-sm"
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>

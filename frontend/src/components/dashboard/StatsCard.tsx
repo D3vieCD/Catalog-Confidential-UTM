@@ -94,10 +94,8 @@ export const StatsCard: React.FC<StatsCardProps> = ({
             </span>
           </div>
         </div>
-        <div className={`ml-4 p-3 rounded-lg bg-gradient-to-r ${color}`}>
-          <div className="text-white">
-            {getIcon(icon)}
-          </div>
+        <div className={`ml-4 p-3 rounded-xl ${color}`}>
+          {getIcon(icon)}
         </div>
       </div>
     </div>

@@ -32,10 +32,15 @@ export const LoginForm = () => {
       storage.set('isLoggedIn', 'true');
       storage.set('userEmail', email);
       storage.set('userName', user.name);
+      storage.set('userRole', user.role);
       storage.set('showAnimation', 'true');
 
-      // Redirecționăm
-      navigate('/dashboard');
+      // Redirect bazat pe rol
+      if (user.role === 'admin') {
+        navigate(paths.admin);
+      } else {
+        navigate(paths.dashboard);
+      }
     } else {
       // Login eșuat
       setError('Email sau parolă incorectă!');
@@ -44,19 +49,19 @@ export const LoginForm = () => {
   };
 
   return (
-    <div className="w-full lg:w-1/2 flex items-center justify-center p-4 sm:p-6 md:p-8 relative min-h-screen bg-white dark:bg-gray-900 transition-colors duration-300">
+    <div className="w-full lg:w-1/2 flex items-center justify-center px-4 sm:px-8 py-4 relative h-screen overflow-y-auto bg-white dark:bg-gray-900 transition-colors duration-300">
       <div className="w-full max-w-md">
         {/* Header */}
-        <div className="mb-6 md:mb-8">
-          <div className="flex items-center gap-2 mb-3">
-            <svg className="w-7 h-7 md:w-8 md:h-8 text-indigo-600 dark:text-indigo-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div className="mb-4">
+          <div className="flex items-center gap-2 mb-2">
+            <svg className="w-6 h-6 text-emerald-600 dark:text-emerald-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
             </svg>
-            <h2 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+            <h2 className="text-2xl font-bold bg-gradient-to-r from-emerald-500 to-emerald-600 bg-clip-text text-transparent">
               Bun venit!
             </h2>
           </div>
-          <p className="text-sm md:text-base text-gray-600 dark:text-gray-400 transition-colors">
+          <p className="text-sm text-gray-600 dark:text-gray-400 transition-colors">
             Intră în cont pentru a accesa catalogul
           </p>
         </div>
@@ -72,7 +77,7 @@ export const LoginForm = () => {
         )}
 
         {/* Email Input */}
-        <div className="mb-4">
+        <div className="mb-3">
           <Input
             label="Email"
             type="email"
@@ -85,7 +90,7 @@ export const LoginForm = () => {
         </div>
 
         {/* Password Input */}
-        <div className="mb-4">
+        <div className="mb-3">
           <Input
             label="Parolă"
             type="password"
@@ -101,11 +106,11 @@ export const LoginForm = () => {
         </div>
 
         {/* Remember & Forgot */}
-        <div className="flex items-center justify-between mb-5">
+        <div className="flex items-center justify-between mb-4">
           <Checkbox label="Ține-mă minte" disabled={loading} />
           <button
             onClick={() => console.log('Forgot password')}
-            className="text-xs md:text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium transition-colors"
+            className="text-xs md:text-sm text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 font-medium transition-colors"
           >
             Ai uitat parola?
           </button>
@@ -126,18 +131,18 @@ export const LoginForm = () => {
         <Divider />
 
         {/* Social Buttons */}
-        <div className="space-y-3">
+        <div className="space-y-2">
           <SocialLoginButton provider="google" fullWidth />
           <SocialLoginButton provider="microsoft" fullWidth />
           <SocialLoginButton provider="github" fullWidth />
         </div>
 
         {/* Register */}
-        <p className="text-center text-xs md:text-sm text-gray-600 dark:text-gray-400 mt-6 transition-colors">
+        <p className="text-center text-sm text-gray-600 dark:text-gray-400 mt-4 transition-colors">
           Nu ai cont?{' '}
           <button
             onClick={() => navigate(paths.register)}
-            className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-semibold transition-colors"
+            className="text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 font-semibold transition-colors"
           >
             Înregistrează-te
           </button>

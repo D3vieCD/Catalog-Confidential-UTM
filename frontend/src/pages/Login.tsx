@@ -10,7 +10,7 @@ import { DarkModeToggle } from '../components/ui';
 
 export const Login = () => {
   return (
-    <div className="min-h-screen flex flex-col lg:flex-row">
+    <div className="h-screen overflow-hidden flex flex-col lg:flex-row">
       {/* Dark Mode Toggle - Fixed în colțul din dreapta-sus */}
       <DarkModeToggle />
 

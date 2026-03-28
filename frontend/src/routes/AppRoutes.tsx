@@ -2,6 +2,12 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Login, Register, Dashboard, Calendar, Settings, Students, Groups, Catalog, GroupCatalog, Reports } from '../pages';
 import { Page403, Page404, Page500 } from '../pages/error';
 import { DashboardLayout } from '../layouts/dashboard/DashboardLayout';
+import { AdminLayout } from '../admin/components/layout/AdminLayout';
+import { AdminDashboard } from '../admin/pages/AdminDashboard';
+import { AdminUsers } from '../admin/pages/AdminUsers';
+import { AdminGroups } from '../admin/pages/AdminGroups';
+import { AdminStudents } from '../admin/pages/AdminStudents';
+import { AdminSettings } from '../admin/pages/AdminSettings';
 import { storage } from '../utils';
 import { paths } from './paths';
 
@@ -14,6 +20,19 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   if (!isLoggedIn) {
     return <Navigate to={paths.login} replace />;
   }
+
+  return <>{children}</>;
+};
+
+/**
+ * Admin Route - Verifică dacă user-ul e logat ȘI are rol admin
+ */
+const AdminRoute = ({ children }: { children: React.ReactNode }) => {
+  const isLoggedIn = storage.get('isLoggedIn') === 'true';
+  const role = storage.get('userRole');
+
+  if (!isLoggedIn) return <Navigate to={paths.login} replace />;
+  if (role !== 'admin') return <Navigate to={paths.error.page403} replace />;
 
   return <>{children}</>;
 };
@@ -154,6 +173,58 @@ export const AppRoutes = () => {
                 <Settings />
               </DashboardLayout>
             </ProtectedRoute>
+          }
+        />
+
+        {/* Admin Pages - Protejat + rol admin */}
+        <Route
+          path={paths.adminRoutes.home}
+          element={
+            <AdminRoute>
+              <AdminLayout>
+                <AdminDashboard />
+              </AdminLayout>
+            </AdminRoute>
+          }
+        />
+        <Route
+          path={paths.adminRoutes.users}
+          element={
+            <AdminRoute>
+              <AdminLayout>
+                <AdminUsers />
+              </AdminLayout>
+            </AdminRoute>
+          }
+        />
+        <Route
+          path={paths.adminRoutes.groups}
+          element={
+            <AdminRoute>
+              <AdminLayout>
+                <AdminGroups />
+              </AdminLayout>
+            </AdminRoute>
+          }
+        />
+        <Route
+          path={paths.adminRoutes.students}
+          element={
+            <AdminRoute>
+              <AdminLayout>
+                <AdminStudents />
+              </AdminLayout>
+            </AdminRoute>
+          }
+        />
+        <Route
+          path={paths.adminRoutes.settings}
+          element={
+            <AdminRoute>
+              <AdminLayout>
+                <AdminSettings />
+              </AdminLayout>
+            </AdminRoute>
           }
         />
 

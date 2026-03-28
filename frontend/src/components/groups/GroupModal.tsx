@@ -34,7 +34,7 @@ const CustomDropdown: React.FC<{
         type="button"
         onClick={() => !disabled && setIsOpen(!isOpen)}
         disabled={disabled}
-        className={`w-full flex items-center justify-between px-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent text-gray-900 dark:text-white transition-all duration-200 ${
+        className={`w-full flex items-center justify-between px-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 dark:focus:ring-emerald-400 focus:border-transparent text-gray-900 dark:text-white transition-all duration-200 ${
           disabled ? 'opacity-50 cursor-not-allowed' : 'hover:border-gray-300 dark:hover:border-gray-500'
         }`}
       >
@@ -229,7 +229,7 @@ export const GroupModal: React.FC<GroupModalProps> = ({
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               placeholder="ex: INF-211"
-              className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent text-gray-900 dark:text-white placeholder-gray-400 transition-all duration-200"
+              className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 dark:focus:ring-emerald-400 focus:border-transparent text-gray-900 dark:text-white placeholder-gray-400 transition-all duration-200"
             />
           </div>
 
@@ -271,7 +271,7 @@ export const GroupModal: React.FC<GroupModalProps> = ({
             <button
               type="button"
               onClick={() => setShowNewFaculty(!showNewFaculty)}
-              className="px-4 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-xl transition-colors duration-200"
+              className="px-4 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl transition-colors duration-200"
               title="Adaugă facultate nouă"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -293,7 +293,7 @@ export const GroupModal: React.FC<GroupModalProps> = ({
                   value={newFacultyInput}
                   onChange={(e) => setNewFacultyInput(e.target.value)}
                   placeholder="Nume facultate nouă"
-                  className="flex-1 px-4 py-2 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 dark:text-white placeholder-gray-400"
+                  className="flex-1 px-4 py-2 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 text-gray-900 dark:text-white placeholder-gray-400"
                   onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddFaculty())}
                 />
                 <button
@@ -330,7 +330,7 @@ export const GroupModal: React.FC<GroupModalProps> = ({
               type="button"
               onClick={() => setShowNewSpec(!showNewSpec)}
               disabled={!formData.faculty}
-              className="px-4 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-xl transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-4 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
               title="Adaugă specializare nouă"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -352,7 +352,7 @@ export const GroupModal: React.FC<GroupModalProps> = ({
                   value={newSpecInput}
                   onChange={(e) => setNewSpecInput(e.target.value)}
                   placeholder="Nume specializare nouă"
-                  className="flex-1 px-4 py-2 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 dark:text-white placeholder-gray-400"
+                  className="flex-1 px-4 py-2 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 text-gray-900 dark:text-white placeholder-gray-400"
                   onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddSpecialization())}
                 />
                 <button
@@ -377,7 +377,7 @@ export const GroupModal: React.FC<GroupModalProps> = ({
             value={formData.coordinator}
             onChange={(e) => setFormData({ ...formData, coordinator: e.target.value })}
             placeholder="ex: Prof. Dr. Ion Popescu"
-            className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent text-gray-900 dark:text-white placeholder-gray-400 transition-all duration-200"
+            className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 dark:focus:ring-emerald-400 focus:border-transparent text-gray-900 dark:text-white placeholder-gray-400 transition-all duration-200"
           />
         </div>
 
@@ -392,7 +392,7 @@ export const GroupModal: React.FC<GroupModalProps> = ({
               value={formData.maxCapacity}
               onChange={(e) => setFormData({ ...formData, maxCapacity: parseInt(e.target.value) || 0 })}
               min="1"
-              className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent text-gray-900 dark:text-white transition-all duration-200"
+              className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 dark:focus:ring-emerald-400 focus:border-transparent text-gray-900 dark:text-white transition-all duration-200"
             />
           </div>
 
@@ -423,7 +423,7 @@ export const GroupModal: React.FC<GroupModalProps> = ({
               onClick={() => setFormData({ ...formData, status: 'ACTIV' })}
               className={`flex-1 px-4 py-3 rounded-2xl font-semibold transition-all duration-200 ${
                 formData.status === 'ACTIV'
-                  ? 'bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-md'
+                  ? 'bg-gradient-to-r from-emerald-500 to-emerald-600 text-white shadow-md'
                   : 'bg-gray-50 dark:bg-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-600'
               }`}
             >
@@ -456,7 +456,7 @@ export const GroupModal: React.FC<GroupModalProps> = ({
           </button>
           <button
             type="submit"
-            className="flex-1 px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-semibold rounded-2xl transition-all duration-200 shadow-lg hover:shadow-xl"
+            className="flex-1 px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-2xl transition-all duration-200 shadow-lg hover:shadow-xl"
           >
             {group ? 'Salvează' : 'Adaugă'}
           </button>

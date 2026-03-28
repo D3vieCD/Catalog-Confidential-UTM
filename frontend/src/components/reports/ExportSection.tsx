@@ -180,8 +180,8 @@ export const ExportSection = ({ onReportGenerated }: ExportSectionProps) => {
     >
       {/* Header */}
       <div className="flex items-center gap-3 mb-6">
-        <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-xl flex items-center justify-center">
-          <svg className="w-6 h-6 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div className="w-12 h-12 bg-emerald-100 dark:bg-emerald-900/30 rounded-xl flex items-center justify-center">
+          <svg className="w-6 h-6 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"/>
           </svg>
         </div>
@@ -226,7 +226,7 @@ export const ExportSection = ({ onReportGenerated }: ExportSectionProps) => {
               onClick={() => setScope(opt.id)}
               className={`flex items-center justify-center gap-2 px-4 py-3 rounded-xl border-2 font-medium text-sm transition-all ${
                 scope === opt.id
-                  ? 'border-purple-500 bg-purple-50 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300'
+                  ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300'
                   : 'border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-400 hover:border-gray-300 dark:hover:border-gray-500'
               }`}
             >
@@ -277,7 +277,7 @@ export const ExportSection = ({ onReportGenerated }: ExportSectionProps) => {
               key={type.id}
               className={`flex items-center gap-3 p-4 rounded-xl cursor-pointer transition-all border-2 ${
                 reportType === type.id
-                  ? 'border-purple-400 bg-purple-50 dark:bg-purple-900/20'
+                  ? 'border-emerald-400 bg-emerald-50 dark:bg-emerald-900/20'
                   : 'border-transparent bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600'
               }`}
             >
@@ -287,7 +287,7 @@ export const ExportSection = ({ onReportGenerated }: ExportSectionProps) => {
                 value={type.id}
                 checked={reportType === type.id}
                 onChange={(e) => setReportType(e.target.value as ReportType)}
-                className="w-5 h-5 text-purple-600 focus:ring-purple-500"
+                className="w-5 h-5 text-emerald-600 focus:ring-emerald-500"
               />
               <span className="text-gray-900 dark:text-white font-medium">{type.label}</span>
             </label>
@@ -299,7 +299,7 @@ export const ExportSection = ({ onReportGenerated }: ExportSectionProps) => {
       <button
         onClick={handleExport}
         disabled={!canExport || isGenerating}
-        className="w-full px-6 py-4 bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 disabled:from-gray-400 disabled:to-gray-500 disabled:cursor-not-allowed text-white font-semibold rounded-xl transition-all shadow-lg flex items-center justify-center gap-2"
+        className="w-full px-6 py-4 bg-emerald-600 hover:bg-emerald-700 disabled:from-gray-400 disabled:to-gray-500 disabled:cursor-not-allowed text-white font-semibold rounded-xl transition-all shadow-lg flex items-center justify-center gap-2"
       >
         {isGenerating ? (
           <>
@@ -322,7 +322,7 @@ export const ExportSection = ({ onReportGenerated }: ExportSectionProps) => {
       {/* Info */}
       <div className="mt-4 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-200 dark:border-blue-800">
         <div className="flex gap-2 text-sm text-blue-800 dark:text-blue-200">
-          <svg className="w-4 h-4 text-blue-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-4 h-4 text-emerald-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
           </svg>
           <span>

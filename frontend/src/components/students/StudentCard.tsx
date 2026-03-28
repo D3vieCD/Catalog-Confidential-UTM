@@ -26,7 +26,7 @@ export const StudentCard: React.FC<StudentCardProps> = ({ student, onEdit, onDel
       <div className="absolute top-4 right-4 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
         <button
           onClick={(e) => { e.stopPropagation(); onEdit(student); }}
-          className="p-1.5 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20 text-gray-400 dark:text-gray-500 hover:text-blue-500 dark:hover:text-blue-400 transition-all duration-200"
+          className="p-1.5 rounded-lg hover:bg-emerald-50 dark:hover:bg-emerald-900/20 text-gray-400 dark:text-gray-500 hover:text-emerald-600 dark:hover:text-emerald-400 transition-all duration-200"
           title="Editează"
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -46,7 +46,7 @@ export const StudentCard: React.FC<StudentCardProps> = ({ student, onEdit, onDel
 
       {/* Avatar with Status */}
       <div className="relative w-14 h-14 mb-4">
-        <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-white text-lg font-bold bg-gradient-to-br from-blue-500 to-indigo-600">
+        <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-white text-lg font-bold bg-gradient-to-br from-emerald-500 to-emerald-600">
           {initials}
         </div>
         <span className="absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full border-2 border-white dark:border-gray-800 bg-green-500" />

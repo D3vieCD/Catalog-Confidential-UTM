@@ -12,7 +12,7 @@ export const mockDashboardData = {
       change: '+12%',
       changeType: 'increase' as const,
       icon: 'users',
-      color: 'from-blue-500 to-blue-600',
+      color: 'bg-stone-100 dark:bg-stone-700 text-stone-600 dark:text-stone-300',
     },
     {
       title: 'Note Adăugate',
@@ -21,7 +21,7 @@ export const mockDashboardData = {
       change: '+15%',
       changeType: 'increase' as const,
       icon: 'book',
-      color: 'from-purple-500 to-purple-600',
+      color: 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400',
     },
     {
       title: 'Medie Generală',
@@ -30,7 +30,7 @@ export const mockDashboardData = {
       change: '+0.3',
       changeType: 'increase' as const,
       icon: 'chart',
-      color: 'from-green-500 to-green-600',
+      color: 'bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400',
     },
     {
       title: 'Absențe Luna',
@@ -39,7 +39,7 @@ export const mockDashboardData = {
       change: '-8%',
       changeType: 'decrease' as const,
       icon: 'warning',
-      color: 'from-orange-500 to-orange-600',
+      color: 'bg-red-100 dark:bg-red-900/30 text-red-500 dark:text-red-400',
     },
   ],
 
