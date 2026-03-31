@@ -1,56 +1,56 @@
 export const colors = {
-  // Primary Colors (Gradient albastru-violet)
+  // Primary Colors (Emerald)
   primary: {
-    50: '#EEF2FF',
-    100: '#E0E7FF',
-    200: '#C7D2FE',
-    300: '#A5B4FC',
-    400: '#818CF8',
-    500: '#6366F1',
-    600: '#4F46E5',
-    700: '#4338CA',
-    800: '#3730A3',
-    900: '#312E81',
+    50: '#ECFDF5',
+    100: '#D1FAE5',
+    200: '#A7F3D0',
+    300: '#6EE7B7',
+    400: '#34D399',
+    500: '#10B981',
+    600: '#059669',
+    700: '#047857',
+    800: '#065F46',
+    900: '#064E3B',
   },
 
-  // Secondary Colors (Violet)
+  // Secondary Colors (Stone - warm neutral)
   secondary: {
-    50: '#FAF5FF',
-    100: '#F3E8FF',
-    200: '#E9D5FF',
-    300: '#D8B4FE',
-    400: '#C084FC',
-    500: '#A855F7',
-    600: '#9333EA',
-    700: '#7C3AED',
-    800: '#6B21A8',
-    900: '#581C87',
+    50: '#FAFAF9',
+    100: '#F5F5F4',
+    200: '#E7E5E4',
+    300: '#D6D3D1',
+    400: '#A8A29E',
+    500: '#78716C',
+    600: '#57534E',
+    700: '#44403C',
+    800: '#292524',
+    900: '#1C1917',
   },
 
-  // Accent Colors (Blue)
+  // Accent Colors (Stone)
   accent: {
-    50: '#EFF6FF',
-    100: '#DBEAFE',
-    200: '#BFDBFE',
-    300: '#93C5FD',
-    400: '#60A5FA',
-    500: '#3B82F6',
-    600: '#2563EB',
-    700: '#1D4ED8',
-    800: '#1E40AF',
-    900: '#1E3A8A',
+    50: '#FAFAF9',
+    100: '#F5F5F4',
+    200: '#E7E5E4',
+    300: '#D6D3D1',
+    400: '#A8A29E',
+    500: '#78716C',
+    600: '#57534E',
+    700: '#44403C',
+    800: '#292524',
+    900: '#1C1917',
   },
 
   // Semantic Colors
-  success: '#10B981',
+  success: '#059669',
   error: '#EF4444',
   warning: '#F59E0B',
-  info: '#3B82F6',
+  info: '#0891B2',
 
-  // Gradient Backgrounds
+  // Gradient Backgrounds (statice, fără animație)
   gradients: {
-    primary: 'linear-gradient(-45deg, #4F46E5, #7C3AED, #2563EB, #6366F1, #8B5CF6)',
-    dark: 'linear-gradient(-45deg, #1E1B4B, #312E81, #1E3A8A, #3730A3, #4C1D95)',
+    primary: 'linear-gradient(135deg, #059669, #047857)',
+    dark: 'linear-gradient(135deg, #065F46, #064E3B)',
   },
 };
 

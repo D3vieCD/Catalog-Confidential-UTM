@@ -88,7 +88,7 @@ export const CalendarGrid: React.FC<CalendarGridProps> = ({
                 ${!day.isCurrentMonth
                   ? 'text-gray-300 dark:text-gray-600 bg-transparent cursor-default'
                   : isToday
-                  ? 'bg-blue-600 text-white font-bold shadow-md'
+                  ? 'bg-emerald-600 text-white font-bold shadow-md'
                   : isWeekend
                   ? 'bg-gray-50 hover:bg-gray-100 text-red-500 dark:bg-gray-800 dark:hover:bg-gray-700 dark:text-red-400'
                   : 'bg-gray-50 hover:bg-gray-100 text-gray-900 dark:bg-gray-800 dark:hover:bg-gray-700 dark:text-white'

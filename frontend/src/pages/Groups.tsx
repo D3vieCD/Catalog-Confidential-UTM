@@ -8,7 +8,7 @@ import {
   deleteGroup,
   getGroupStats,
 } from '../_mock/mockGroups';
-import { GroupStats, GroupCard, GroupFilters, GroupModal } from '../components/groups';
+import { GroupStats, GroupCard, GroupFilters, GroupModal, GroupDetailPanel } from '../components/groups';
 import { ConfirmModal } from '../components/ui/ConfirmModal';
 
 export const Groups = () => {
@@ -25,6 +25,7 @@ export const Groups = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingGroup, setEditingGroup] = useState<Group | null>(null);
   const [deletingGroup, setDeletingGroup] = useState<Group | null>(null);
+  const [viewingGroup, setViewingGroup] = useState<Group | null>(null);
   // Filtered & sorted groups
   const filteredGroups = useMemo(() => {
     let result = [...groups];
@@ -89,6 +90,10 @@ export const Groups = () => {
     setDeletingGroup(group);
   };
 
+  const handleView = (group: Group) => {
+    setViewingGroup(group);
+  };
+
   const handleSave = (data: GroupFormData) => {
     if (editingGroup) {
       const updated = updateGroup(editingGroup.id, data);
@@ -140,7 +145,7 @@ export const Groups = () => {
           {/* Add Group Button */}
           <button
             onClick={handleOpenAdd}
-            className="px-4 sm:px-6 py-2.5 bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white rounded-xl font-medium transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105 flex items-center gap-2"
+            className="px-4 sm:px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-medium transition-all duration-200 shadow-sm hover:shadow-md flex items-center gap-2"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4"/>
@@ -207,6 +212,7 @@ export const Groups = () => {
                 group={group}
                 onEdit={handleOpenEdit}
                 onDelete={handleOpenDelete}
+                onView={handleView}
                 index={index}
               />
             ))}
@@ -234,6 +240,13 @@ export const Groups = () => {
         message={`Ești sigur că vrei să ștergi grupa ${deletingGroup?.name}? Această acțiune nu poate fi anulată.`}
         confirmText="Da, șterge"
         cancelText="Anulează"
+      />
+
+      {/* Group Detail Panel */}
+      <GroupDetailPanel
+        group={viewingGroup}
+        onClose={() => setViewingGroup(null)}
+        onEdit={(group) => { setViewingGroup(null); handleOpenEdit(group); }}
       />
     </div>
   );

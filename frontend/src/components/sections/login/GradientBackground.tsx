@@ -21,7 +21,7 @@ export const GradientBackground = () => {
         </div>
         <h1 className="text-4xl md:text-5xl font-bold mb-4">Academix</h1>
         
-        <p className="subtitle-text text-lg md:text-xl text-blue-100 transition-colors duration-300 max-w-md mx-auto">
+        <p className="subtitle-text text-lg md:text-xl text-emerald-100 transition-colors duration-300 max-w-md mx-auto">
           Platforma ta digitală pentru gestionarea catalogului școlar
         </p>
       </div>

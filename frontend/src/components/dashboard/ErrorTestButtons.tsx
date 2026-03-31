@@ -17,7 +17,7 @@ export const ErrorTestButtons: React.FC = () => {
       id: '404',
       title: 'Test 404 - Not Found',
       description: 'Pagina nu a fost găsită',
-      color: 'from-blue-500 to-blue-600',
+      color: 'from-emerald-500 to-emerald-600',
       route: paths.error.page404
     },
     {
@@ -31,7 +31,7 @@ export const ErrorTestButtons: React.FC = () => {
       id: 'invalid',
       title: 'Test Invalid Route',
       description: 'Rută invalidă (wildcard)',
-      color: 'from-purple-500 to-purple-600',
+      color: 'from-emerald-500 to-emerald-600',
       route: '/pagina-inexistenta'
     }
   ];

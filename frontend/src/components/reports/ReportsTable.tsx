@@ -111,7 +111,7 @@ export const ReportsTable = ({ reports }: ReportsTableProps) => {
                 <td className="px-6 py-4">
                   <button
                     onClick={() => handleDownload(report)}
-                    className="text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 font-semibold transition-colors"
+                    className="text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 font-semibold transition-colors"
                   >
                     Descarcă din nou
                   </button>

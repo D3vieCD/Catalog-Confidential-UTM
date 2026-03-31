@@ -43,7 +43,7 @@ export const SettingsProfile: React.FC<SettingsProfileProps> = ({ profile, setPr
               className="w-24 h-24 rounded-2xl object-cover shadow-lg"
             />
           ) : (
-            <div className="w-24 h-24 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center text-white text-3xl font-bold shadow-lg">
+            <div className="w-24 h-24 bg-gradient-to-r from-emerald-500 to-emerald-600 rounded-2xl flex items-center justify-center text-white text-3xl font-bold shadow-lg">
               {currentUser.name.split(' ').map(n => n[0]).join('').toUpperCase()}
             </div>
           )}
@@ -56,7 +56,7 @@ export const SettingsProfile: React.FC<SettingsProfileProps> = ({ profile, setPr
           />
           <label
             htmlFor="avatar-upload"
-            className="absolute bottom-0 right-0 w-8 h-8 bg-blue-600 hover:bg-blue-700 rounded-full flex items-center justify-center text-white shadow-lg transition-all duration-200 group-hover:scale-110 cursor-pointer"
+            className="absolute bottom-0 right-0 w-8 h-8 bg-emerald-600 hover:bg-emerald-700 rounded-full flex items-center justify-center text-white shadow-lg transition-all duration-200 group-hover:scale-110 cursor-pointer"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/>
@@ -123,7 +123,7 @@ export const SettingsProfile: React.FC<SettingsProfileProps> = ({ profile, setPr
           value={profile.bio}
           onChange={(e) => setProfile({ ...profile, bio: e.target.value })}
           rows={4}
-          className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200"
+          className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-200"
         />
       </div>
     </div>

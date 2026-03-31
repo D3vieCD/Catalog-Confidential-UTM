@@ -5,10 +5,11 @@ interface GroupCardProps {
   group: Group;
   onEdit: (group: Group) => void;
   onDelete: (group: Group) => void;
+  onView: (group: Group) => void;
   index: number;
 }
 
-export const GroupCard: React.FC<GroupCardProps> = ({ group, onEdit, onDelete, index }) => {
+export const GroupCard: React.FC<GroupCardProps> = ({ group, onEdit, onDelete, onView, index }) => {
   const capacityPercentage = (group.currentCapacity / group.maxCapacity) * 100;
 
   // Determină culoarea progress bar-ului bazat pe capacitate
@@ -24,13 +25,14 @@ export const GroupCard: React.FC<GroupCardProps> = ({ group, onEdit, onDelete, i
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3, delay: Math.min(index * 0.05, 0.6) }}
       whileHover={{ y: -4 }}
-      className="group bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-shadow duration-300 relative"
+      onClick={() => onView(group)}
+      className="group bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-shadow duration-300 relative cursor-pointer"
     >
       {/* Hover Actions */}
       <div className="absolute top-4 right-4 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
         <button
-          onClick={() => onEdit(group)}
-          className="p-1.5 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20 text-gray-400 dark:text-gray-500 hover:text-blue-500 dark:hover:text-blue-400 transition-all duration-200"
+          onClick={(e) => { e.stopPropagation(); onEdit(group); }}
+          className="p-1.5 rounded-lg hover:bg-emerald-50 dark:hover:bg-emerald-900/20 text-gray-400 dark:text-gray-500 hover:text-emerald-600 dark:hover:text-emerald-400 transition-all duration-200"
           title="Editează"
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -38,7 +40,7 @@ export const GroupCard: React.FC<GroupCardProps> = ({ group, onEdit, onDelete, i
           </svg>
         </button>
         <button
-          onClick={() => onDelete(group)}
+          onClick={(e) => { e.stopPropagation(); onDelete(group); }}
           className="p-1.5 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 text-gray-400 dark:text-gray-500 hover:text-red-500 dark:hover:text-red-400 transition-all duration-200"
           title="Șterge"
         >
@@ -50,7 +52,7 @@ export const GroupCard: React.FC<GroupCardProps> = ({ group, onEdit, onDelete, i
 
       {/* Icon & Group Name */}
       <div className="relative w-14 h-14 mb-4">
-        <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-white text-lg font-bold bg-gradient-to-br from-blue-400 to-indigo-500">
+        <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-white text-lg font-bold bg-gradient-to-br from-emerald-500 to-emerald-600">
           <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
           </svg>
@@ -64,7 +66,7 @@ export const GroupCard: React.FC<GroupCardProps> = ({ group, onEdit, onDelete, i
 
       {/* Year Badge */}
       <div className="mb-4">
-        <span className="px-3 py-1 bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-300 text-xs font-medium rounded-full">
+        <span className="px-3 py-1 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-300 text-xs font-medium rounded-full">
           ANUL {group.year}
         </span>
       </div>

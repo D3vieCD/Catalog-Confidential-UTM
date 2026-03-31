@@ -179,32 +179,14 @@
    GRADIENT BACKGROUND STYLES
    =================================== */
 
-/* Light Mode Gradient */
+/* Light Mode - fundal static emerald */
 .gradient-bg {
-  background: linear-gradient(
-    -45deg,
-    #4f46e5,
-    #7c3aed,
-    #2563eb,
-    #6366f1,
-    #8b5cf6
-  );
-  background-size: 400% 400%;
-  animation: gradient 15s ease infinite;
+  background: linear-gradient(135deg, #059669, #047857);
 }
 
-/* Dark Mode Gradient */
+/* Dark Mode - fundal static emerald întunecat */
 .dark .gradient-bg {
-  background: linear-gradient(
-    -45deg,
-    #1e1b4b,
-    #312e81,
-    #1e3a8a,
-    #3730a3,
-    #4c1d95
-  );
-  background-size: 400% 400%;
-  animation: gradient 15s ease infinite;
+  background: linear-gradient(135deg, #065F46, #064E3B);
 }
 
 /* ===================================
@@ -220,5 +202,5 @@
    =================================== */
 
 .dark .subtitle-text {
-  color: #c7d2fe;
+  color: #A7F3D0;
 }

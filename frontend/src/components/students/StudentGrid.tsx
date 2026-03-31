@@ -7,9 +7,10 @@ interface StudentGridProps {
   viewMode: 'grid' | 'list';
   onEdit: (student: Student) => void;
   onDelete: (student: Student) => void;
+  onView: (student: Student) => void;
 }
 
-export const StudentGrid: React.FC<StudentGridProps> = ({ students, viewMode, onEdit, onDelete }) => {
+export const StudentGrid: React.FC<StudentGridProps> = ({ students, viewMode, onEdit, onDelete, onView }) => {
   if (students.length === 0) {
     return (
       <div className="bg-white dark:bg-gray-800 rounded-2xl p-12 shadow-sm border border-gray-200 dark:border-gray-700 text-center">
@@ -35,6 +36,7 @@ export const StudentGrid: React.FC<StudentGridProps> = ({ students, viewMode, on
             student={student}
             onEdit={onEdit}
             onDelete={onDelete}
+            onView={onView}
             index={index}
           />
         ))}
@@ -50,6 +52,7 @@ export const StudentGrid: React.FC<StudentGridProps> = ({ students, viewMode, on
           student={student}
           onEdit={onEdit}
           onDelete={onDelete}
+          onView={onView}
           index={index}
         />
       ))}

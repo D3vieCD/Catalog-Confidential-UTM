@@ -231,7 +231,7 @@ export const Calendar = () => {
             ) : (
               <button
                 onClick={() => setModalState({ ...modalState, isOpen: false })}
-                className="px-6 py-2.5 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white rounded-xl font-medium transition-all duration-200 shadow-md hover:shadow-lg"
+                className="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-medium transition-all duration-200 shadow-md hover:shadow-lg"
               >
                 OK
               </button>

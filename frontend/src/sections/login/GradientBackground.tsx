@@ -7,7 +7,7 @@ import { AnimatedElements } from './AnimatedElements';
 
 export const GradientBackground = () => {
   return (
-    <div className="hidden lg:flex gradient-bg w-full lg:w-1/2 min-h-screen items-center justify-center relative overflow-hidden transition-colors duration-300">
+    <div className="hidden lg:flex gradient-bg w-full lg:w-1/2 h-screen items-center justify-center relative overflow-hidden transition-colors duration-300">
 
       {/* Elemente animate în fundal */}
       <AnimatedElements />
@@ -24,7 +24,7 @@ export const GradientBackground = () => {
 
         <h1 className="text-4xl md:text-5xl font-bold mb-4">Academix</h1>
 
-        <p className="subtitle-text text-lg md:text-xl text-blue-100 transition-colors duration-300 max-w-md mx-auto">
+        <p className="subtitle-text text-lg md:text-xl text-emerald-100 transition-colors duration-300 max-w-md mx-auto">
           Platforma ta digitală pentru gestionarea catalogului școlar
         </p>
       </div>

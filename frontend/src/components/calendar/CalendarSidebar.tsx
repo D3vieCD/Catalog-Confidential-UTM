@@ -76,7 +76,7 @@ export const CalendarSidebar: React.FC<CalendarSidebarProps> = ({
             </div>
           ) : (
             <div className="text-center">
-              <div className="text-2xl font-bold text-blue-600 dark:text-blue-400 mb-1">
+              <div className="text-2xl font-bold text-emerald-600 dark:text-emerald-400 mb-1">
                 {selectedDayEvents.length}
               </div>
               <div className="text-sm text-gray-500 dark:text-gray-400">
@@ -89,7 +89,7 @@ export const CalendarSidebar: React.FC<CalendarSidebarProps> = ({
 
       {/* This Week Card */}
       {weekEvents.length > 0 && (
-        <div className="bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700 rounded-2xl p-5 text-white shadow-lg">
+        <div className="bg-gradient-to-br from-emerald-500 to-emerald-600 dark:from-emerald-600 dark:to-emerald-700 rounded-2xl p-5 text-white shadow-lg">
           <div className="flex items-center gap-2 mb-3">
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>

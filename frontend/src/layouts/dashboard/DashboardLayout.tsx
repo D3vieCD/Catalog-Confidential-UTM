@@ -13,7 +13,7 @@ interface DashboardLayoutProps {
 
 export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-900 transition-colors duration-200">
+    <div className="min-h-screen bg-stone-50 dark:bg-gray-900 transition-colors duration-200">
       {/* Header - Fixed în top */}
       <Header />
 
@@ -22,7 +22,7 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
 
       {/* Main Content - Restul spațiului */}
       <div
-        className="pt-20 transition-all duration-300 min-h-screen bg-white dark:bg-gray-900"
+        className="pt-20 transition-all duration-300 min-h-screen bg-stone-50 dark:bg-gray-900"
         style={{ marginLeft: '80px' }}
       >
         <motion.main
