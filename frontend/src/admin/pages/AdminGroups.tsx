@@ -1,15 +1,39 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
+import {
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
+  ResponsiveContainer, Cell,
+} from 'recharts';
 import { MOCK_ADMIN_GROUPS } from '../_mock/mockAdminData';
 import type { AdminGroup } from '../_mock/mockAdminData';
 
 /**
- * AdminGroups - Overview grupe sistem
+ * AdminGroups - Comparație vizuală grupe + tabel management
  */
 
 const STATUS_BADGE: Record<AdminGroup['status'], string> = {
-  activ:    'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400',
-  arhivat:  'bg-stone-100 dark:bg-stone-700 text-stone-500 dark:text-stone-400',
+  activ:   'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400',
+  arhivat: 'bg-stone-100 dark:bg-stone-700 text-stone-500 dark:text-stone-400',
+};
+
+const avgColor = (avg: number) => {
+  if (avg >= 8.5) return '#059669';
+  if (avg >= 7)   return '#F59E0B';
+  return '#EF4444';
+};
+
+const CustomTooltip = ({ active, payload, label }: { active?: boolean; payload?: { value: number; name: string }[]; label?: string }) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="bg-white dark:bg-gray-800 border border-stone-200 dark:border-gray-700 rounded-xl px-3 py-2 shadow-lg text-xs">
+        <p className="font-semibold text-gray-900 dark:text-white mb-1">Grupa {label}</p>
+        {payload.map((p) => (
+          <p key={p.name} className="text-gray-500 dark:text-gray-400">{p.name}: <span className="font-semibold text-gray-900 dark:text-white">{p.value}</span></p>
+        ))}
+      </div>
+    );
+  }
+  return null;
 };
 
 export const AdminGroups = () => {
@@ -22,18 +46,13 @@ export const AdminGroups = () => {
     g.faculty.toLowerCase().includes(search.toLowerCase())
   );
 
+  const activeGroups = groups.filter((g) => g.status === 'activ');
+
   const handleArchive = (id: string) => {
     setGroups((prev) =>
       prev.map((g) => g.id === id ? { ...g, status: g.status === 'activ' ? 'arhivat' : 'activ' } : g)
     );
   };
-
-  const activeCount = groups.filter((g) => g.status === 'activ').length;
-  const totalStudents = groups.filter((g) => g.status === 'activ').reduce((s, g) => s + g.studentCount, 0);
-  const avgGrade = groups.filter((g) => g.average > 0);
-  const globalAvg = avgGrade.length > 0
-    ? (avgGrade.reduce((s, g) => s + g.average, 0) / avgGrade.length).toFixed(1)
-    : '-';
 
   return (
     <div className="space-y-6">
@@ -41,28 +60,66 @@ export const AdminGroups = () => {
       <div>
         <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Grupe</h1>
         <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-          {groups.length} grupe în sistem ({activeCount} active)
+          {groups.length} grupe în sistem — {activeGroups.length} active
         </p>
       </div>
 
-      {/* Stat cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        {[
-          { label: 'Grupe active', value: activeCount, iconBg: 'bg-emerald-100 dark:bg-emerald-900/30', iconColor: 'text-emerald-600 dark:text-emerald-400' },
-          { label: 'Total studenți', value: totalStudents, iconBg: 'bg-blue-100 dark:bg-blue-900/30', iconColor: 'text-blue-600 dark:text-blue-400' },
-          { label: 'Medie globală', value: globalAvg, iconBg: 'bg-amber-100 dark:bg-amber-900/30', iconColor: 'text-amber-600 dark:text-amber-400' },
-        ].map((card, i) => (
-          <motion.div
-            key={card.label}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.07 }}
-            className="bg-white dark:bg-gray-800 rounded-2xl p-5 shadow-sm border border-stone-200 dark:border-gray-700"
-          >
-            <p className="text-sm text-gray-500 dark:text-gray-400">{card.label}</p>
-            <p className={`text-3xl font-bold mt-1 ${card.iconColor}`}>{card.value}</p>
-          </motion.div>
-        ))}
+      {/* Grafice comparație */}
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+
+        {/* BarChart — Studenți per grupă */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.05 }}
+          className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-stone-200 dark:border-gray-700"
+        >
+          <h2 className="text-sm font-semibold text-gray-900 dark:text-white mb-1">Studenți per grupă</h2>
+          <p className="text-xs text-gray-400 dark:text-gray-500 mb-4">Număr studenți înregistrați (grupe active)</p>
+          <ResponsiveContainer width="100%" height={200}>
+            <BarChart data={activeGroups} margin={{ top: 0, right: 0, left: -20, bottom: 0 }} barSize={36}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" vertical={false} />
+              <XAxis dataKey="name" tick={{ fontSize: 12, fill: '#9CA3AF' }} axisLine={false} tickLine={false} />
+              <YAxis tick={{ fontSize: 11, fill: '#9CA3AF' }} axisLine={false} tickLine={false} />
+              <Tooltip content={<CustomTooltip />} cursor={{ fill: '#f9fafb', radius: 8 }} />
+              <Bar dataKey="studentCount" name="Studenți" radius={[6, 6, 0, 0]}>
+                {activeGroups.map((g) => (
+                  <Cell key={g.id} fill="#3B82F6" fillOpacity={0.85} />
+                ))}
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
+        </motion.div>
+
+        {/* BarChart — Medie per grupă */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-stone-200 dark:border-gray-700"
+        >
+          <h2 className="text-sm font-semibold text-gray-900 dark:text-white mb-1">Performanță per grupă</h2>
+          <p className="text-xs text-gray-400 dark:text-gray-500 mb-4">
+            Medie generală —{' '}
+            <span className="text-emerald-600">■</span> ≥8.5{' '}
+            <span className="text-amber-500 ml-1">■</span> ≥7{' '}
+            <span className="text-red-500 ml-1">■</span> &lt;7
+          </p>
+          <ResponsiveContainer width="100%" height={200}>
+            <BarChart data={activeGroups.filter((g) => g.average > 0)} margin={{ top: 0, right: 0, left: -20, bottom: 0 }} barSize={36}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" vertical={false} />
+              <XAxis dataKey="name" tick={{ fontSize: 12, fill: '#9CA3AF' }} axisLine={false} tickLine={false} />
+              <YAxis domain={[0, 10]} tick={{ fontSize: 11, fill: '#9CA3AF' }} axisLine={false} tickLine={false} />
+              <Tooltip content={<CustomTooltip />} cursor={{ fill: '#f9fafb', radius: 8 }} />
+              <Bar dataKey="average" name="Medie" radius={[6, 6, 0, 0]}>
+                {activeGroups.filter((g) => g.average > 0).map((g) => (
+                  <Cell key={g.id} fill={avgColor(g.average)} fillOpacity={0.9} />
+                ))}
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
+        </motion.div>
+
       </div>
 
       {/* Căutare */}
@@ -80,7 +137,7 @@ export const AdminGroups = () => {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3 }}
+        transition={{ delay: 0.2 }}
         className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-stone-200 dark:border-gray-700 overflow-hidden"
       >
         <div className="overflow-x-auto">
@@ -93,12 +150,15 @@ export const AdminGroups = () => {
                 <th className="text-left px-6 py-4 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Studenți</th>
                 <th className="text-left px-6 py-4 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Medie</th>
                 <th className="text-left px-6 py-4 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Status</th>
-                <th className="text-right px-6 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Acțiuni</th>
+                <th className="text-right px-6 py-4 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Acțiuni</th>
               </tr>
             </thead>
             <tbody>
               {filtered.map((group, idx) => (
-                <tr key={group.id} className={`transition-colors hover:bg-emerald-50/50 dark:hover:bg-emerald-900/10 ${idx % 2 === 0 ? 'bg-white dark:bg-gray-800' : 'bg-stone-50/60 dark:bg-gray-700/20'}`}>
+                <tr
+                  key={group.id}
+                  className={`transition-colors hover:bg-emerald-50/50 dark:hover:bg-emerald-900/10 ${idx % 2 === 0 ? 'bg-white dark:bg-gray-800' : 'bg-stone-50/60 dark:bg-gray-700/20'}`}
+                >
                   <td className="px-6 py-4">
                     <span className="text-sm font-bold text-gray-900 dark:text-white">{group.name}</span>
                   </td>
@@ -110,11 +170,11 @@ export const AdminGroups = () => {
                   <td className="px-6 py-4 text-sm text-gray-700 dark:text-gray-300">{group.studentCount}</td>
                   <td className="px-6 py-4">
                     {group.average > 0 ? (
-                      <span className={`text-sm font-semibold ${group.average >= 8 ? 'text-emerald-600 dark:text-emerald-400' : group.average >= 6 ? 'text-amber-600 dark:text-amber-400' : 'text-red-600 dark:text-red-400'}`}>
+                      <span className="text-sm font-semibold" style={{ color: avgColor(group.average) }}>
                         {group.average.toFixed(1)}
                       </span>
                     ) : (
-                      <span className="text-sm text-gray-400">-</span>
+                      <span className="text-sm text-gray-400">—</span>
                     )}
                   </td>
                   <td className="px-6 py-4">
@@ -123,11 +183,15 @@ export const AdminGroups = () => {
                     </span>
                   </td>
                   <td className="px-6 py-4">
-                    <div className="flex items-center justify-end gap-1">
+                    <div className="flex items-center justify-end">
                       <button
                         onClick={() => handleArchive(group.id)}
                         title={group.status === 'activ' ? 'Arhivează' : 'Reactivează'}
-                        className={`p-1.5 rounded-lg transition-colors text-gray-400 ${group.status === 'activ' ? 'hover:bg-amber-50 dark:hover:bg-amber-900/20 hover:text-amber-600 dark:hover:text-amber-400' : 'hover:bg-emerald-50 dark:hover:bg-emerald-900/20 hover:text-emerald-600 dark:hover:text-emerald-400'}`}
+                        className={`p-1.5 rounded-lg transition-colors text-gray-400 ${
+                          group.status === 'activ'
+                            ? 'hover:bg-amber-50 dark:hover:bg-amber-900/20 hover:text-amber-600 dark:hover:text-amber-400'
+                            : 'hover:bg-emerald-50 dark:hover:bg-emerald-900/20 hover:text-emerald-600 dark:hover:text-emerald-400'
+                        }`}
                       >
                         {group.status === 'activ' ? (
                           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

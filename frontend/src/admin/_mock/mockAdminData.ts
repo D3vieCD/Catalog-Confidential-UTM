@@ -253,6 +253,43 @@ export const MOCK_ADMIN_STUDENTS: AdminStudent[] = [
   { id: '8', name: 'Radu Florea', email: 'radu.florea@student.ro', group: 'A2', faculty: 'Informatică', year: 1, average: 7.6, absences: 9 },
 ];
 
+// ─── Trends (ultimele 6 luni) ────────────────────────────────────────────────
+
+export const MOCK_TRENDS = {
+  users: [
+    { luna: 'Oct', valoare: 2 },
+    { luna: 'Nov', valoare: 3 },
+    { luna: 'Dec', valoare: 3 },
+    { luna: 'Ian', valoare: 4 },
+    { luna: 'Feb', valoare: 5 },
+    { luna: 'Mar', valoare: 6 },
+  ],
+  students: [
+    { luna: 'Oct', valoare: 58 },
+    { luna: 'Nov', valoare: 63 },
+    { luna: 'Dec', valoare: 68 },
+    { luna: 'Ian', valoare: 74 },
+    { luna: 'Feb', valoare: 80 },
+    { luna: 'Mar', valoare: 87 },
+  ],
+  groups: [
+    { luna: 'Oct', valoare: 2 },
+    { luna: 'Nov', valoare: 3 },
+    { luna: 'Dec', valoare: 3 },
+    { luna: 'Ian', valoare: 4 },
+    { luna: 'Feb', valoare: 5 },
+    { luna: 'Mar', valoare: 5 },
+  ],
+  average: [
+    { luna: 'Oct', valoare: 7.8 },
+    { luna: 'Nov', valoare: 8.0 },
+    { luna: 'Dec', valoare: 7.9 },
+    { luna: 'Ian', valoare: 8.2 },
+    { luna: 'Feb', valoare: 8.5 },
+    { luna: 'Mar', valoare: 8.4 },
+  ],
+};
+
 // ─── Settings ─────────────────────────────────────────────────────────────────
 
 export const MOCK_SYSTEM_SETTINGS: SystemSettings = {
