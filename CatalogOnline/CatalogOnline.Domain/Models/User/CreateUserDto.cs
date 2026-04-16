@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CatalogOnline.Domain.Models.Teacher
+namespace CatalogOnline.Domain.Models.User
 {
-     public class CreateTeacherDto
+     public class CreateUserDto
      {
           public string UserName { get; set; }
           public string FirstName { get; set; }

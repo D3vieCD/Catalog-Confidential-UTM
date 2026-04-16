@@ -1,5 +1,6 @@
-﻿using CatalogOnline.Domain.Entities.Teacher;
+﻿using CatalogOnline.Domain.Entities.User;
 using Microsoft.EntityFrameworkCore;
+using CatalogOnline.Domain.Entities.Grade;
 
 namespace CatalogOnline.DataAccess.Context
 {
@@ -9,6 +10,7 @@ namespace CatalogOnline.DataAccess.Context
             => optionsBuilder.UseSqlServer(DbSession.ConnectionString);
 
 
-          public DbSet<TeacherData> Teachers { get; set; }
+          public DbSet<UserData> User { get; set; }
+          public DbSet<GradeData> Grade { get; set; }
      }
 }

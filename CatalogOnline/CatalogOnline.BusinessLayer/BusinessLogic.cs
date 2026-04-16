@@ -14,9 +14,13 @@ namespace CatalogOnline.BusinessLayer
           {
                return new HealthService();
           }
-          public ITeacherAction TeacherAction()
+          public IUserAction UserAction()
           {
-               return new TeacherService(); // get from the structure folder
+               return new UserService(); // get from the structure folder
+          }
+          public IGradeAction GradeAction()
+          {
+               return new GradeService(); // get from the structure folder
           }
      }
 }

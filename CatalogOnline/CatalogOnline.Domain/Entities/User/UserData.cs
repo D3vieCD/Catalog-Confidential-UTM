@@ -2,9 +2,9 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace CatalogOnline.Domain.Entities.Teacher
+namespace CatalogOnline.Domain.Entities.User
 {
-     public class TeacherData
+     public class UserData
      {
           [Key]
           [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

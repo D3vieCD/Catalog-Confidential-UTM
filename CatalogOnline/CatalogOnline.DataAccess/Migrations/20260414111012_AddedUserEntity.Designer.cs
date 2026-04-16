@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CatalogOnline.DataAccess.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260407113843_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20260414111012_AddedUserEntity")]
+    partial class AddedUserEntity
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,7 +25,7 @@ namespace CatalogOnline.DataAccess.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("CatalogOnline.Domain.Entities.Teacher.TeacherData", b =>
+            modelBuilder.Entity("CatalogOnline.Domain.Entities.User.UserData", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -63,7 +63,7 @@ namespace CatalogOnline.DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Teachers");
+                    b.ToTable("User");
                 });
 #pragma warning restore 612, 618
         }
