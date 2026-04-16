@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { MOCK_ADMIN_USERS } from '../_mock/mockAdminData';
 import type { AdminUser } from '../_mock/mockAdminData';
 import { UserModal } from '../components/users/UserModal';
@@ -28,6 +28,7 @@ export const AdminUsers = () => {
   const [search, setSearch] = useState('');
   const [modalOpen, setModalOpen] = useState(false);
   const [editingUser, setEditingUser] = useState<AdminUser | null>(null);
+  const [toast, setToast] = useState<{ message: string; visible: boolean }>({ message: '', visible: false });
 
   const filtered = users.filter((u) => {
     const matchRole = roleFilter === 'toate' || u.role === roleFilter;
@@ -65,8 +66,13 @@ export const AdminUsers = () => {
     }
   };
 
+  const showToast = (message: string) => {
+    setToast({ message, visible: true });
+    setTimeout(() => setToast((t) => ({ ...t, visible: false })), 3500);
+  };
+
   const handleResetPassword = (name: string) => {
-    alert(`Parolă resetată pentru ${name} (simulare)`);
+    showToast(`Parolă resetată cu succes pentru ${name}`);
   };
 
   return (
@@ -212,6 +218,37 @@ export const AdminUsers = () => {
         onSave={handleSave}
         user={editingUser}
       />
+
+      {/* Toast notificare reset parolă */}
+      <AnimatePresence>
+        {toast.visible && (
+          <motion.div
+            initial={{ opacity: 0, y: 40, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 20, scale: 0.95 }}
+            transition={{ duration: 0.25 }}
+            className="fixed bottom-6 right-6 z-50 flex items-center gap-3 px-5 py-3.5 bg-white dark:bg-gray-800 border border-emerald-200 dark:border-emerald-800 rounded-2xl shadow-xl"
+          >
+            <div className="flex-shrink-0 w-8 h-8 bg-emerald-100 dark:bg-emerald-900/40 rounded-full flex items-center justify-center">
+              <svg className="w-4 h-4 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+            <div>
+              <p className="text-sm font-semibold text-gray-900 dark:text-white">Parolă resetată</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400">{toast.message}</p>
+            </div>
+            <button
+              onClick={() => setToast((t) => ({ ...t, visible: false }))}
+              className="ml-2 p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors"
+            >
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
