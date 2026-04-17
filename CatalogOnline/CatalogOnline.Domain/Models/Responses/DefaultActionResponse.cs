@@ -1,4 +1,5 @@
 ﻿using CatalogOnline.Domain.Entities.Grade;
+using CatalogOnline.Domain.Entities.Group;
 using CatalogOnline.Domain.Entities.User;
 using System;
 using System.Collections.Generic;
@@ -11,10 +12,12 @@ namespace CatalogOnline.Domain.Models.Responses
      public class DefaultActionResponse
      {
           public bool IsValid { get; set; }
-          public string Message { get; set; }
+          public string? Message { get; set; }
           public UserData? User { get; set; }
           public List<UserData>? Users { get; set; }
           public GradeData? Grade { get; set; }
           public List<GradeData>? Grades { get; set; }
+          public GroupData? Group { get; set; }
+          public List<GroupData>? Groups { get; set; }
      }
 }

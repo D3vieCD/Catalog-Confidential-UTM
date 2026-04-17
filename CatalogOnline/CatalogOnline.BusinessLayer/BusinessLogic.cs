@@ -22,5 +22,9 @@ namespace CatalogOnline.BusinessLayer
           {
                return new GradeService(); // get from the structure folder
           }
+          public IGroupAction GroupAction()
+          {
+               return new GroupService();
+          }
      }
 }
