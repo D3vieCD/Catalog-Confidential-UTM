@@ -8,7 +8,7 @@ namespace CatalogOnline.BusinessLayer.Core
 {
      public class UserActions
      {
-          public DefaultActionResponse CreateUserActionExecution(CreateUserDto createData)
+          public UserActionResponse CreateUserActionExecution(CreateUserDto createData)
                
           {
                using (var appDbContext = new AppDbContext())
@@ -23,7 +23,7 @@ namespace CatalogOnline.BusinessLayer.Core
                     };
                     appDbContext.User.Add(user);
                     appDbContext.SaveChanges();
-                    return new DefaultActionResponse
+                    return new UserActionResponse
                     {
                          IsValid = true,
                          Message = "User created successfully."
@@ -32,14 +32,14 @@ namespace CatalogOnline.BusinessLayer.Core
                }
           }
 
-          public DefaultActionResponse DeleteUserActionExecution(int userId)
+          public UserActionResponse DeleteUserActionExecution(int userId)
           {
                using (var appDbContext = new AppDbContext())
                {
                     var user = appDbContext.User.Find(userId);
                     if (user == null)
                     {
-                         return new DefaultActionResponse
+                         return new UserActionResponse
                          {
                               IsValid = false,
                               Message = "User not found."
@@ -47,7 +47,7 @@ namespace CatalogOnline.BusinessLayer.Core
                     }
                     appDbContext.User.Remove(user);
                     appDbContext.SaveChanges();
-                    return new DefaultActionResponse
+                    return new UserActionResponse
                     {
                          IsValid = true,
                          Message = "User deleted successfully."
@@ -55,14 +55,14 @@ namespace CatalogOnline.BusinessLayer.Core
                }
 
           }
-          public DefaultActionResponse UpdateUserActionExecution(int userId, UpdateUserDto updateData)
+          public UserActionResponse UpdateUserActionExecution(int userId, UpdateUserDto updateData)
           {
                using (var appDbContext = new AppDbContext())
                {
                     var user = appDbContext.User.Find(userId);
                     if (user == null)
                     {
-                         return new DefaultActionResponse
+                         return new UserActionResponse
                          {
                               IsValid = false,
                               Message = "User not found."
@@ -74,19 +74,19 @@ namespace CatalogOnline.BusinessLayer.Core
                     user.FirstName = updateData.FirstName;
                     user.LastName = updateData.LastName;
                     appDbContext.SaveChanges();
-                    return new DefaultActionResponse
+                    return new UserActionResponse
                     {
                          IsValid = true,
                          Message = "User updated successfully."
                     };
                }
           }
-          public DefaultActionResponse GetUserByIdActionExecution(int userId)
+          public UserActionResponse GetUserByIdActionExecution(int userId)
           {
                using (var appDbContext = new AppDbContext())
                {
                     var user = appDbContext.User.Find(userId);
-                    return new DefaultActionResponse
+                    return new UserActionResponse
                     {
                          IsValid = user != null,
                          Message = user != null ? "User retrieved successfully." : "User not found.",
@@ -94,12 +94,12 @@ namespace CatalogOnline.BusinessLayer.Core
                     };
                }
           }
-          public DefaultActionResponse GetAllUsersActionExecution()
+          public UserActionResponse GetAllUsersActionExecution()
           {
                using (var appDbContext = new AppDbContext())
                {
                     var users = appDbContext.User.ToList();
-                    return new DefaultActionResponse
+                    return new UserActionResponse
                     {
                          IsValid = true,
                          Message = "Users retrieved successfully.",

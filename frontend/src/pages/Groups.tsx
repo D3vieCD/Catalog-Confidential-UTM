@@ -1,20 +1,53 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import type { Group, GroupFormData } from '../_mock/mockGroups';
-import {
-  getGroups,
-  addGroup,
-  updateGroup,
-  deleteGroup,
-  getGroupStats,
-} from '../_mock/mockGroups';
+import { Plus, Users2 } from 'lucide-react';
 import { GroupStats, GroupCard, GroupFilters, GroupModal, GroupDetailPanel } from '../components/groups';
 import { ConfirmModal } from '../components/ui/ConfirmModal';
+import type { CreateGroupDto, Group } from '../context/GroupProvider';
+import useGroups from '../hooks/useGroups';
+
+const mapGroup = (g: Group): Group => ({
+  id: Number(g.id),
+  groupName: g.groupName ?? '',
+  year: g.year,
+  faculty: g.faculty ?? '',
+  specialization: g.specialization ?? '',
+  coordinator: g.coordinator ?? '',
+  maxCapacity: g.maxCapacity,
+  currentCapacity: g.currentCapacity ?? 0,
+  semester: g.semester,
+  createdAt: g.createdAt ?? new Date().toISOString(),
+});
 
 export const Groups = () => {
-  // Data
-  const [groups, setGroups] = useState<Group[]>(() => getGroups());
-  const stats = useMemo(() => getGroupStats(), [groups]);
+  const [groups, setGroups] = useState<Group[]>([]);
+  const { createGroup, deleteGroup, getAllGroups, updateGroup, loading: groupsLoading } = useGroups();
+
+  const faculties = useMemo(() =>
+    [...new Set(groups.map(g => g.faculty).filter(Boolean))].sort(),
+    [groups]);
+
+  const specsByFaculty = useMemo(() => {
+    const map: Record<string, string[]> = {};
+    for (const g of groups) {
+      if (!g.faculty || !g.specialization) continue;
+      if (!map[g.faculty]) map[g.faculty] = [];
+      if (!map[g.faculty].includes(g.specialization)) map[g.faculty].push(g.specialization);
+    }
+    return map;
+  }, [groups]);
+
+  useEffect(() => {
+    async function fetchGroups() {
+      try {
+        const backendGroups = await getAllGroups();
+        setGroups(backendGroups.map(mapGroup));
+      } catch (err) {
+        console.error(err);
+      }
+    }
+    fetchGroups();
+  }, []);
 
   // Filters
   const [searchQuery, setSearchQuery] = useState('');
@@ -22,41 +55,35 @@ export const Groups = () => {
   const [sortBy, setSortBy] = useState('az');
 
   // Modals
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editingGroup, setEditingGroup] = useState<Group | null>(null);
   const [deletingGroup, setDeletingGroup] = useState<Group | null>(null);
   const [viewingGroup, setViewingGroup] = useState<Group | null>(null);
+
   // Filtered & sorted groups
   const filteredGroups = useMemo(() => {
     let result = [...groups];
 
-    // Search filter
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase();
       result = result.filter(
         g =>
-          g.name.toLowerCase().includes(q) ||
-          g.specialization.toLowerCase().includes(q) ||
-          g.coordinator.toLowerCase().includes(q) ||
-          g.faculty.toLowerCase().includes(q)
+          (g.groupName ?? '').toLowerCase().includes(q) ||
+          (g.coordinator ?? '').toLowerCase().includes(q)
       );
     }
 
-    // Year filter
     if (selectedYear) {
       result = result.filter(g => g.year === parseInt(selectedYear));
     }
 
-    // Status filter - show only active groups
-    result = result.filter(g => g.status === 'ACTIV');
-
-    // Sorting
     switch (sortBy) {
       case 'az':
-        result.sort((a, b) => a.name.localeCompare(b.name, 'ro'));
+        result.sort((a, b) => a.groupName.localeCompare(b.groupName, 'ro'));
         break;
       case 'za':
-        result.sort((a, b) => b.name.localeCompare(a.name, 'ro'));
+        result.sort((a, b) => b.groupName.localeCompare(a.groupName, 'ro'));
         break;
       case 'year-asc':
         result.sort((a, b) => a.year - b.year);
@@ -78,12 +105,12 @@ export const Groups = () => {
   // Handlers
   const handleOpenAdd = () => {
     setEditingGroup(null);
-    setIsModalOpen(true);
+    setIsCreateModalOpen(true);
   };
 
   const handleOpenEdit = (group: Group) => {
     setEditingGroup(group);
-    setIsModalOpen(true);
+    setIsEditModalOpen(true);
   };
 
   const handleOpenDelete = (group: Group) => {
@@ -94,24 +121,35 @@ export const Groups = () => {
     setViewingGroup(group);
   };
 
-  const handleSave = (data: GroupFormData) => {
-    if (editingGroup) {
-      const updated = updateGroup(editingGroup.id, data);
-      if (updated) {
-        setGroups(prev => prev.map(g => (g.id === updated.id ? updated : g)));
-      }
-    } else {
-      const newGroup = addGroup(data);
-      setGroups(prev => [...prev, newGroup]);
+  const handleCreateGroup = async (data: CreateGroupDto) => {
+    try {
+      const newGroup = await createGroup(data);
+      setGroups(prev => [...prev, mapGroup(newGroup)]);
+      setIsCreateModalOpen(false);
+    } catch (err) {
+      console.error(err);
     }
-    setIsModalOpen(false);
-    setEditingGroup(null);
+  };
+
+  const handleUpdateGroup = async (data: CreateGroupDto) => {
+    if (!editingGroup) return;
+    try {
+      await updateGroup(editingGroup.id, data);
+      setGroups(prev => prev.map(g =>
+        g.id === editingGroup.id
+          ? mapGroup({ ...g, ...data })
+          : g
+      ));
+      setIsEditModalOpen(false);
+      setEditingGroup(null);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   const handleDeleteConfirm = () => {
     if (!deletingGroup) return;
 
-    // Check if group has students
     if (deletingGroup.currentCapacity > 0) {
       alert('Nu poți șterge o grupă care are studenți înscriși!');
       setDeletingGroup(null);
@@ -122,6 +160,12 @@ export const Groups = () => {
     setGroups(prev => prev.filter(g => g.id !== deletingGroup.id));
     setDeletingGroup(null);
   };
+
+  if (groupsLoading) return (
+    <div className="flex items-center justify-center min-h-full py-24">
+      <div className="w-10 h-10 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin" />
+    </div>
+  );
 
   return (
     <div className="space-y-6 min-h-full pb-8">
@@ -137,19 +181,16 @@ export const Groups = () => {
             Gestiune Grupe
           </h1>
           <p className="text-gray-600 dark:text-gray-400 mt-1 text-sm">
-            Total: {stats.totalGroups} grupe academice
+            Total: {groups.length} grupe academice
           </p>
         </div>
 
         <div className="flex items-center gap-3">
-          {/* Add Group Button */}
           <button
             onClick={handleOpenAdd}
             className="px-4 sm:px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-medium transition-all duration-200 shadow-sm hover:shadow-md flex items-center gap-2"
           >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4"/>
-            </svg>
+            <Plus className="w-5 h-5" />
             <span className="hidden sm:inline">Adaugă Grupă</span>
             <span className="sm:hidden">Adaugă</span>
           </button>
@@ -158,10 +199,12 @@ export const Groups = () => {
 
       {/* Stats */}
       <GroupStats
-        totalGroups={stats.totalGroups}
-        totalStudents={stats.totalStudents}
-        avgStudentsPerGroup={stats.avgStudentsPerGroup}
-        totalFaculties={stats.totalFaculties}
+        totalGroups={groups.length}
+        totalStudents={groups.reduce((sum, g) => sum + g.currentCapacity, 0)}
+        avgStudentsPerGroup={groups.length > 0
+          ? Math.round(groups.reduce((sum, g) => sum + g.currentCapacity, 0) / groups.length)
+          : 0}
+        totalFaculties={faculties.length}
       />
 
       {/* Filters */}
@@ -182,19 +225,7 @@ export const Groups = () => {
       >
         {filteredGroups.length === 0 ? (
           <div className="bg-white dark:bg-gray-800 rounded-2xl p-12 text-center shadow-sm border border-gray-200 dark:border-gray-700">
-            <svg
-              className="w-16 h-16 text-gray-300 dark:text-gray-600 mx-auto mb-4"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
-              />
-            </svg>
+            <Users2 className="w-16 h-16 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
             <p className="text-gray-500 dark:text-gray-400 font-medium">
               Nicio grupă găsită
             </p>
@@ -220,15 +251,23 @@ export const Groups = () => {
         )}
       </motion.div>
 
-      {/* Add/Edit Modal */}
+      {/* Create Modal */}
       <GroupModal
-        isOpen={isModalOpen}
-        onClose={() => {
-          setIsModalOpen(false);
-          setEditingGroup(null);
-        }}
-        onSave={handleSave}
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+        onSave={handleCreateGroup}
+        faculties={faculties}
+        specsByFaculty={specsByFaculty}
+      />
+
+      {/* Edit Modal */}
+      <GroupModal
+        isOpen={isEditModalOpen}
+        onClose={() => { setIsEditModalOpen(false); setEditingGroup(null); }}
+        onSave={handleUpdateGroup}
         group={editingGroup}
+        faculties={faculties}
+        specsByFaculty={specsByFaculty}
       />
 
       {/* Delete Confirmation */}
@@ -237,7 +276,7 @@ export const Groups = () => {
         onClose={() => setDeletingGroup(null)}
         onConfirm={handleDeleteConfirm}
         title="Șterge Grupa"
-        message={`Ești sigur că vrei să ștergi grupa ${deletingGroup?.name}? Această acțiune nu poate fi anulată.`}
+        message={`Ești sigur că vrei să ștergi grupa ${deletingGroup?.groupName}? Această acțiune nu poate fi anulată.`}
         confirmText="Da, șterge"
         cancelText="Anulează"
       />

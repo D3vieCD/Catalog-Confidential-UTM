@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button, Input, Checkbox } from '../../ui';
 import { SocialLoginButton, Divider } from '../../auth';
 import { storage } from '../../../utils';
-import { paths } from '../../routes/paths';
+import  paths  from '../../routes/paths';
 
 /**
  * Register Form - Formularul de înregistrare

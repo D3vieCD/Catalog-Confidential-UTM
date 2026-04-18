@@ -2,10 +2,12 @@
  * Application Routes Paths
  */
 
-export const paths = {
+
+const paths = {
   login: '/login',
   register: '/register',
   dashboard: '/dashboard',
+  healthy: '/healthy',
 
   auth: {
     login: '/login',
@@ -37,3 +39,5 @@ export const paths = {
     page500: '/500',
   },
 };
+
+export default paths;

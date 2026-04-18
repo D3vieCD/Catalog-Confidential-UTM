@@ -1,6 +1,7 @@
-﻿using CatalogOnline.Domain.Entities.User;
+﻿using CatalogOnline.Domain.Entities.Grade;
+using CatalogOnline.Domain.Entities.Group;
+using CatalogOnline.Domain.Entities.User;
 using Microsoft.EntityFrameworkCore;
-using CatalogOnline.Domain.Entities.Grade;
 
 namespace CatalogOnline.DataAccess.Context
 {
@@ -12,5 +13,6 @@ namespace CatalogOnline.DataAccess.Context
 
           public DbSet<UserData> User { get; set; }
           public DbSet<GradeData> Grade { get; set; }
+          public DbSet<GroupData> Group { get; set; }
      }
 }

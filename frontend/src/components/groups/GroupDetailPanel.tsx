@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import type { Group } from '../../_mock/mockGroups';
+import { X, Users2, BookOpen, User, GraduationCap, BarChart3, CheckCircle2, Clock, ChevronRight, Download, Pencil } from 'lucide-react';
 import { getStudents, getInitials } from '../../_mock/mockStudents';
+import type { Group } from '../../context/GroupProvider';
 
 interface GroupDetailPanelProps {
   group: Group | null;
@@ -83,10 +84,7 @@ export const GroupDetailPanel: React.FC<GroupDetailPanelProps> = ({ group, onClo
               <div className="flex items-start justify-between p-6 border-b border-gray-100 dark:border-gray-800">
                 <div className="flex items-center gap-4">
                   <div className="w-16 h-16 rounded-2xl flex items-center justify-center bg-gradient-to-br from-emerald-500 to-emerald-600 flex-shrink-0">
-                    <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 14l9-5-9-5-9 5 9 5z"/>
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/>
-                    </svg>
+                    <Users2 className="w-8 h-8 text-white" />
                   </div>
                   <div>
                     <h2 className="text-xl font-bold text-gray-900 dark:text-white">{group.name}</h2>
@@ -99,33 +97,40 @@ export const GroupDetailPanel: React.FC<GroupDetailPanelProps> = ({ group, onClo
                   onClick={onClose}
                   className="p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors"
                 >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12"/>
-                  </svg>
+                  <X className="w-5 h-5" />
                 </button>
               </div>
 
               {/* Scrollable content */}
               <div className="flex-1 overflow-y-auto">
-                {/* Subjects + Coordinator */}
+                {/* Faculty, Specialization, Coordinator */}
                 <div className="px-6 pt-5 space-y-3">
-                  {group.subjects.map((subject, i) => (
-                    <div key={i} className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center flex-shrink-0">
-                        <svg className="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
-                        </svg>
-                      </div>
-                      <span className="text-sm text-gray-700 dark:text-gray-300">{subject}</span>
-                    </div>
-                  ))}
                   <div className="flex items-center gap-3">
                     <div className="w-8 h-8 rounded-lg bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center flex-shrink-0">
-                      <svg className="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
-                      </svg>
+                      <GraduationCap className="w-4 h-4 text-emerald-600" />
                     </div>
-                    <span className="text-sm text-gray-700 dark:text-gray-300">{group.coordinator}</span>
+                    <div>
+                      <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wide">Facultate</p>
+                      <p className="text-sm text-gray-700 dark:text-gray-300">{group.faculty || '—'}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center flex-shrink-0">
+                      <BookOpen className="w-4 h-4 text-blue-500" />
+                    </div>
+                    <div>
+                      <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wide">Specializare</p>
+                      <p className="text-sm text-gray-700 dark:text-gray-300">{group.specialization || '—'}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center flex-shrink-0">
+                      <User className="w-4 h-4 text-purple-500" />
+                    </div>
+                    <div>
+                      <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wide">Coordinator</p>
+                      <p className="text-sm text-gray-700 dark:text-gray-300">{group.coordinator || '—'}</p>
+                    </div>
                   </div>
                 </div>
 
@@ -206,28 +211,20 @@ export const GroupDetailPanel: React.FC<GroupDetailPanelProps> = ({ group, onClo
                               <p className="text-sm font-semibold text-gray-900 dark:text-white truncate">{student.name}</p>
                               <div className="flex items-center gap-3 mt-0.5">
                                 <span className="flex items-center gap-1 text-xs text-blue-600 dark:text-blue-400 font-medium">
-                                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
-                                  </svg>
+                                  <BarChart3 className="w-3 h-3" />
                                   Medie: {stats.avg}
                                 </span>
                                 <span className="flex items-center gap-1 text-xs text-green-600 dark:text-green-400 font-medium">
-                                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                  </svg>
+                                  <CheckCircle2 className="w-3 h-3" />
                                   {stats.attendance}%
                                 </span>
                                 <span className="flex items-center gap-1 text-xs text-orange-500 dark:text-orange-400 font-medium">
-                                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                  </svg>
+                                  <Clock className="w-3 h-3" />
                                   {stats.absences} abs.
                                 </span>
                               </div>
                             </div>
-                            <svg className="w-4 h-4 text-gray-300 dark:text-gray-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7"/>
-                            </svg>
+                            <ChevronRight className="w-4 h-4 text-gray-300 dark:text-gray-600 flex-shrink-0" />
                           </button>
                         );
                       })}
@@ -245,27 +242,21 @@ export const GroupDetailPanel: React.FC<GroupDetailPanelProps> = ({ group, onClo
                   }}
                   className="flex items-center justify-center gap-2 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-semibold transition-all shadow-lg text-sm col-span-2"
                 >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
-                  </svg>
+                  <BarChart3 className="w-4 h-4" />
                   Raport Grupă
                 </button>
                 <button
                   onClick={() => console.log('export')}
                   className="flex items-center justify-center gap-2 py-3 border-2 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl font-semibold transition-colors text-sm"
                 >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
-                  </svg>
+                  <Download className="w-4 h-4" />
                   Export Listă
                 </button>
                 <button
                   onClick={() => { onClose(); onEdit(group); }}
                   className="flex items-center justify-center gap-2 py-3 border-2 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl font-semibold transition-colors text-sm"
                 >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
-                  </svg>
+                  <Pencil className="w-4 h-4" />
                   Editează Grupă
                 </button>
               </div>

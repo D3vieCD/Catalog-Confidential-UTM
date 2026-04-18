@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { paths } from '../../routes/paths';
+import  paths  from '../../routes/paths';
 
 export const ErrorTestButtons: React.FC = () => {
   const navigate = useNavigate();
