@@ -7,23 +7,23 @@ namespace CatalogOnline.BusinessLayer.Structure
 {
      public class GroupService : GroupActions, IGroupAction
      {
-          public DefaultActionResponse CreateGroupAction(CreateGroupDto createData)
+          public GroupActionResponse CreateGroupAction(CreateGroupDto createData)
           {
                return CreateGroupActionExecution(createData);
           }
-          public DefaultActionResponse DeleteGroupAction(int id)
+          public GroupActionResponse DeleteGroupAction(int id)
           {
                return DeleteGroupActionExecution(id);
           }
-          public DefaultActionResponse UpdateGroupAction(int groupId, UpdateGroupDto groupData)
+          public GroupActionResponse UpdateGroupAction(int groupId, UpdateGroupDto groupData)
           {
                return UpdateGroupActionExecution(groupId, groupData);
           }
-          public DefaultActionResponse GetAllGroupsAction()
+          public GroupActionResponse GetAllGroupsAction()
           {
                return GetAllGroupsActionExecution();
           }
-          public DefaultActionResponse GetGroupByIdAction(int id)
+          public GroupActionResponse GetGroupByIdAction(int id)
           {
                return GetGroupByIdActionExecution(id);
           }

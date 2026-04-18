@@ -8,23 +8,23 @@ namespace CatalogOnline.BusinessLayer.Structure
 {
      public class UserService : UserActions, IUserAction
      {
-          public DefaultActionResponse CreateUserAction(CreateUserDto createData)
+          public UserActionResponse CreateUserAction(CreateUserDto createData)
           {
                return CreateUserActionExecution(createData);
           }
-          public DefaultActionResponse DeleteUserAction(int id)
+          public UserActionResponse DeleteUserAction(int id)
           {
               return DeleteUserActionExecution(id);
           }
-          public DefaultActionResponse UpdateUserAction(int userId ,UpdateUserDto userData)
+          public UserActionResponse UpdateUserAction(int userId ,UpdateUserDto userData)
           {
               return UpdateUserActionExecution(userId, userData);
           }
-          public DefaultActionResponse GetAllUsersAction()
+          public UserActionResponse GetAllUsersAction()
           {
                return GetAllUsersActionExecution();
           }
-          public DefaultActionResponse GetUserByIdAction(int id)
+          public UserActionResponse GetUserByIdAction(int id)
           {
                return GetUserByIdActionExecution(id);
           }

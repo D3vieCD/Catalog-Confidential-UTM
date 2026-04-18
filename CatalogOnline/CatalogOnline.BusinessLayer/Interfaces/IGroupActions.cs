@@ -5,10 +5,10 @@ namespace CatalogOnline.BusinessLayer.Interfaces
 {
      public interface IGroupAction
      {
-          DefaultActionResponse GetAllGroupsAction();
-          DefaultActionResponse GetGroupByIdAction(int id);
-          DefaultActionResponse CreateGroupAction(CreateGroupDto createData);
-          DefaultActionResponse UpdateGroupAction(int groupId, UpdateGroupDto groupData);
-          DefaultActionResponse DeleteGroupAction(int id);
+          GroupActionResponse GetAllGroupsAction();
+          GroupActionResponse GetGroupByIdAction(int id);
+          GroupActionResponse CreateGroupAction(CreateGroupDto createData);
+          GroupActionResponse UpdateGroupAction(int groupId, UpdateGroupDto groupData);
+          GroupActionResponse DeleteGroupAction(int id);
      }
 }

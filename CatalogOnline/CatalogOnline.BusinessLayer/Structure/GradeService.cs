@@ -7,23 +7,23 @@ namespace CatalogOnline.BusinessLayer.Structure
 {
      public class GradeService : GradeActions, IGradeAction
      {
-          public DefaultActionResponse CreateGradeAction(CreateGradeDto createData)
+          public GradeActionResponse CreateGradeAction(CreateGradeDto createData)
           {
                return CreateGradeActionExecution(createData);
           }
-          public DefaultActionResponse DeleteGradeAction(int id)
+          public GradeActionResponse DeleteGradeAction(int id)
           {
                return DeleteGradeActionExecution(id);
           }
-          public DefaultActionResponse UpdateGradeAction(int gradeId, UpdateGradeDto gradeData)
+          public GradeActionResponse UpdateGradeAction(int gradeId, UpdateGradeDto gradeData)
           {
                return UpdateGradeActionExecution(gradeId, gradeData);
           }
-          public DefaultActionResponse GetAllGradesAction()
+          public GradeActionResponse GetAllGradesAction()
           {
                return GetAllGradesActionExecution();
           }
-          public DefaultActionResponse GetGradeByIdAction(int id)
+          public GradeActionResponse GetGradeByIdAction(int id)
           {
                return GetGradeByIdActionExecution(id);
           }

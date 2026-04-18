@@ -7,7 +7,7 @@ namespace CatalogOnline.BusinessLayer.Core
 {
      public class GroupActions
      {
-          public DefaultActionResponse CreateGroupActionExecution(CreateGroupDto createData)
+          public GroupActionResponse CreateGroupActionExecution(CreateGroupDto createData)
           {
                using (var appDbContext = new AppDbContext())
                {
@@ -23,35 +23,36 @@ namespace CatalogOnline.BusinessLayer.Core
                     };
                     appDbContext.Group.Add(group);
                     appDbContext.SaveChanges();
-                    return new DefaultActionResponse
+                    return new GroupActionResponse
                     {
                          IsValid = true,
-                         Message = "Group created successfully."
+                         Message = "Group created successfully.",
+                         Group = group
                     };
                }
           }
 
-          public DefaultActionResponse DeleteGroupActionExecution(int groupId)
+          public GroupActionResponse DeleteGroupActionExecution(int groupId)
           {
                using (var appDbContext = new AppDbContext())
                {
                     var group = appDbContext.Group.Find(groupId);
                     if (group == null)
-                         return new DefaultActionResponse { IsValid = false, Message = "Group not found." };
+                         return new GroupActionResponse { IsValid = false, Message = "Group not found." };
 
                     appDbContext.Group.Remove(group);
                     appDbContext.SaveChanges();
-                    return new DefaultActionResponse { IsValid = true, Message = "Group deleted successfully." };
+                    return new GroupActionResponse { IsValid = true, Message = "Group deleted successfully." };
                }
           }
 
-          public DefaultActionResponse UpdateGroupActionExecution(int groupId, UpdateGroupDto updateData)
+          public GroupActionResponse UpdateGroupActionExecution(int groupId, UpdateGroupDto updateData)
           {
                using (var appDbContext = new AppDbContext())
                {
                     var group = appDbContext.Group.Find(groupId);
                     if (group == null)
-                         return new DefaultActionResponse { IsValid = false, Message = "Group not found." };
+                         return new GroupActionResponse { IsValid = false, Message = "Group not found." };
 
                     group.GroupName = updateData.GroupName;
                     group.Year = updateData.Year;
@@ -61,16 +62,16 @@ namespace CatalogOnline.BusinessLayer.Core
                     group.MaxCapacity = updateData.MaxCapacity;
                     group.Semester = updateData.Semester;
                     appDbContext.SaveChanges();
-                    return new DefaultActionResponse { IsValid = true, Message = "Group updated successfully." };
+                    return new GroupActionResponse { IsValid = true, Message = "Group updated successfully." };
                }
           }
 
-          public DefaultActionResponse GetGroupByIdActionExecution(int groupId)
+          public GroupActionResponse GetGroupByIdActionExecution(int groupId)
           {
                using (var appDbContext = new AppDbContext())
                {
                     var group = appDbContext.Group.Find(groupId);
-                    return new DefaultActionResponse
+                    return new GroupActionResponse
                     {
                          IsValid = group != null,
                          Message = group != null ? "Group retrieved successfully." : "Group not found.",
@@ -79,12 +80,12 @@ namespace CatalogOnline.BusinessLayer.Core
                }
           }
 
-          public DefaultActionResponse GetAllGroupsActionExecution()
+          public GroupActionResponse GetAllGroupsActionExecution()
           {
                using (var appDbContext = new AppDbContext())
                {
                     var groups = appDbContext.Group.ToList();
-                    return new DefaultActionResponse
+                    return new GroupActionResponse
                     {
                          IsValid = true,
                          Message = "Groups retrieved successfully.",

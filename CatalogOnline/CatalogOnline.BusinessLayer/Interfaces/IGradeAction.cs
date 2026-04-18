@@ -5,10 +5,10 @@ namespace CatalogOnline.BusinessLayer.Interfaces
 {
      public interface IGradeAction
      {
-          DefaultActionResponse GetAllGradesAction();
-          DefaultActionResponse GetGradeByIdAction(int id);
-          DefaultActionResponse CreateGradeAction(CreateGradeDto createData);
-          DefaultActionResponse UpdateGradeAction(int gradeId, UpdateGradeDto gradeData);
-          DefaultActionResponse DeleteGradeAction(int id);
+          GradeActionResponse GetAllGradesAction();
+          GradeActionResponse GetGradeByIdAction(int id);
+          GradeActionResponse CreateGradeAction(CreateGradeDto createData);
+          GradeActionResponse UpdateGradeAction(int gradeId, UpdateGradeDto gradeData);
+          GradeActionResponse DeleteGradeAction(int id);
      }
 }

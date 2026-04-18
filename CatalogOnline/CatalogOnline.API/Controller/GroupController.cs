@@ -21,7 +21,7 @@ namespace CatalogOnline.API.Controller
           {
                var response = _groupAction.CreateGroupAction(createData);
                if (!response.IsValid) return BadRequest(response.Message);
-               return Ok(response.Message);
+               return Ok(response);
           }
 
           [HttpGet]
@@ -29,7 +29,7 @@ namespace CatalogOnline.API.Controller
           {
                var response = _groupAction.GetAllGroupsAction();
                if (!response.IsValid) return BadRequest(response.Message);
-               return Ok(response.Groups);
+               return Ok(response);
           }
 
           [HttpGet("{groupId}")]
@@ -37,7 +37,7 @@ namespace CatalogOnline.API.Controller
           {
                var response = _groupAction.GetGroupByIdAction(groupId);
                if (!response.IsValid) return BadRequest(response.Message);
-               return Ok(response.Group);
+               return Ok(response);
           }
 
           [HttpPut("{groupId}")]
@@ -45,7 +45,7 @@ namespace CatalogOnline.API.Controller
           {
                var response = _groupAction.UpdateGroupAction(groupId, updateData);
                if (!response.IsValid) return BadRequest(response.Message);
-               return Ok(response.Message);
+               return Ok(response);
           }
 
           [HttpDelete("{groupId}")]
@@ -53,7 +53,7 @@ namespace CatalogOnline.API.Controller
           {
                var response = _groupAction.DeleteGroupAction(groupId);
                if (!response.IsValid) return BadRequest(response.Message);
-               return Ok(response.Message);
+               return Ok(response);
           }
      }
 }

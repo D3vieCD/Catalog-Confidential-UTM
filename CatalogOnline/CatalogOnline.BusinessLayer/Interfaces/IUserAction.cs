@@ -6,10 +6,10 @@ namespace CatalogOnline.BusinessLayer.Interfaces
 {
      public interface IUserAction
      {
-          DefaultActionResponse GetAllUsersAction();
-          DefaultActionResponse GetUserByIdAction(int id);
-          DefaultActionResponse CreateUserAction(CreateUserDto createData);
-          DefaultActionResponse UpdateUserAction(int userId, UpdateUserDto userData);
-          DefaultActionResponse DeleteUserAction(int id);
+          UserActionResponse GetAllUsersAction();
+          UserActionResponse GetUserByIdAction(int id);
+          UserActionResponse CreateUserAction(CreateUserDto createData);
+          UserActionResponse UpdateUserAction(int userId, UpdateUserDto userData);
+          UserActionResponse DeleteUserAction(int id);
      }
 }
