@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import * as XLSX from 'xlsx';
 import { getGroups } from '../../_mock/mockGroups';

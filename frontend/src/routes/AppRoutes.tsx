@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { AxiosProvider } from '../axios/AxiosProvider';
 import { Login, Register, Dashboard, Calendar, Settings, Students, Groups, Catalog, GroupCatalog, Reports } from '../pages';
 import { Page403, Page404, Page500 } from '../pages/error';
 import { DashboardLayout } from '../layouts/dashboard/DashboardLayout';
@@ -9,7 +10,8 @@ import { AdminGroups } from '../admin/pages/AdminGroups';
 import { AdminStudents } from '../admin/pages/AdminStudents';
 import { AdminSettings } from '../admin/pages/AdminSettings';
 import { storage } from '../utils';
-import { paths } from './paths';
+import paths from './paths';
+import Healthy from '../pages/Healthy';
 
 /**
  * Protected Route - Verifică dacă user-ul e autentificat
@@ -55,10 +57,16 @@ const PublicRoute = ({ children }: { children: React.ReactNode }) => {
  */
 export const AppRoutes = () => {
   return (
-    <BrowserRouter>
       <Routes>
         {/* Redirect root la login */}
         <Route path="/" element={<Navigate to={paths.login} replace />} />
+
+        <Route
+          path={paths.healthy}
+          element={
+            <Healthy />
+          }
+        />
 
         {/* Login Page */}
         <Route
@@ -250,6 +258,5 @@ export const AppRoutes = () => {
         {/* 404 - Not Found - Public */}
         <Route path="*" element={<Page404 />} />
       </Routes>
-    </BrowserRouter>
   );
 };

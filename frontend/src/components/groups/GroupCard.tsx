@@ -1,5 +1,7 @@
 import { motion } from 'framer-motion';
-import type { Group } from '../../_mock/mockGroups';
+import { Pencil, Trash2, Users2, GraduationCap, BookOpen, User } from 'lucide-react';
+import type { Group } from '../../context/GroupProvider';
+// import type { Group } from '../../_mock/mockGroups';
 
 interface GroupCardProps {
   group: Group;
@@ -10,104 +12,94 @@ interface GroupCardProps {
 }
 
 export const GroupCard: React.FC<GroupCardProps> = ({ group, onEdit, onDelete, onView, index }) => {
-  const capacityPercentage = (group.currentCapacity / group.maxCapacity) * 100;
+  const capacityPercentage = Math.min((group.currentCapacity / group.maxCapacity) * 100, 100);
 
-  // Determină culoarea progress bar-ului bazat pe capacitate
-  const getCapacityColor = () => {
-    if (capacityPercentage >= 90) return 'bg-red-400';
-    if (capacityPercentage >= 70) return 'bg-orange-400';
-    return 'bg-emerald-400';
-  };
+  const capacityColor =
+    capacityPercentage >= 90 ? 'bg-red-400' :
+    capacityPercentage >= 70 ? 'bg-orange-400' : 'bg-emerald-400';
+
+  const capacityText =
+    capacityPercentage >= 90 ? 'text-red-500' :
+    capacityPercentage >= 70 ? 'text-orange-500' : 'text-emerald-500';
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3, delay: Math.min(index * 0.05, 0.6) }}
-      whileHover={{ y: -4 }}
+      whileHover={{ y: -4, boxShadow: '0 12px 32px rgba(0,0,0,0.10)' }}
       onClick={() => onView(group)}
-      className="group bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-shadow duration-300 relative cursor-pointer"
+      className="group bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 hover:border-emerald-200 dark:hover:border-emerald-700 transition-all duration-300 relative cursor-pointer overflow-hidden"
     >
-      {/* Hover Actions */}
-      <div className="absolute top-4 right-4 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-        <button
-          onClick={(e) => { e.stopPropagation(); onEdit(group); }}
-          className="p-1.5 rounded-lg hover:bg-emerald-50 dark:hover:bg-emerald-900/20 text-gray-400 dark:text-gray-500 hover:text-emerald-600 dark:hover:text-emerald-400 transition-all duration-200"
-          title="Editează"
-        >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
-          </svg>
-        </button>
-        <button
-          onClick={(e) => { e.stopPropagation(); onDelete(group); }}
-          className="p-1.5 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 text-gray-400 dark:text-gray-500 hover:text-red-500 dark:hover:text-red-400 transition-all duration-200"
-          title="Șterge"
-        >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-          </svg>
-        </button>
-      </div>
+      {/* Colored top accent */}
+      <div className="h-1.5 w-full bg-gradient-to-r from-emerald-400 to-emerald-600" />
 
-      {/* Icon & Group Name */}
-      <div className="relative w-14 h-14 mb-4">
-        <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-white text-lg font-bold bg-gradient-to-br from-emerald-500 to-emerald-600">
-          <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
-          </svg>
-        </div>
-      </div>
-
-      {/* Group Name */}
-      <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-1 pr-16">
-        {group.name}
-      </h3>
-
-      {/* Year Badge */}
-      <div className="mb-4">
-        <span className="px-3 py-1 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-300 text-xs font-medium rounded-full">
-          ANUL {group.year}
-        </span>
-      </div>
-
-      {/* Subjects */}
-      <div className="space-y-2 mb-4">
-        {group.subjects.map((subject, idx) => (
-          <div key={idx} className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
-            <svg className="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-            </svg>
-            <span className="truncate">{subject}</span>
+      <div className="p-5">
+        {/* Header row: icon + name + actions */}
+        <div className="flex items-start justify-between gap-2 mb-3">
+          <div className="flex items-center gap-3">
+            <div className="w-11 h-11 rounded-xl flex items-center justify-center bg-gradient-to-br from-emerald-500 to-emerald-600 shadow-sm flex-shrink-0">
+              <Users2 className="w-6 h-6 text-white" />
+            </div>
+            <div>
+              <h3 className="text-base font-bold text-gray-900 dark:text-white leading-tight">
+                {group.name}
+              </h3>
+              <span className="inline-block mt-0.5 px-2 py-0.5 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-300 text-[11px] font-semibold rounded-full">
+                ANUL {group.year} · SEM {group.semester}
+              </span>
+            </div>
           </div>
-        ))}
-      </div>
 
-      {/* Coordinator */}
-      <div className="flex items-center gap-2 mb-4 text-sm text-gray-600 dark:text-gray-400">
-        <svg className="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
-        </svg>
-        <span className="truncate">{group.coordinator}</span>
-      </div>
-
-      {/* Capacity */}
-      <div className="space-y-2">
-        <div className="flex items-center justify-between text-sm">
-          <span className="text-gray-600 dark:text-gray-400 font-medium">Capacitate</span>
-          <span className={`font-bold ${
-            capacityPercentage >= 90 ? 'text-red-500' :
-            capacityPercentage >= 70 ? 'text-orange-500' :
-            'text-emerald-500'
-          }`}>
-            {group.currentCapacity}/{group.maxCapacity}
-          </span>
+          {/* Action buttons — visible on hover */}
+          <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex-shrink-0">
+            <button
+              onClick={(e) => { e.stopPropagation(); onEdit(group); }}
+              className="p-1.5 rounded-lg bg-gray-50 dark:bg-gray-700 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 text-gray-400 hover:text-emerald-600 dark:hover:text-emerald-400 transition-all"
+              title="Editează"
+            >
+              <Pencil className="w-3.5 h-3.5" />
+            </button>
+            <button
+              onClick={(e) => { e.stopPropagation(); onDelete(group); }}
+              className="p-1.5 rounded-lg bg-gray-50 dark:bg-gray-700 hover:bg-red-50 dark:hover:bg-red-900/20 text-gray-400 hover:text-red-500 dark:hover:text-red-400 transition-all"
+              title="Șterge"
+            >
+              <Trash2 className="w-3.5 h-3.5" />
+            </button>
+          </div>
         </div>
-        <div className="w-full h-2 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
-          <div
-            className={`h-full ${getCapacityColor()} transition-all duration-300 rounded-full`}
-            style={{ width: `${capacityPercentage}%` }}
-          />
+
+        {/* Info rows */}
+        <div className="space-y-1.5 mb-4">
+          <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
+            <GraduationCap className="w-3.5 h-3.5 text-emerald-500 flex-shrink-0" />
+            <span className="truncate font-medium">{group.faculty || '—'}</span>
+          </div>
+          <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
+            <BookOpen className="w-3.5 h-3.5 text-blue-400 flex-shrink-0" />
+            <span className="truncate">{group.specialization || '—'}</span>
+          </div>
+          <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
+            <User className="w-3.5 h-3.5 text-purple-400 flex-shrink-0" />
+            <span className="truncate">{group.coordinator || '—'}</span>
+          </div>
+        </div>
+
+        {/* Capacity */}
+        <div className="pt-3 border-t border-gray-100 dark:border-gray-700 space-y-1.5">
+          <div className="flex items-center justify-between text-xs">
+            <span className="text-gray-400 dark:text-gray-500 font-medium">Capacitate</span>
+            <span className={`font-bold ${capacityText}`}>
+              {group.currentCapacity}/{group.maxCapacity}
+            </span>
+          </div>
+          <div className="w-full h-1.5 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
+            <div
+              className={`h-full ${capacityColor} rounded-full transition-all duration-500`}
+              style={{ width: `${capacityPercentage}%` }}
+            />
+          </div>
         </div>
       </div>
     </motion.div>

@@ -2,33 +2,6 @@
  * Mock data și helpers pentru Grupe Academice
  */
 
-export interface Group {
-  id: string;
-  name: string; // ex: INF-211
-  year: number; // 1-4
-  faculty: string; // ex: Informatică
-  specialization: string; // ex: Informatică Aplicată
-  coordinator: string; // ex: Prof. Dr. Ion Popescu
-  maxCapacity: number; // ex: 30
-  currentCapacity: number; // număr actual de studenți
-  semester: 'I' | 'II';
-  status: 'ACTIV' | 'ARHIVAT';
-  subjects: string[]; // materii predate
-  createdAt: string;
-}
-
-export interface GroupFormData {
-  name: string;
-  year: number;
-  faculty: string;
-  specialization: string;
-  coordinator: string;
-  maxCapacity: number;
-  semester: 'I' | 'II';
-  status: 'ACTIV' | 'ARHIVAT';
-  subjects: string[];
-}
-
 // Facultăți disponibile
 export const DEFAULT_FACULTIES = [
   'Informatică',

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Search, Calendar, ArrowUpDown, ChevronDown } from 'lucide-react';
 
 interface GroupFiltersProps {
   searchQuery: string;
@@ -35,14 +36,7 @@ const CustomDropdown: React.FC<{
       >
         <span className="text-gray-400">{icon}</span>
         <span className="flex-1 text-left">{selectedOption.label}</span>
-        <svg
-          className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7"/>
-        </svg>
+        <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
       </button>
 
       <AnimatePresence>
@@ -118,19 +112,12 @@ export const GroupFilters: React.FC<GroupFiltersProps> = ({
     >
       {/* Search */}
       <div className="relative">
-        <svg
-          className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-        </svg>
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
         <input
           type="text"
           value={searchQuery}
           onChange={(e) => onSearchChange(e.target.value)}
-          placeholder="Caută după nume, specializare sau coordinator..."
+          placeholder="Caută după numele grupei sau coordonator..."
           className="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-2xl focus:outline-none focus:ring-2 focus:ring-emerald-500 dark:focus:ring-emerald-400 focus:border-transparent text-gray-900 dark:text-white placeholder-gray-400 transition-all duration-200"
         />
       </div>
@@ -141,22 +128,14 @@ export const GroupFilters: React.FC<GroupFiltersProps> = ({
           value={selectedYear}
           onChange={onYearChange}
           options={yearOptions}
-          icon={
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-            </svg>
-          }
+          icon={<Calendar className="w-4 h-4" />}
         />
 
         <CustomDropdown
           value={sortBy}
           onChange={onSortChange}
           options={sortOptions}
-          icon={
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"/>
-            </svg>
-          }
+          icon={<ArrowUpDown className="w-4 h-4" />}
         />
       </div>
     </motion.div>

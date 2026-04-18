@@ -1,5 +1,4 @@
 import { storage } from '../utils';
-import { incrementGroupCapacity, decrementGroupCapacity } from './mockGroups';
 
 export interface Student {
   id: string;
@@ -148,7 +147,7 @@ export const addStudent = (data: StudentFormData): Student => {
   saveStudents(students);
 
   // Auto-incrementează capacitatea grupei
-  incrementGroupCapacity(newStudent.group);
+  // incrementGroupCapacity(newStudent.group);
 
   return newStudent;
 };
@@ -165,8 +164,8 @@ export const updateStudent = (id: string, data: Partial<StudentFormData>): Stude
   // IMPORTANT: Verificăm că grupa s-a SCHIMBAT cu adevărat
   if (data.group !== undefined && oldStudent.group !== data.group) {
     try {
-      decrementGroupCapacity(oldStudent.group);
-      incrementGroupCapacity(data.group);
+      // decrementGroupCapacity(oldStudent.group);
+      // incrementGroupCapacity(data.group);
     } catch (error) {
       console.error('Eroare la actualizarea capacității grupei:', error);
       // Continuăm oricum cu salvarea studentului
@@ -189,7 +188,7 @@ export const deleteStudent = (id: string): boolean => {
 
   // Auto-decrementează capacitatea grupei
   if (student) {
-    decrementGroupCapacity(student.group);
+    // decrementGroupCapacity(student.group);
   }
 
   return true;

@@ -3,7 +3,7 @@ import { Login, Register, Dashboard, Calendar, Settings, Students, Groups, Catal
 import { Page403, Page404, Page500 } from '../../pages/error';
 import { DashboardLayout } from '../../layouts/dashboard/DashboardLayout';
 import { storage } from '../../utils';
-import { paths } from './paths';
+import paths  from './paths';
 
 /**
  * Protected Route - Verifică dacă user-ul e autentificat

@@ -1,4 +1,4 @@
-import { paths } from '../../routes/paths';
+import paths from '../../routes/paths';
 import { ErrorPage } from './ErrorPage';
 
 export const Page500 = () => (
