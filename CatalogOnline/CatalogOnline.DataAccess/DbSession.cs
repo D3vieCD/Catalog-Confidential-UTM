@@ -8,6 +8,6 @@ namespace CatalogOnline.DataAccess
 {
      public class DbSession
      {
-          public static string ConnectionString { get; set; }
+          public static string ConnectionString { get; set; }= string.Empty;
      }
 }

@@ -26,5 +26,9 @@ namespace CatalogOnline.BusinessLayer
           {
                return new GroupService();
           }
+          public IStudentAction StudentAction()
+          {
+               return new StudentService();
+          }
      }
 }
