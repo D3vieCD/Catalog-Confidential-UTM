@@ -25,7 +25,7 @@ namespace CatalogOnline.API.Controller
                     {
                          return BadRequest(response.Message);
                     }
-                    return Ok(response.Message);
+                    return Ok(response);
                }
                [HttpGet]
                public IActionResult GetAllStudents()
@@ -35,7 +35,7 @@ namespace CatalogOnline.API.Controller
                     {
                          return BadRequest(response.Message);
                     }
-                    return Ok(response.Students);
+                    return Ok(response);
                }
                [HttpDelete("{studentId}")]
                public IActionResult DeleteStudent([FromRoute] int studentId)
@@ -46,7 +46,7 @@ namespace CatalogOnline.API.Controller
                          return BadRequest(response.Message);
 
                     }
-                    return Ok(response.Message);
+                    return Ok(response);
                }
                [HttpPut("{studentId}")]
                public IActionResult UpdateStudent([FromRoute] int studentId, UpdateStudentDto updateData)
@@ -56,7 +56,7 @@ namespace CatalogOnline.API.Controller
                     {
                          return BadRequest(response.Message);
                     }
-                    return Ok(response.Message);
+                    return Ok(response);
                }
                [HttpGet("{studentId}")]
                public IActionResult GetStudentById([FromRoute] int studentId)
@@ -66,7 +66,7 @@ namespace CatalogOnline.API.Controller
                     {
                          return BadRequest(response.Message);
                     }
-                    return Ok(response.Student);
+                    return Ok(response);
                }
           }
      }

@@ -22,14 +22,15 @@ namespace CatalogOnline.BusinessLayer.Core
                          FullName = createData.FullName,
                          Email = createData.Email,
                          PhoneNumber = createData.PhoneNumber,
-
+                         GroupId = createData.GroupId,
                     };
                     appDbContext.Student.Add(student);
                     appDbContext.SaveChanges();
                     return new StudentActionResponse
                     {
                          IsValid = true,
-                         Message = "Student created successfully."
+                         Message = "Student created successfully.",
+                         Student = student
                     };
 
                }

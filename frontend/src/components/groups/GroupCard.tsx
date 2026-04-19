@@ -43,7 +43,7 @@ export const GroupCard: React.FC<GroupCardProps> = ({ group, onEdit, onDelete, o
             </div>
             <div>
               <h3 className="text-base font-bold text-gray-900 dark:text-white leading-tight">
-                {group.name}
+                {group.groupName}
               </h3>
               <span className="inline-block mt-0.5 px-2 py-0.5 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-300 text-[11px] font-semibold rounded-full">
                 ANUL {group.year} · SEM {group.semester}

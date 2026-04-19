@@ -1,14 +1,14 @@
 import { useState, useEffect } from 'react';
 import { Modal } from '../ui/Modal';
-import type { Student, StudentFormData } from '../../_mock/mockStudents';
+import type { UIStudent, StudentFormData } from '../../context/StudentProvider';
 
 interface StudentModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSave: (data: StudentFormData) => void;
-  student?: Student | null;
+  student?: UIStudent | null;
   groups: string[];
-  onAddGroup: (group: string) => void;
+  onAddGroup?: (group: string) => void;
 }
 
 export const StudentModal: React.FC<StudentModalProps> = ({
@@ -24,6 +24,7 @@ export const StudentModal: React.FC<StudentModalProps> = ({
   const [form, setForm] = useState<StudentFormData>({
     name: '',
     email: '',
+    phoneNumber: '',
     group: '',
     year: 1,
     status: 'active',
@@ -40,6 +41,7 @@ export const StudentModal: React.FC<StudentModalProps> = ({
         setForm({
           name: student.name,
           email: student.email,
+          phoneNumber: student.phoneNumber,
           group: student.group,
           year: student.year,
           status: student.status,
@@ -48,6 +50,7 @@ export const StudentModal: React.FC<StudentModalProps> = ({
         setForm({
           name: '',
           email: '',
+          phoneNumber: '',
           group: groups[0] || '',
           year: 1,
           status: 'active',
@@ -79,7 +82,7 @@ export const StudentModal: React.FC<StudentModalProps> = ({
   const handleAddNewGroup = () => {
     const trimmed = newGroupName.trim().toUpperCase();
     if (trimmed) {
-      onAddGroup(trimmed);
+      onAddGroup?.(trimmed);
       setForm({ ...form, group: trimmed });
       setShowNewGroup(false);
       setNewGroupName('');
@@ -146,6 +149,18 @@ export const StudentModal: React.FC<StudentModalProps> = ({
             className={inputClasses(!!errors.email)}
           />
           {errors.email && <p className="text-xs text-red-500 mt-1">{errors.email}</p>}
+        </div>
+
+        {/* Phone */}
+        <div>
+          <label className={labelClasses}>Telefon</label>
+          <input
+            type="tel"
+            value={form.phoneNumber}
+            onChange={(e) => setForm({ ...form, phoneNumber: e.target.value })}
+            placeholder="ex: 0712345678"
+            className={inputClasses(false)}
+          />
         </div>
 
         {/* Group + Year Row */}

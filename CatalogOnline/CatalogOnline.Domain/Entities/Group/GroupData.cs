@@ -6,6 +6,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace CatalogOnline.Domain.Entities.Group
@@ -23,6 +24,7 @@ namespace CatalogOnline.Domain.Entities.Group
           public int MaxCapacity  { get; set; }
           public int Semester { get; set; }
 
+          [JsonIgnore]
           public List<StudentData> Students { get; set; } = new List<StudentData>();
 
      }

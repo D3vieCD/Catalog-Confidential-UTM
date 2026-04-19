@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace CatalogOnline.Domain.Entities.Students
@@ -34,6 +35,7 @@ namespace CatalogOnline.Domain.Entities.Students
           public int GroupId { get; set; } 
 
           [ForeignKey(nameof(GroupId))]
+          [JsonIgnore]
           public GroupData Group { get; set; } = null!;
           
      }

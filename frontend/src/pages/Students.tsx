@@ -1,21 +1,51 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import type { Student, StudentFormData } from '../_mock/mockStudents';
-import {
-  getStudents,
-  addStudent,
-  updateStudent,
-  deleteStudent,
-  getGroups,
-  addGroup,
-} from '../_mock/mockStudents';
+import type { UIStudent, StudentFormData } from '../context/StudentProvider';
+import type { Group } from '../context/GroupProvider';
+import useStudents from '../hooks/useStudents';
+import useGroups from '../hooks/useGroups';
 import { StudentGrid, StudentFilters, StudentModal, StudentDetailPanel } from '../components/students';
 import { ConfirmModal } from '../components/ui/ConfirmModal';
 
+const mapToUIStudent = (s: { id: number; fullName: string; email: string; phoneNumber: string; createdOn: string; groupId: number }, groups: Group[]): UIStudent => {
+  const group = groups.find(g => g.id === s.groupId);
+  return {
+    id: s.id.toString(),
+    name: s.fullName,
+    email: s.email,
+    phoneNumber: s.phoneNumber,
+    group: group?.groupName ?? '',
+    year: group?.year ?? 0,
+    status: 'active',
+    createdAt: s.createdOn,
+    groupId: s.groupId,
+  };
+};
+
 export const Students = () => {
-  // Data
-  const [students, setStudents] = useState<Student[]>(() => getStudents());
-  const [groups, setGroups] = useState<string[]>(() => getGroups());
+  const { createStudent, updateStudent, deleteStudent, getAllStudents, loading } = useStudents();
+  const { getAllGroups } = useGroups();
+
+  const [students, setStudents] = useState<UIStudent[]>([]);
+  const [groups, setGroups] = useState<Group[]>([]);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const [backendStudents, backendGroups] = await Promise.all([
+          getAllStudents(),
+          getAllGroups(),
+        ]);
+        setGroups(backendGroups);
+        setStudents(backendStudents.filter(s => s != null).map(s => mapToUIStudent(s, backendGroups)));
+      } catch (err) {
+        console.error(err);
+      }
+    }
+    fetchData();
+  }, []);
+
+  const groupNames = useMemo(() => groups.map(g => g.groupName), [groups]);
 
   // View
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
@@ -28,11 +58,10 @@ export const Students = () => {
 
   // Modals
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingStudent, setEditingStudent] = useState<Student | null>(null);
-  const [deletingStudent, setDeletingStudent] = useState<Student | null>(null);
-  const [viewingStudent, setViewingStudent] = useState<Student | null>(null);
+  const [editingStudent, setEditingStudent] = useState<UIStudent | null>(null);
+  const [deletingStudent, setDeletingStudent] = useState<UIStudent | null>(null);
+  const [viewingStudent, setViewingStudent] = useState<UIStudent | null>(null);
 
-  // Filtered & sorted students
   const filteredStudents = useMemo(() => {
     let result = [...students];
 
@@ -69,55 +98,78 @@ export const Students = () => {
     return result;
   }, [students, searchQuery, selectedGroup, selectedYear, sortBy]);
 
-  // Handlers
   const handleOpenAdd = () => {
     setEditingStudent(null);
     setIsModalOpen(true);
   };
 
-  const handleOpenEdit = (student: Student) => {
+  const handleOpenEdit = (student: UIStudent) => {
     setEditingStudent(student);
     setIsModalOpen(true);
   };
 
-  const handleOpenDelete = (student: Student) => {
+  const handleOpenDelete = (student: UIStudent) => {
     setDeletingStudent(student);
   };
 
-  const handleView = (student: Student) => {
+  const handleView = (student: UIStudent) => {
     setViewingStudent(student);
   };
 
-  const handleSave = (data: StudentFormData) => {
-    if (editingStudent) {
-      const updated = updateStudent(editingStudent.id, data);
-      if (updated) {
-        // Reîmprospătează lista din localStorage
-        setStudents(getStudents());
+  const handleSave = async (data: StudentFormData) => {
+    const group = groups.find(g => g.groupName === data.group);
+    const groupId = group?.id ?? 0;
+
+    try {
+      if (editingStudent) {
+        await updateStudent(parseInt(editingStudent.id), {
+          fullName: data.name,
+          email: data.email,
+          phoneNumber: data.phoneNumber,
+        });
+        setStudents(prev => prev.map(s =>
+          s.id === editingStudent.id
+            ? { ...s, name: data.name, email: data.email, phoneNumber: data.phoneNumber, group: data.group, year: group?.year ?? s.year }
+            : s
+        ));
+      } else {
+        const created = await createStudent({
+          fullName: data.name,
+          email: data.email,
+          phoneNumber: data.phoneNumber,
+          groupId,
+        });
+        if (created) {
+          setStudents(prev => [...prev, mapToUIStudent(created, groups)]);
+        } else {
+          const refreshed = await getAllStudents();
+          setStudents(refreshed.filter(s => s != null).map(s => mapToUIStudent(s, groups)));
+        }
       }
-    } else {
-      addStudent(data);
-      // Reîmprospătează lista din localStorage
-      setStudents(getStudents());
+    } catch (err) {
+      console.error(err);
     }
+
     setIsModalOpen(false);
     setEditingStudent(null);
   };
 
-  const handleDeleteConfirm = () => {
+  const handleDeleteConfirm = async () => {
     if (!deletingStudent) return;
-    const success = deleteStudent(deletingStudent.id);
-    if (success) {
-      // Reîmprospătează lista din localStorage
-      setStudents(getStudents());
+    try {
+      await deleteStudent(parseInt(deletingStudent.id));
+      setStudents(prev => prev.filter(s => s.id !== deletingStudent.id));
+    } catch (err) {
+      console.error(err);
     }
     setDeletingStudent(null);
   };
 
-  const handleAddGroup = (group: string) => {
-    const updated = addGroup(group);
-    setGroups(updated);
-  };
+  if (loading) return (
+    <div className="flex items-center justify-center min-h-full py-24">
+      <div className="w-10 h-10 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin" />
+    </div>
+  );
 
   return (
     <div className="space-y-6 min-h-full pb-8">
@@ -138,7 +190,6 @@ export const Students = () => {
         </div>
 
         <div className="flex items-center gap-3">
-          {/* Grid/List Toggle */}
           <div className="flex bg-white dark:bg-gray-700 rounded-xl p-1 border border-gray-200 dark:border-gray-600 shadow-sm">
             <button
               onClick={() => setViewMode('grid')}
@@ -168,7 +219,6 @@ export const Students = () => {
             </button>
           </div>
 
-          {/* Add Student Button */}
           <button
             onClick={handleOpenAdd}
             className="px-4 sm:px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-medium transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105 flex items-center gap-2"
@@ -192,7 +242,7 @@ export const Students = () => {
         onYearChange={setSelectedYear}
         sortBy={sortBy}
         onSortChange={setSortBy}
-        groups={groups}
+        groups={groupNames}
       />
 
       {/* Student Grid/List */}
@@ -210,8 +260,7 @@ export const Students = () => {
         onClose={() => { setIsModalOpen(false); setEditingStudent(null); }}
         onSave={handleSave}
         student={editingStudent}
-        groups={groups}
-        onAddGroup={handleAddGroup}
+        groups={groupNames}
       />
 
       {/* Delete Confirmation */}

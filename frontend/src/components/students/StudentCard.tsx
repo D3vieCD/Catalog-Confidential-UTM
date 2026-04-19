@@ -1,16 +1,16 @@
 import { motion } from 'framer-motion';
-import type { Student } from '../../_mock/mockStudents';
-import { getInitials } from '../../_mock/mockStudents';
+import type { UIStudent } from '../../context/StudentProvider';
+import { getInitials } from '../../context/StudentProvider';
 
 interface StudentCardProps {
-  student: Student;
-  onEdit: (student: Student) => void;
-  onDelete: (student: Student) => void;
-  onView: (student: Student) => void;
+  student: UIStudent;
+  onEdit: (student: UIStudent) => void;
+  onDelete: (student: UIStudent) => void;
+  onView: (student: UIStudent) => void;
   index: number;
 }
 
-export const StudentCard: React.FC<StudentCardProps> = ({ student, onEdit, onDelete, onView, index }) => {
+export const StudentCard: React.FC<StudentCardProps> = ({ student, onEdit, onDelete, onView, index }: StudentCardProps) => {
   const initials = getInitials(student.name);
 
   return (

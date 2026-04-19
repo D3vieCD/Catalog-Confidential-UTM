@@ -1,19 +1,18 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import * as XLSX from 'xlsx';
-import type { Student } from '../../_mock/mockStudents';
-import { getInitials } from '../../_mock/mockStudents';
+import type { UIStudent } from '../../context/StudentProvider';
+import { getInitials } from '../../context/StudentProvider';
 import { getStudentGrades, getStudentAbsences } from '../../_mock/mockGrades';
 import { getGroupByName } from '../../_mock/mockGroups';
 
 interface StudentDetailPanelProps {
-  student: Student | null;
+  student: UIStudent | null;
   onClose: () => void;
-  onEdit: (student: Student) => void;
+  onEdit: (student: UIStudent) => void;
 }
 
-// Date mock generate deterministic dupa id student
-const getMockData = (student: Student) => {
+const getMockData = (student: UIStudent) => {
   const seed = parseInt(student.id) || student.id.charCodeAt(0);
 
   const avg = (7 + (seed % 3) + (seed % 2) * 0.5).toFixed(1);
@@ -63,7 +62,7 @@ type Tab = 'note' | 'absente' | 'realizari';
 const fmt = (iso: string) =>
   new Date(iso).toLocaleDateString('ro-RO', { day: '2-digit', month: '2-digit', year: 'numeric' });
 
-const generateStudentReport = (student: Student) => {
+const generateStudentReport = (student: UIStudent) => {
   const group = getGroupByName(student.group);
   const subjects = group?.subjects ?? [];
   const today = fmt(new Date().toISOString());
@@ -228,7 +227,7 @@ export const StudentDetailPanel: React.FC<StudentDetailPanelProps> = ({ student,
                       </div>
                       <div>
                         <p className="text-xs text-gray-400 dark:text-gray-500">Telefon</p>
-                        <p className="text-sm font-medium text-gray-800 dark:text-gray-200">{data.phone}</p>
+                        <p className="text-sm font-medium text-gray-800 dark:text-gray-200">{student.phoneNumber || data.phone}</p>
                       </div>
                     </div>
                     <div className="flex items-center gap-3">
