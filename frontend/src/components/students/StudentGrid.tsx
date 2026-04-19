@@ -1,13 +1,13 @@
-import type { Student } from '../../_mock/mockStudents';
+import type { UIStudent } from '../../context/StudentProvider';
 import { StudentCard } from './StudentCard';
 import { StudentListItem } from './StudentListItem';
 
 interface StudentGridProps {
-  students: Student[];
+  students: UIStudent[];
   viewMode: 'grid' | 'list';
-  onEdit: (student: Student) => void;
-  onDelete: (student: Student) => void;
-  onView: (student: Student) => void;
+  onEdit: (student: UIStudent) => void;
+  onDelete: (student: UIStudent) => void;
+  onView: (student: UIStudent) => void;
 }
 
 export const StudentGrid: React.FC<StudentGridProps> = ({ students, viewMode, onEdit, onDelete, onView }) => {
