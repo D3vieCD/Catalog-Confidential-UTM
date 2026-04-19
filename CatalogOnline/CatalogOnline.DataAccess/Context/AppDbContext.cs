@@ -10,7 +10,19 @@ namespace CatalogOnline.DataAccess.Context
      {
           protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
             => optionsBuilder.UseSqlServer(DbSession.ConnectionString);
+          protected override void OnModelCreating(ModelBuilder modelBuilder)
+          {
+               base.OnModelCreating(modelBuilder);
 
+               // Group → Students (one-to-many)
+               modelBuilder.Entity<GroupData>()
+                   .HasMany(g => g.Students)
+                   .WithOne(st => st.Group)
+                   .HasForeignKey(st => st.GroupId)
+                   .OnDelete(DeleteBehavior.Cascade);
+
+
+          }
 
           public DbSet<UserData> User { get; set; }
           public DbSet<GradeData> Grade { get; set; }

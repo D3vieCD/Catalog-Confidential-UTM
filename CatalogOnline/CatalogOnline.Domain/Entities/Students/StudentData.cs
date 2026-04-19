@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CatalogOnline.Domain.Entities.Group;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -29,6 +30,11 @@ namespace CatalogOnline.Domain.Entities.Students
 
           [Required]
           public DateTime CreatedOn { get; set; } = DateTime.UtcNow;
+          [Required]
+          public int GroupId { get; set; } 
 
+          [ForeignKey(nameof(GroupId))]
+          public GroupData Group { get; set; } = null!;
+          
      }
 }

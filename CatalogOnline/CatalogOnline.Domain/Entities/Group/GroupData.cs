@@ -1,4 +1,6 @@
-﻿using System;
+﻿using CatalogOnline.Domain.Entities.Students;
+using CatalogOnline.Domain.Entities.User;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -20,6 +22,8 @@ namespace CatalogOnline.Domain.Entities.Group
           public string? Coordinator { get; set; }
           public int MaxCapacity  { get; set; }
           public int Semester { get; set; }
+
+          public List<StudentData> Students { get; set; } = new List<StudentData>();
 
      }
 }
