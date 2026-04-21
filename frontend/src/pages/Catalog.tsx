@@ -1,29 +1,32 @@
-import { useState, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { getGroups } from '../_mock/mockGroups';
-import { getStudents } from '../_mock/mockStudents';
+import useGroups from '../hooks/useGroups';
+import type { Group } from '../context/GroupProvider';
 
-/**
- * Catalog - Pagina principală cu lista de grupe
- * Selectează o grupă pentru a vizualiza catalogul
- */
 export const Catalog = () => {
   const navigate = useNavigate();
-  const [groups] = useState(() => getGroups().filter(g => g.status === 'ACTIV'));
-  const [students] = useState(() => getStudents());
+  const { getAllGroups } = useGroups();
+  const [groups, setGroups] = useState<Group[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  // Calculează numărul de studenți pentru fiecare grupă
-  const groupsWithStudentCount = useMemo(() => {
-    return groups.map(group => ({
-      ...group,
-      studentCount: students.filter(s => s.group === group.name && s.status === 'active').length,
-    }));
-  }, [groups, students]);
+  useEffect(() => {
+    getAllGroups().then(data => {
+      setGroups(data);
+    }).finally(() => setLoading(false));
+  }, []);
 
-  const handleGroupClick = (groupId: string) => {
+  const handleGroupClick = (groupId: number) => {
     navigate(`/dashboard/catalog/${groupId}`);
   };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-96">
+        <div className="w-8 h-8 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6 p-6">
@@ -49,7 +52,7 @@ export const Catalog = () => {
         transition={{ duration: 0.3, delay: 0.1 }}
         className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
       >
-        {groupsWithStudentCount.map((group, index) => (
+        {groups.map((group, index) => (
           <motion.button
             key={group.id}
             initial={{ opacity: 0, scale: 0.9 }}
@@ -67,7 +70,7 @@ export const Catalog = () => {
               </div>
               <div>
                 <h3 className="text-2xl font-bold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                  {group.name}
+                  {group.groupName}
                 </h3>
                 <p className="text-sm text-gray-500 dark:text-gray-400 font-medium uppercase tracking-wide">
                   ANUL {group.year}
@@ -81,7 +84,7 @@ export const Catalog = () => {
                 <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
                 </svg>
-                <span className="text-sm font-medium">{group.studentCount} studenți</span>
+                <span className="text-sm font-medium">{group.currentCapacity} studenți</span>
               </div>
               <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
                 <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -95,7 +98,7 @@ export const Catalog = () => {
       </motion.div>
 
       {/* Empty State */}
-      {groupsWithStudentCount.length === 0 && (
+      {groups.length === 0 && (
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -107,7 +110,7 @@ export const Catalog = () => {
             </svg>
           </div>
           <p className="text-gray-500 dark:text-gray-400 text-lg">
-            Nu există grupe active
+            Nu există grupe
           </p>
         </motion.div>
       )}

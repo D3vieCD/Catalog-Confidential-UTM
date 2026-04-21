@@ -2,6 +2,7 @@
 using CatalogOnline.Domain.Entities.Group;
 using CatalogOnline.Domain.Models.Group;
 using CatalogOnline.Domain.Models.Responses;
+using Microsoft.EntityFrameworkCore;
 
 namespace CatalogOnline.BusinessLayer.Core
 {
@@ -84,7 +85,8 @@ namespace CatalogOnline.BusinessLayer.Core
           {
                using (var appDbContext = new AppDbContext())
                {
-                    var groups = appDbContext.Group.ToList();
+                    var groups = appDbContext.Group.Include(g => g.Students).ToList();
+                    groups.ForEach(g => g.CurrentCapacity = g.Students.Count);
                     return new GroupActionResponse
                     {
                          IsValid = true,

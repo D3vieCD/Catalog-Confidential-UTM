@@ -1,7 +1,8 @@
-﻿using CatalogOnline.DataAccess.Context;
+using CatalogOnline.DataAccess.Context;
 using CatalogOnline.Domain.Entities.Grade;
 using CatalogOnline.Domain.Models.Grade;
 using CatalogOnline.Domain.Models.Responses;
+using Microsoft.EntityFrameworkCore;
 
 namespace CatalogOnline.BusinessLayer.Core
 {
@@ -23,12 +24,13 @@ namespace CatalogOnline.BusinessLayer.Core
                     return new GradeActionResponse
                     {
                          IsValid = true,
-                         Message = "Grade created successfully."
+                         Message = "Grade created successfully.",
+                         Grade = grade
                     };
                }
           }
 
-          public GradeActionResponse  DeleteGradeActionExecution(int gradeId)
+          public GradeActionResponse DeleteGradeActionExecution(int gradeId)
           {
                using (var appDbContext = new AppDbContext())
                {
@@ -50,12 +52,11 @@ namespace CatalogOnline.BusinessLayer.Core
                     if (grade == null)
                          return new GradeActionResponse { IsValid = false, Message = "Grade not found." };
 
-                    grade.StudentId = updateData.StudentId;
                     grade.SubjectName = updateData.SubjectName;
                     grade.GradeValue = updateData.GradeValue;
                     grade.DateAwarded = updateData.DateAwarded;
                     appDbContext.SaveChanges();
-                    return new GradeActionResponse { IsValid = true, Message = "Grade updated successfully." };
+                    return new GradeActionResponse { IsValid = true, Message = "Grade updated successfully.", Grade = grade };
                }
           }
 
@@ -78,6 +79,22 @@ namespace CatalogOnline.BusinessLayer.Core
                using (var appDbContext = new AppDbContext())
                {
                     var grades = appDbContext.Grade.ToList();
+                    return new GradeActionResponse
+                    {
+                         IsValid = true,
+                         Message = "Grades retrieved successfully.",
+                         Grades = grades
+                    };
+               }
+          }
+
+          public GradeActionResponse GetGradesByStudentIdActionExecution(int studentId)
+          {
+               using (var appDbContext = new AppDbContext())
+               {
+                    var grades = appDbContext.Grade
+                         .Where(g => g.StudentId == studentId)
+                         .ToList();
                     return new GradeActionResponse
                     {
                          IsValid = true,

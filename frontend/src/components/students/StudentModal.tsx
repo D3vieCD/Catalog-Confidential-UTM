@@ -227,34 +227,6 @@ export const StudentModal: React.FC<StudentModalProps> = ({
           </div>
         </div>
 
-        {/* Status */}
-        <div>
-          <label className={labelClasses}>Status Cont</label>
-          <div className="flex gap-3">
-            <button
-              type="button"
-              onClick={() => setForm({ ...form, status: 'active' })}
-              className={`flex-1 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 ${
-                form.status === 'active'
-                  ? 'bg-gradient-to-r from-emerald-500 to-emerald-600 text-white shadow-md'
-                  : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-600'
-              }`}
-            >
-              ACTIV
-            </button>
-            <button
-              type="button"
-              onClick={() => setForm({ ...form, status: 'suspended' })}
-              className={`flex-1 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 ${
-                form.status === 'suspended'
-                  ? 'bg-red-500 text-white shadow-md'
-                  : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-600'
-              }`}
-            >
-              SUSPENDAT
-            </button>
-          </div>
-        </div>
       </div>
     </Modal>
   );

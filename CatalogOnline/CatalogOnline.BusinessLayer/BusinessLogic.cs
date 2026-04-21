@@ -1,6 +1,7 @@
 ﻿using CatalogOnline.BusinessLayer.Interfaces;
 using CatalogOnline.BusinessLayer.Structure;
 using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -29,6 +30,14 @@ namespace CatalogOnline.BusinessLayer
           public IStudentAction StudentAction()
           {
                return new StudentService();
+          }
+          public IAbsenceAction AbsenceAction()
+          {
+               return new AbsenceService();
+          }
+          public ISubjectAction SubjectAction()
+          {
+               return new SubjectService();
           }
      }
 }
