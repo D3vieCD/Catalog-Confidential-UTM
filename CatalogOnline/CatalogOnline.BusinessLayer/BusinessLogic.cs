@@ -8,27 +8,31 @@ using System.Threading.Tasks;
 
 namespace CatalogOnline.BusinessLayer
 {
-     public class BusinessLogic
-     {
-          public IHealthAction GetHealth()
-          {
-               return new HealthService();
-          }
-          public IUserAction UserAction()
-          {
-               return new UserService(); // get from the structure folder
-          }
-          public IGradeAction GradeAction()
-          {
-               return new GradeService(); // get from the structure folder
-          }
-          public IGroupAction GroupAction()
-          {
-               return new GroupService();
-          }
-          public IStudentAction StudentAction()
-          {
-               return new StudentService();
-          }
-     }
+    public class BusinessLogic
+    {
+        public IHealthAction GetHealth()
+        {
+            return new HealthService();
+        }
+        public IUserAction UserAction()
+        {
+            return new UserService();
+        }
+        public IGradeAction GradeAction()
+        {
+            return new GradeService();
+        }
+        public IGroupAction GroupAction()
+        {
+            return new GroupService();
+        }
+        public IStudentAction StudentAction()
+        {
+            return new StudentService();
+        }
+        public ICalendarAction CalendarAction()
+        {
+            return new CalendarService();
+        }
+    }
 }
