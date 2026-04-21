@@ -22,3 +22,6 @@ export const Calendar = () => {
     message: '',
     type: 'info'
   });
+  useEffect(() => {
+    loadEvents();
+  }, []);
