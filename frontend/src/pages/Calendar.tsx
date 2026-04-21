@@ -25,3 +25,21 @@ export const Calendar = () => {
   useEffect(() => {
     loadEvents();
   }, []);
+  const loadEvents = async () => {
+    try {
+      const data = await calendarService.getAllEvents();
+      const converted: CalendarEvent[] = data.map((ev: any) => ({
+        id: String(ev.id),
+        title: ev.title,
+        description: ev.description,
+        date: new Date(ev.startDate),
+        startTime: ev.startDate.substring(11, 16),
+        endTime: ev.endDate ? ev.endDate.substring(11, 16) : '',
+        type: (ev.eventType as CalendarEvent['type']) || 'class',
+        color: ev.color || '#3b82f6'
+      }));
+      setEvents(converted);
+    } catch (error) {
+      console.error('Eroare la încărcarea evenimentelor:', error);
+    }
+  };
