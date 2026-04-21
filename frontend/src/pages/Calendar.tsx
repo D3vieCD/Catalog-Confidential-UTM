@@ -51,3 +51,10 @@ export const Calendar = () => {
     const min = String(minutes).padStart(2, '0');
     return `${y}-${m}-${d}T${h}:${min}:00`;
   };
+  const handlePreviousMonth = () => {
+    setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1));
+  };
+
+  const handleNextMonth = () => {
+    setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1));
+  };
