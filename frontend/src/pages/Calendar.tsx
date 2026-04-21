@@ -171,3 +171,17 @@ export const Calendar = () => {
     const eventDate = new Date(event.date);
     return eventDate.toDateString() === selectedDate.toDateString();
   });
+  return (
+    <div className="space-y-6">
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3 }}
+      >
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+          Calendar Academic
+        </h1>
+        <p className="text-gray-600 dark:text-gray-400 mt-1">
+          Vizualizează orarul și evenimentele importante
+        </p>
+      </motion.div>
