@@ -113,3 +113,23 @@ export const Calendar = () => {
       });
       return;
     }
+    const ev = selectedDayEvents[0];
+    const newTitle = prompt('Titlu nou:', ev.title);
+    if (!newTitle) return;
+    const newTime = prompt('Ora nouă (ex: 10:00):', ev.startTime) || ev.startTime;
+    const [hours, minutes] = newTime.split(':').map(Number);
+
+    calendarService.updateEvent(Number(ev.id), {
+      title: newTitle,
+      startDate: formatLocalDate(selectedDate, hours || 9, minutes || 0),
+      userId: 1
+    }).then(() => {
+      loadEvents();
+      setModalState({
+        isOpen: true,
+        title: 'Succes!',
+        message: 'Evenimentul a fost actualizat!',
+        type: 'success'
+      });
+    });
+  };
