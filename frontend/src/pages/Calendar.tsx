@@ -148,3 +148,22 @@ export const Calendar = () => {
       });
       return;
     }
+    setModalState({
+      isOpen: true,
+      title: 'Confirmare Ștergere',
+      message: `Sigur vrei să ștergi ${selectedDayEvents.length} eveniment(e)?`,
+      type: 'confirm',
+      onConfirm: async () => {
+        for (const ev of selectedDayEvents) {
+          await calendarService.deleteEvent(Number(ev.id));
+        }
+        loadEvents();
+        setModalState({
+          isOpen: true,
+          title: 'Succes!',
+          message: 'Evenimentele au fost șterse!',
+          type: 'success'
+        });
+      }
+    });
+  };
