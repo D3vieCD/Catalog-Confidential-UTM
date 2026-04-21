@@ -63,3 +63,6 @@ export const Calendar = () => {
     setCurrentMonth(today);
     setSelectedDate(today);
   };
+  const handleDateSelect = (date: Date) => {
+    setSelectedDate(date);
+  };
