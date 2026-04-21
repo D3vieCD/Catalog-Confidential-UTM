@@ -81,3 +81,20 @@ export const Calendar = () => {
       eventType: 'class',
       userId: 1
     };
+    calendarService.createEvent(payload).then(() => {
+      loadEvents();
+      setModalState({
+        isOpen: true,
+        title: 'Succes!',
+        message: 'Evenimentul a fost adăugat cu succes!',
+        type: 'success'
+      });
+    }).catch(() => {
+      setModalState({
+        isOpen: true,
+        title: 'Eroare',
+        message: 'Nu s-a putut adăuga evenimentul.',
+        type: 'warning'
+      });
+    });
+  };
