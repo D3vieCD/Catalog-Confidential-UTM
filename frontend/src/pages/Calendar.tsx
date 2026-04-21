@@ -167,3 +167,7 @@ export const Calendar = () => {
       }
     });
   };
+  const selectedDayEvents = events.filter(event => {
+    const eventDate = new Date(event.date);
+    return eventDate.toDateString() === selectedDate.toDateString();
+  });
