@@ -133,3 +133,18 @@ export const Calendar = () => {
       });
     });
   };
+  const handleDeleteEvent = () => {
+    const selectedDayEvents = events.filter(event => {
+      const eventDate = new Date(event.date);
+      return eventDate.toDateString() === selectedDate.toDateString();
+    });
+
+    if (selectedDayEvents.length === 0) {
+      setModalState({
+        isOpen: true,
+        title: 'Niciun Eveniment',
+        message: 'Nu există evenimente de șters pentru această zi!',
+        type: 'warning'
+      });
+      return;
+    }
