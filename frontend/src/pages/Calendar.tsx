@@ -66,3 +66,18 @@ export const Calendar = () => {
   const handleDateSelect = (date: Date) => {
     setSelectedDate(date);
   };
+  const handleAddEvent = () => {
+    const title = prompt('Titlul evenimentului:');
+    if (!title) return;
+    const description = prompt('Descriere (opțional):') || '';
+    const timeInput = prompt('Ora începutului (ex: 09:00):') || '09:00';
+    const [hours, minutes] = timeInput.split(':').map(Number);
+
+    const payload: CalendarEventPayload = {
+      title,
+      description,
+      startDate: formatLocalDate(selectedDate, hours || 9, minutes || 0),
+      color: '#3b82f6',
+      eventType: 'class',
+      userId: 1
+    };
