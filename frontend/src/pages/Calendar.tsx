@@ -203,3 +203,29 @@ export const Calendar = () => {
             events={events}
           />
         </div>
+        <div className="lg:col-span-1">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl p-5 shadow space-y-4">
+            <h2 className="text-lg font-bold text-gray-900 dark:text-white">
+              {selectedDate.toLocaleDateString('ro-RO', { weekday: 'long', day: 'numeric', month: 'long' })}
+            </h2>
+            {selectedDayEvents.length === 0 ? (
+              <p className="text-gray-500 dark:text-gray-400 text-sm">Niciun eveniment pentru această zi.</p>
+            ) : (
+              <div className="space-y-3">
+                {selectedDayEvents.map(ev => (
+                  <div key={ev.id} className="border-l-4 pl-3 py-1" style={{ borderColor: ev.color }}>
+                    <p className="font-semibold text-gray-900 dark:text-white text-sm">{ev.title}</p>
+                    {ev.description && (
+                      <p className="text-gray-500 dark:text-gray-400 text-xs mt-0.5">{ev.description}</p>
+                    )}
+                    <p className="text-gray-400 text-xs mt-0.5">🕐 {ev.startTime}</p>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+          <div className="mt-4">
+            <CalendarSidebar selectedDate={selectedDate} events={events} />
+          </div>
+        </div>
+      </div>
