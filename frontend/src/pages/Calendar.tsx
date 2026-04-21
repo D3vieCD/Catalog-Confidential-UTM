@@ -185,3 +185,21 @@ export const Calendar = () => {
           Vizualizează orarul și evenimentele importante
         </p>
       </motion.div>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="lg:col-span-2 space-y-4">
+          <CalendarHeader
+            currentMonth={currentMonth}
+            onPreviousMonth={handlePreviousMonth}
+            onNextMonth={handleNextMonth}
+            onToday={handleToday}
+            onAdd={handleAddEvent}
+            onEdit={handleEditEvent}
+            onDelete={handleDeleteEvent}
+          />
+          <CalendarGrid
+            currentMonth={currentMonth}
+            selectedDate={selectedDate}
+            onDateSelect={handleDateSelect}
+            events={events}
+          />
+        </div>
