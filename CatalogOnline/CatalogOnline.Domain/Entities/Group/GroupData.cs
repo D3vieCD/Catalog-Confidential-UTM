@@ -1,4 +1,5 @@
 ﻿using CatalogOnline.Domain.Entities.Students;
+using CatalogOnline.Domain.Entities.Subject;
 using CatalogOnline.Domain.Entities.User;
 using System;
 using System.Collections.Generic;
@@ -26,6 +27,12 @@ namespace CatalogOnline.Domain.Entities.Group
 
           [JsonIgnore]
           public List<StudentData> Students { get; set; } = new List<StudentData>();
+
+          [JsonIgnore]
+          public List<SubjectData> Subjects { get; set; } = new List<SubjectData>();
+
+          [NotMapped]
+          public int CurrentCapacity { get; set; }
 
      }
 }

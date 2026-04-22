@@ -37,6 +37,12 @@ namespace CatalogOnline.Domain.Entities.Students
           [ForeignKey(nameof(GroupId))]
           [JsonIgnore]
           public GroupData Group { get; set; } = null!;
-          
+
+          [JsonIgnore]
+          public List<Entities.Grade.GradeData> Grades { get; set; } = new List<Entities.Grade.GradeData>();
+
+          [JsonIgnore]
+          public List<Entities.Absence.AbsenceData> Absences { get; set; } = new List<Entities.Absence.AbsenceData>();
+
      }
 }

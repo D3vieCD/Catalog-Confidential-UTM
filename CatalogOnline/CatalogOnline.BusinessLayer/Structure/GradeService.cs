@@ -27,5 +27,9 @@ namespace CatalogOnline.BusinessLayer.Structure
           {
                return GetGradeByIdActionExecution(id);
           }
+          public GradeActionResponse GetGradesByStudentIdAction(int studentId)
+          {
+               return GetGradesByStudentIdActionExecution(studentId);
+          }
      }
 }

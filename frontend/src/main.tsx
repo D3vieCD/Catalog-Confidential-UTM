@@ -6,13 +6,22 @@ import { BrowserRouter } from 'react-router-dom'
 import { AxiosProvider } from './axios/AxiosProvider.tsx'
 import { GroupsProvider } from './context/GroupProvider.tsx'
 import { StudentsProvider } from './context/StudentProvider.tsx'
+import { GradesProvider } from './context/GradeProvider.tsx'
+import { AbsencesProvider } from './context/AbsenceProvider.tsx'
+import { SubjectsProvider } from './context/SubjectProvider.tsx'
 createRoot(document.getElementById('root')!).render(
   <BrowserRouter>
     <StrictMode>
       <AxiosProvider>
         <GroupsProvider>
           <StudentsProvider>
-            <App />
+            <GradesProvider>
+              <AbsencesProvider>
+                <SubjectsProvider>
+                  <App />
+                </SubjectsProvider>
+              </AbsencesProvider>
+            </GradesProvider>
           </StudentsProvider>
         </GroupsProvider>
       </AxiosProvider>

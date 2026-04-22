@@ -7,6 +7,7 @@ namespace CatalogOnline.BusinessLayer.Interfaces
      {
           GradeActionResponse GetAllGradesAction();
           GradeActionResponse GetGradeByIdAction(int id);
+          GradeActionResponse GetGradesByStudentIdAction(int studentId);
           GradeActionResponse CreateGradeAction(CreateGradeDto createData);
           GradeActionResponse UpdateGradeAction(int gradeId, UpdateGradeDto gradeData);
           GradeActionResponse DeleteGradeAction(int id);

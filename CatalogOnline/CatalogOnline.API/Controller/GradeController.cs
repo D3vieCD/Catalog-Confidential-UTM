@@ -1,4 +1,4 @@
-﻿using CatalogOnline.BusinessLayer;
+using CatalogOnline.BusinessLayer;
 using CatalogOnline.BusinessLayer.Interfaces;
 using CatalogOnline.Domain.Models.Grade;
 using Microsoft.AspNetCore.Mvc;
@@ -21,7 +21,7 @@ namespace CatalogOnline.API.Controller
           {
                var response = _gradeAction.CreateGradeAction(createData);
                if (!response.IsValid) return BadRequest(response.Message);
-               return Ok(response.Message);
+               return Ok(response);
           }
 
           [HttpGet]
@@ -29,7 +29,7 @@ namespace CatalogOnline.API.Controller
           {
                var response = _gradeAction.GetAllGradesAction();
                if (!response.IsValid) return BadRequest(response.Message);
-               return Ok(response.Grades);
+               return Ok(response);
           }
 
           [HttpGet("{gradeId}")]
@@ -37,7 +37,15 @@ namespace CatalogOnline.API.Controller
           {
                var response = _gradeAction.GetGradeByIdAction(gradeId);
                if (!response.IsValid) return BadRequest(response.Message);
-               return Ok(response.Grade);
+               return Ok(response);
+          }
+
+          [HttpGet("student/{studentId}")]
+          public IActionResult GetGradesByStudentId([FromRoute] int studentId)
+          {
+               var response = _gradeAction.GetGradesByStudentIdAction(studentId);
+               if (!response.IsValid) return BadRequest(response.Message);
+               return Ok(response);
           }
 
           [HttpPut("{gradeId}")]
@@ -45,7 +53,7 @@ namespace CatalogOnline.API.Controller
           {
                var response = _gradeAction.UpdateGradeAction(gradeId, updateData);
                if (!response.IsValid) return BadRequest(response.Message);
-               return Ok(response.Message);
+               return Ok(response);
           }
 
           [HttpDelete("{gradeId}")]
@@ -53,7 +61,7 @@ namespace CatalogOnline.API.Controller
           {
                var response = _gradeAction.DeleteGradeAction(gradeId);
                if (!response.IsValid) return BadRequest(response.Message);
-               return Ok(response.Message);
+               return Ok(response);
           }
      }
 }

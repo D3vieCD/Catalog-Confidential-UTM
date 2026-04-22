@@ -1,11 +1,11 @@
-﻿using CatalogOnline.Domain.Entities.Students;
+using CatalogOnline.Domain.Entities.Students;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
-namespace CatalogOnline.Domain.Entities.Grade
+namespace CatalogOnline.Domain.Entities.Absence
 {
-     public class GradeData
+     public class AbsenceData
      {
           [Key]
           [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -22,9 +22,9 @@ namespace CatalogOnline.Domain.Entities.Grade
           public string SubjectName { get; set; } = string.Empty;
 
           [Required]
-          public int GradeValue { get; set; }
+          public DateTime Date { get; set; } = DateTime.UtcNow;
 
           [Required]
-          public DateTime DateAwarded { get; set; } = DateTime.UtcNow;
+          public bool IsMotivated { get; set; } = false;
      }
 }
