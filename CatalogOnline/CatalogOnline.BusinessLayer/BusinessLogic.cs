@@ -39,5 +39,9 @@ namespace CatalogOnline.BusinessLayer
           {
                return new SubjectService();
           }
+          public ICalendarAction CalendarAction()
+          {
+               return new CalendarService();
+          }
      }
 }

@@ -11,14 +11,40 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CatalogOnline.DataAccess.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260421131452_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20260422202205_InitialMigration")]
+    partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.0");
+
+            modelBuilder.Entity("CatalogOnline.Domain.Entities.Absence.AbsenceData", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsMotivated")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("StudentId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("SubjectName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("StudentId");
+
+                    b.ToTable("Absence");
+                });
 
             modelBuilder.Entity("CatalogOnline.Domain.Entities.Calendar.CalendarEventData", b =>
                 {
@@ -79,6 +105,8 @@ namespace CatalogOnline.DataAccess.Migrations
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("StudentId");
 
                     b.ToTable("Grade");
                 });
@@ -149,6 +177,27 @@ namespace CatalogOnline.DataAccess.Migrations
                     b.ToTable("Student");
                 });
 
+            modelBuilder.Entity("CatalogOnline.Domain.Entities.Subject.SubjectData", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("GroupId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("SubjectName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GroupId");
+
+                    b.ToTable("Subject");
+                });
+
             modelBuilder.Entity("CatalogOnline.Domain.Entities.User.UserData", b =>
                 {
                     b.Property<int>("Id")
@@ -188,6 +237,28 @@ namespace CatalogOnline.DataAccess.Migrations
                     b.ToTable("User");
                 });
 
+            modelBuilder.Entity("CatalogOnline.Domain.Entities.Absence.AbsenceData", b =>
+                {
+                    b.HasOne("CatalogOnline.Domain.Entities.Students.StudentData", "Student")
+                        .WithMany("Absences")
+                        .HasForeignKey("StudentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Student");
+                });
+
+            modelBuilder.Entity("CatalogOnline.Domain.Entities.Grade.GradeData", b =>
+                {
+                    b.HasOne("CatalogOnline.Domain.Entities.Students.StudentData", "Student")
+                        .WithMany("Grades")
+                        .HasForeignKey("StudentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Student");
+                });
+
             modelBuilder.Entity("CatalogOnline.Domain.Entities.Students.StudentData", b =>
                 {
                     b.HasOne("CatalogOnline.Domain.Entities.Group.GroupData", "Group")
@@ -199,9 +270,29 @@ namespace CatalogOnline.DataAccess.Migrations
                     b.Navigation("Group");
                 });
 
+            modelBuilder.Entity("CatalogOnline.Domain.Entities.Subject.SubjectData", b =>
+                {
+                    b.HasOne("CatalogOnline.Domain.Entities.Group.GroupData", "Group")
+                        .WithMany("Subjects")
+                        .HasForeignKey("GroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Group");
+                });
+
             modelBuilder.Entity("CatalogOnline.Domain.Entities.Group.GroupData", b =>
                 {
                     b.Navigation("Students");
+
+                    b.Navigation("Subjects");
+                });
+
+            modelBuilder.Entity("CatalogOnline.Domain.Entities.Students.StudentData", b =>
+                {
+                    b.Navigation("Absences");
+
+                    b.Navigation("Grades");
                 });
 #pragma warning restore 612, 618
         }
