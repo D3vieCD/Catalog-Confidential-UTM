@@ -51,5 +51,9 @@ namespace CatalogOnline.DataAccess.Context
           public DbSet<GradeData> Grade { get; set; }
           public DbSet<GroupData> Group { get; set; }
           public DbSet<StudentData> Student { get; set; }
+          public DbSet<AbsenceData> Absence { get; set; }
+          public DbSet<SubjectData> Subject { get; set; }
+     public DbSet<CalendarEventData> CalendarEvents { get; set; }
+
      }
 }
