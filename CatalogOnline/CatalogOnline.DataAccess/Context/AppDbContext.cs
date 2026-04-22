@@ -4,24 +4,25 @@ using CatalogOnline.Domain.Entities.Grade;
 using CatalogOnline.Domain.Entities.Group;
 using CatalogOnline.Domain.Entities.Students;
 using CatalogOnline.Domain.Entities.User;
+using CatalogOnline.Domain.Entities.Calendar;
 using Microsoft.EntityFrameworkCore;
 
 namespace CatalogOnline.DataAccess.Context
 {
-     public class AppDbContext : DbContext
-     {
-          protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-            => optionsBuilder.UseSqlServer(DbSession.ConnectionString);
-          protected override void OnModelCreating(ModelBuilder modelBuilder)
-          {
-               base.OnModelCreating(modelBuilder);
+    public class AppDbContext : DbContext
+    {
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+            => optionsBuilder.UseSqlite("Data Source=catalog.db");
 
-               // Group → Students (one-to-many)
-               modelBuilder.Entity<GroupData>()
-                   .HasMany(g => g.Students)
-                   .WithOne(st => st.Group)
-                   .HasForeignKey(st => st.GroupId)
-                   .OnDelete(DeleteBehavior.Cascade);
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<GroupData>()
+                .HasMany(g => g.Students)
+                .WithOne(st => st.Group)
+                .HasForeignKey(st => st.GroupId)
+                .OnDelete(DeleteBehavior.Cascade);
+        }
 
                // Student → Grades (one-to-many)
                modelBuilder.Entity<StudentData>()
