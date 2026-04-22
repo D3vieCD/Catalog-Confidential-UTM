@@ -9,20 +9,20 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CatalogOnline.DataAccess.Context
 {
-    public class AppDbContext : DbContext
-    {
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-            => optionsBuilder.UseSqlite("Data Source=catalog.db");
+     public class AppDbContext : DbContext
+     {
+          protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+            => optionsBuilder.UseSqlServer(DbSession.ConnectionString);
+          protected override void OnModelCreating(ModelBuilder modelBuilder)
+          {
+               base.OnModelCreating(modelBuilder);
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            base.OnModelCreating(modelBuilder);
-            modelBuilder.Entity<GroupData>()
-                .HasMany(g => g.Students)
-                .WithOne(st => st.Group)
-                .HasForeignKey(st => st.GroupId)
-                .OnDelete(DeleteBehavior.Cascade);
-        
+               // Group → Students (one-to-many)
+               modelBuilder.Entity<GroupData>()
+                   .HasMany(g => g.Students)
+                   .WithOne(st => st.Group)
+                   .HasForeignKey(st => st.GroupId)
+                   .OnDelete(DeleteBehavior.Cascade);
 
                // Student → Grades (one-to-many)
                modelBuilder.Entity<StudentData>()
@@ -53,6 +53,7 @@ namespace CatalogOnline.DataAccess.Context
           public DbSet<StudentData> Student { get; set; }
           public DbSet<AbsenceData> Absence { get; set; }
           public DbSet<SubjectData> Subject { get; set; }
-          public DbSet<CalendarEventData> CalendarEvents { get; set; }
+     public DbSet<CalendarEventData> CalendarEvents { get; set; }
+
      }
 }
