@@ -16,11 +16,10 @@ export const CalendarSidebar: React.FC<CalendarSidebarProps> = ({
     return eventDate.toDateString() === selectedDate.toDateString();
   });
 
-  // Get events for this week
   const getStartOfWeek = (date: Date) => {
     const d = new Date(date);
     const day = d.getDay();
-    const diff = d.getDate() - day + (day === 0 ? -6 : 1); // adjust when day is sunday
+    const diff = d.getDate() - day + (day === 0 ? -6 : 1);
     return new Date(d.setDate(diff));
   };
 
@@ -36,6 +35,12 @@ export const CalendarSidebar: React.FC<CalendarSidebarProps> = ({
     const eventDate = new Date(event.date);
     return eventDate >= startOfWeek && eventDate <= endOfWeek;
   });
+
+  // Găsește următorul eveniment din viitor față de acum
+  const now = new Date();
+  const nextEvent = events
+    .filter(event => new Date(event.date) >= now)
+    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())[0];
 
   const monthNames = [
     'ianuarie', 'februarie', 'martie', 'aprilie', 'mai', 'iunie',
@@ -57,7 +62,6 @@ export const CalendarSidebar: React.FC<CalendarSidebarProps> = ({
           {formattedDate}
         </h3>
 
-        {/* Icon & Status */}
         <div className="flex flex-col items-center gap-3 mt-4">
           <div className="w-16 h-16 bg-gray-50 dark:bg-gray-700 rounded-full flex items-center justify-center">
             <svg className="w-8 h-8 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -103,12 +107,17 @@ export const CalendarSidebar: React.FC<CalendarSidebarProps> = ({
               <span className="text-sm opacity-90">Total evenimente:</span>
               <span className="font-bold text-lg">{weekEvents.length}</span>
             </div>
-            {weekEvents[0] && (
+            {nextEvent && (
               <div className="pt-2 border-t border-white/20">
                 <div className="text-xs opacity-75 mb-1">Următorul:</div>
-                <div className="font-medium text-sm">{weekEvents[0].title}</div>
+                <div className="font-medium text-sm">{nextEvent.title}</div>
                 <div className="text-xs opacity-75 mt-1">
-                  {new Date(weekEvents[0].date).toLocaleDateString('ro-RO', { weekday: 'long', day: 'numeric', month: 'long' })}
+                  {new Date(nextEvent.date).toLocaleDateString('ro-RO', {
+                    weekday: 'long',
+                    day: 'numeric',
+                    month: 'long'
+                  })}
+                  {nextEvent.startTime && ` • ${nextEvent.startTime}`}
                 </div>
               </div>
             )}

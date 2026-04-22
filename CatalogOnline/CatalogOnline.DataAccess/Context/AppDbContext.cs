@@ -4,6 +4,7 @@ using CatalogOnline.Domain.Entities.Grade;
 using CatalogOnline.Domain.Entities.Group;
 using CatalogOnline.Domain.Entities.Students;
 using CatalogOnline.Domain.Entities.User;
+using CatalogOnline.Domain.Entities.Calendar;
 using Microsoft.EntityFrameworkCore;
 
 namespace CatalogOnline.DataAccess.Context
@@ -50,7 +51,5 @@ namespace CatalogOnline.DataAccess.Context
           public DbSet<GradeData> Grade { get; set; }
           public DbSet<GroupData> Group { get; set; }
           public DbSet<StudentData> Student { get; set; }
-          public DbSet<AbsenceData> Absence { get; set; }
-          public DbSet<SubjectData> Subject { get; set; }
      }
 }
