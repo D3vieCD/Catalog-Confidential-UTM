@@ -22,7 +22,7 @@ namespace CatalogOnline.DataAccess.Context
                 .WithOne(st => st.Group)
                 .HasForeignKey(st => st.GroupId)
                 .OnDelete(DeleteBehavior.Cascade);
-        }
+        
 
                // Student → Grades (one-to-many)
                modelBuilder.Entity<StudentData>()
@@ -53,5 +53,6 @@ namespace CatalogOnline.DataAccess.Context
           public DbSet<StudentData> Student { get; set; }
           public DbSet<AbsenceData> Absence { get; set; }
           public DbSet<SubjectData> Subject { get; set; }
+          public DbSet<CalendarEventData> CalendarEvents { get; set; }
      }
 }

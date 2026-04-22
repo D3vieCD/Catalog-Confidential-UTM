@@ -11,11 +11,11 @@ namespace CatalogOnline.API.Controller
     {
         private readonly ICalendarAction _calendarAction;
 
-        public CalendarController()
-        {
-            var bl = new BusinessLogic();
-            _calendarAction = bl.CalendarAction();
-        }
+          public CalendarController()
+          {
+               var bl = new BusinessLogic();
+               _calendarAction = bl.CalendarAction();
+          }
 
         [HttpPost]
         public IActionResult CreateEvent(CreateCalendarEventDto createData)

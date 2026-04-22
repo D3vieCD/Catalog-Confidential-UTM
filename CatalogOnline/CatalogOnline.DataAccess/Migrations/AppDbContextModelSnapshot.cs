@@ -17,6 +17,32 @@ namespace CatalogOnline.DataAccess.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.0");
 
+            modelBuilder.Entity("CatalogOnline.Domain.Entities.Absence.AbsenceData", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsMotivated")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("StudentId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("SubjectName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("StudentId");
+
+                    b.ToTable("Absence");
+                });
+
             modelBuilder.Entity("CatalogOnline.Domain.Entities.Calendar.CalendarEventData", b =>
                 {
                     b.Property<int>("Id")
@@ -54,34 +80,6 @@ namespace CatalogOnline.DataAccess.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("CalendarEvents");
-                });
-
-            modelBuilder.Entity("CatalogOnline.Domain.Entities.Absence.AbsenceData", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsMotivated")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("StudentId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("SubjectName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("StudentId");
-
-                    b.ToTable("Absence");
                 });
 
             modelBuilder.Entity("CatalogOnline.Domain.Entities.Grade.GradeData", b =>
@@ -180,17 +178,15 @@ namespace CatalogOnline.DataAccess.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("GroupId")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("SubjectName")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
