@@ -1,10 +1,12 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import * as XLSX from 'xlsx';
 import type { UIStudent } from '../../context/StudentProvider';
 import { getInitials } from '../../context/StudentProvider';
-import { getStudentGrades, getStudentAbsences } from '../../_mock/mockGrades';
-import { getGroupByName } from '../../_mock/mockGroups';
+import type { Grade } from '../../context/GradeProvider';
+import type { Absence } from '../../context/AbsenceProvider';
+import useGrades from '../../hooks/useGrades';
+import useAbsences from '../../hooks/useAbsences';
 
 interface StudentDetailPanelProps {
   student: UIStudent | null;
@@ -12,130 +14,82 @@ interface StudentDetailPanelProps {
   onEdit: (student: UIStudent) => void;
 }
 
-const getMockData = (student: UIStudent) => {
-  const seed = parseInt(student.id) || student.id.charCodeAt(0);
-
-  const avg = (7 + (seed % 3) + (seed % 2) * 0.5).toFixed(1);
-  const attendance = 85 + (seed % 14);
-  const absences = Math.max(1, Math.floor((100 - attendance) / 5));
-
-  const digits = String(seed * 7 + 21).padStart(8, '0');
-  const phone = `07${digits.slice(0, 2)} ${digits.slice(2, 5)} ${digits.slice(5, 8)}`;
-
-  const allSubjects = [
-    { name: 'Matematică', prof: 'Prof. Ionescu' },
-    { name: 'Română', prof: 'Prof. Georgescu' },
-    { name: 'Engleză', prof: 'Prof. Radu' },
-    { name: 'Fizică', prof: 'Prof. Pop' },
-    { name: 'Informatică', prof: 'Prof. Stan' },
-    { name: 'Chimie', prof: 'Prof. Nicu' },
-  ];
-
-  const grades = allSubjects.slice(0, 4 + (seed % 3)).map((s, i) => ({
-    subject: s.name,
-    professor: s.prof,
-    grade: 7 + ((seed + i * 3) % 4),
-    date: new Date(2026, 2, Math.max(1, 17 - i * 3)).toLocaleDateString('ro-RO', {
-      day: '2-digit', month: 'short', year: 'numeric',
-    }),
-    semester: 2,
-  }));
-
-  const absentList = Array.from({ length: absences }, (_, i) => ({
-    subject: allSubjects[i % allSubjects.length].name,
-    date: new Date(2026, 2, Math.max(1, 15 - i * 4)).toLocaleDateString('ro-RO', {
-      day: '2-digit', month: 'short', year: 'numeric',
-    }),
-    motivated: i % 3 === 0,
-  }));
-
-  const achievements = [
-    { title: 'Top 10% Grupă', desc: 'Medie peste 9.0 în sem. 1', color: 'bg-yellow-100 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-400' },
-    { title: 'Prezență Excelentă', desc: '100% prezență luna trecută', color: 'bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400' },
-  ].slice(0, 1 + (seed % 2));
-
-  return { avg, attendance, absences, phone, grades, absentList, achievements };
-};
-
-type Tab = 'note' | 'absente' | 'realizari';
+type Tab = 'note' | 'absente';
 
 const fmt = (iso: string) =>
   new Date(iso).toLocaleDateString('ro-RO', { day: '2-digit', month: '2-digit', year: 'numeric' });
 
-const generateStudentReport = (student: UIStudent) => {
-  const group = getGroupByName(student.group);
-  const subjects = group?.subjects ?? [];
-  const today = fmt(new Date().toISOString());
-  const wb = XLSX.utils.book_new();
+const fmtShort = (iso: string) =>
+  new Date(iso).toLocaleDateString('ro-RO', { day: '2-digit', month: 'short', year: 'numeric' });
 
-  const allSubjects = subjects.length > 0 ? subjects : ['General'];
+export const StudentDetailPanel: React.FC<StudentDetailPanelProps> = ({ student, onClose, onEdit }) => {
+  const [activeTab, setActiveTab] = useState<Tab>('note');
+  const [grades, setGrades] = useState<Grade[]>([]);
+  const [absences, setAbsences] = useState<Absence[]>([]);
+  const [fetching, setFetching] = useState(false);
 
-  allSubjects.forEach(subject => {
-    const grades = getStudentGrades(student.id, subject)
-      .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
-    const absences = getStudentAbsences(student.id, subject)
-      .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+  const { getGradesByStudentId } = useGrades();
+  const { getAbsencesByStudentId } = useAbsences();
 
-    const validGrades = grades.filter(g => g.value !== null);
-    const avg = validGrades.length > 0
-      ? (validGrades.reduce((s, g) => s + (g.value || 0), 0) / validGrades.length).toFixed(2)
-      : '—';
+  useEffect(() => {
+    if (!student) return;
+    setGrades([]);
+    setAbsences([]);
+    setFetching(true);
+    const id = parseInt(student.id);
+    Promise.all([getGradesByStudentId(id), getAbsencesByStudentId(id)])
+      .then(([g, a]) => { setGrades(g); setAbsences(a); })
+      .catch(() => { setGrades([]); setAbsences([]); })
+      .finally(() => setFetching(false));
+  }, [student?.id]);
 
+  const avg = grades.length > 0
+    ? (grades.reduce((s, g) => s + g.gradeValue, 0) / grades.length).toFixed(1)
+    : '—';
+
+  const generateStudentReport = (s: UIStudent) => {
+    const today = fmt(new Date().toISOString());
+    const wb = XLSX.utils.book_new();
     const aoa: (string | number)[][] = [];
 
-    // META
-    aoa.push(['RAPORT STUDENT — ' + student.name]);
-    aoa.push(['Student:', student.name, '', 'Email:', student.email]);
-    aoa.push(['Grupă:', student.group, '', 'An studiu:', `Anul ${student.year}`]);
-    aoa.push(['Materie:', subject, '', 'Data raport:', today]);
-    aoa.push(['Coordonator:', group?.coordinator ?? '—', '', 'Facultate:', group?.faculty ?? '—']);
+    aoa.push(['RAPORT STUDENT — ' + s.name]);
+    aoa.push(['Student:', s.name, '', 'Email:', s.email]);
+    aoa.push(['Grupă:', s.group, '', 'An studiu:', `Anul ${s.year}`]);
+    aoa.push(['Data raport:', today]);
     aoa.push([]);
 
-    // NOTE
     aoa.push(['NOTE']);
-    aoa.push(['#', 'Valoare', 'Data', 'Semestru']);
+    aoa.push(['#', 'Materie', 'Valoare', 'Data']);
     if (grades.length === 0) {
       aoa.push(['', 'Nu există note înregistrate', '', '']);
     } else {
-      grades.forEach((g, i) => {
-        aoa.push([i + 1, g.value ?? '—', fmt(g.date), subject]);
-      });
+      grades.forEach((g, i) => aoa.push([i + 1, g.subjectName, g.gradeValue, fmt(g.dateAwarded)]));
     }
     aoa.push(['', 'MEDIE:', avg, '']);
     aoa.push([]);
 
-    // ABSENȚE
     aoa.push(['ABSENȚE']);
-    aoa.push(['#', 'Data', 'Motivată']);
+    aoa.push(['#', 'Materie', 'Data', 'Motivată']);
     if (absences.length === 0) {
-      aoa.push(['', 'Nu există absențe înregistrate', '']);
+      aoa.push(['', 'Nu există absențe înregistrate', '', '']);
     } else {
-      absences.forEach((ab, i) => {
-        aoa.push([i + 1, fmt(ab.date), ab.motivated ? 'Da' : 'Nu']);
-      });
+      absences.forEach((a, i) => aoa.push([i + 1, a.subjectName, fmt(a.date), a.isMotivated ? 'Da' : 'Nu']));
     }
-    aoa.push(['', 'TOTAL:', absences.length]);
-    aoa.push(['', 'Motivate:', absences.filter(a => a.motivated).length]);
-    aoa.push(['', 'Nemotivate:', absences.filter(a => !a.motivated).length]);
+    aoa.push(['', 'TOTAL:', absences.length, '']);
+    aoa.push(['', 'Motivate:', absences.filter(a => a.isMotivated).length, '']);
+    aoa.push(['', 'Nemotivate:', absences.filter(a => !a.isMotivated).length, '']);
 
     const ws = XLSX.utils.aoa_to_sheet(aoa);
-    ws['!cols'] = [{ wch: 4 }, { wch: 24 }, { wch: 18 }, { wch: 14 }, { wch: 28 }];
+    ws['!cols'] = [{ wch: 4 }, { wch: 24 }, { wch: 14 }, { wch: 18 }, { wch: 10 }];
     ws['!merges'] = [{ s: { r: 0, c: 0 }, e: { r: 0, c: 4 } }];
+    XLSX.utils.book_append_sheet(wb, ws, 'Raport');
 
-    XLSX.utils.book_append_sheet(wb, ws, subject.slice(0, 30));
-  });
-
-  const fileName = `raport_${student.name.replace(/\s+/g, '_')}_${new Date().toISOString().slice(0, 10)}.xlsx`;
-  XLSX.writeFile(wb, fileName);
-};
-
-export const StudentDetailPanel: React.FC<StudentDetailPanelProps> = ({ student, onClose, onEdit }) => {
-  const [activeTab, setActiveTab] = useState<Tab>('note');
+    XLSX.writeFile(wb, `raport_${s.name.replace(/\s+/g, '_')}_${new Date().toISOString().slice(0, 10)}.xlsx`);
+  };
 
   return (
     <AnimatePresence>
       {student && (() => {
-        const data = getMockData(student);
         const initials = getInitials(student.name);
         const enrollDate = new Date(student.createdAt).toLocaleDateString('ro-RO', {
           day: '2-digit', month: 'short', year: 'numeric',
@@ -143,7 +97,6 @@ export const StudentDetailPanel: React.FC<StudentDetailPanelProps> = ({ student,
 
         return (
           <>
-            {/* Overlay */}
             <motion.div
               key="overlay"
               initial={{ opacity: 0 }}
@@ -154,7 +107,6 @@ export const StudentDetailPanel: React.FC<StudentDetailPanelProps> = ({ student,
               className="fixed inset-0 bg-black/50 z-[60]"
             />
 
-            {/* Panel */}
             <motion.div
               key="panel"
               initial={{ x: '100%' }}
@@ -191,15 +143,15 @@ export const StudentDetailPanel: React.FC<StudentDetailPanelProps> = ({ student,
                 {/* Stats */}
                 <div className="grid grid-cols-3 gap-3 p-6 pb-0">
                   <div className="bg-blue-50 dark:bg-blue-900/20 rounded-2xl p-4 text-center">
-                    <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">{data.avg}</p>
+                    <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">{avg}</p>
                     <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Medie Generală</p>
                   </div>
                   <div className="bg-green-50 dark:bg-green-900/20 rounded-2xl p-4 text-center">
-                    <p className="text-2xl font-bold text-green-600 dark:text-green-400">{data.attendance}%</p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Prezență</p>
+                    <p className="text-2xl font-bold text-green-600 dark:text-green-400">{grades.length}</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Note</p>
                   </div>
                   <div className="bg-orange-50 dark:bg-orange-900/20 rounded-2xl p-4 text-center">
-                    <p className="text-2xl font-bold text-orange-500 dark:text-orange-400">{data.absences}</p>
+                    <p className="text-2xl font-bold text-orange-500 dark:text-orange-400">{absences.length}</p>
                     <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Absențe</p>
                   </div>
                 </div>
@@ -227,7 +179,7 @@ export const StudentDetailPanel: React.FC<StudentDetailPanelProps> = ({ student,
                       </div>
                       <div>
                         <p className="text-xs text-gray-400 dark:text-gray-500">Telefon</p>
-                        <p className="text-sm font-medium text-gray-800 dark:text-gray-200">{student.phoneNumber || data.phone}</p>
+                        <p className="text-sm font-medium text-gray-800 dark:text-gray-200">{student.phoneNumber}</p>
                       </div>
                     </div>
                     <div className="flex items-center gap-3">
@@ -248,9 +200,8 @@ export const StudentDetailPanel: React.FC<StudentDetailPanelProps> = ({ student,
                 <div className="px-6 mt-5">
                   <div className="flex gap-1 bg-gray-100 dark:bg-gray-800 rounded-xl p-1">
                     {([
-                      { id: 'note', label: `Note (${data.grades.length})` },
-                      { id: 'absente', label: `Absențe (${data.absences})` },
-                      { id: 'realizari', label: `Realizări (${data.achievements.length})` },
+                      { id: 'note', label: `Note (${grades.length})` },
+                      { id: 'absente', label: `Absențe (${absences.length})` },
                     ] as { id: Tab; label: string }[]).map((tab) => (
                       <button
                         key={tab.id}
@@ -266,57 +217,52 @@ export const StudentDetailPanel: React.FC<StudentDetailPanelProps> = ({ student,
                     ))}
                   </div>
 
-                  {/* Tab Content */}
                   <div className="mt-4 space-y-2 pb-4">
-                    {activeTab === 'note' && data.grades.map((g, i) => (
-                      <div key={i} className="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700">
+                    {fetching && (
+                      <div className="text-center py-8 text-gray-400 text-sm">Se încarcă...</div>
+                    )}
+
+                    {!fetching && activeTab === 'note' && grades.length === 0 && (
+                      <div className="text-center py-8 text-gray-400 text-sm">Nu există note înregistrate</div>
+                    )}
+                    {!fetching && activeTab === 'note' && grades.map((g) => (
+                      <div key={g.id} className="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700">
                         <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-white font-bold text-sm flex-shrink-0 ${
-                          g.grade >= 9 ? 'bg-green-500' : g.grade >= 7 ? 'bg-emerald-500' : 'bg-orange-500'
+                          g.gradeValue >= 9 ? 'bg-green-500' : g.gradeValue >= 7 ? 'bg-emerald-500' : 'bg-orange-500'
                         }`}>
-                          {g.grade}
+                          {g.gradeValue}
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="text-sm font-semibold text-gray-900 dark:text-white">{g.subject}</p>
-                          <p className="text-xs text-gray-500 dark:text-gray-400">{g.professor}</p>
+                          <p className="text-sm font-semibold text-gray-900 dark:text-white">{g.subjectName}</p>
                         </div>
                         <div className="text-right flex-shrink-0">
-                          <p className="text-xs font-medium text-gray-700 dark:text-gray-300">{g.date}</p>
-                          <p className="text-xs text-gray-400">Sem. {g.semester}</p>
+                          <p className="text-xs font-medium text-gray-700 dark:text-gray-300">{fmtShort(g.dateAwarded)}</p>
                         </div>
                       </div>
                     ))}
 
-                    {activeTab === 'absente' && data.absentList.map((a, i) => (
-                      <div key={i} className="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700">
+                    {!fetching && activeTab === 'absente' && absences.length === 0 && (
+                      <div className="text-center py-8 text-gray-400 text-sm">Nu există absențe înregistrate</div>
+                    )}
+                    {!fetching && activeTab === 'absente' && absences.map((a) => (
+                      <div key={a.id} className="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700">
                         <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${
-                          a.motivated ? 'bg-green-100 dark:bg-green-900/30' : 'bg-red-100 dark:bg-red-900/30'
+                          a.isMotivated ? 'bg-green-100 dark:bg-green-900/30' : 'bg-red-100 dark:bg-red-900/30'
                         }`}>
-                          <svg className={`w-5 h-5 ${a.motivated ? 'text-green-500' : 'text-red-500'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={a.motivated
+                          <svg className={`w-5 h-5 ${a.isMotivated ? 'text-green-500' : 'text-red-500'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={a.isMotivated
                               ? 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z'
                               : 'M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z'}
                             />
                           </svg>
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="text-sm font-semibold text-gray-900 dark:text-white">{a.subject}</p>
-                          <p className={`text-xs font-medium ${a.motivated ? 'text-green-600 dark:text-green-400' : 'text-red-500 dark:text-red-400'}`}>
-                            {a.motivated ? 'Motivată' : 'Nemotivată'}
+                          <p className="text-sm font-semibold text-gray-900 dark:text-white">{a.subjectName}</p>
+                          <p className={`text-xs font-medium ${a.isMotivated ? 'text-green-600 dark:text-green-400' : 'text-red-500 dark:text-red-400'}`}>
+                            {a.isMotivated ? 'Motivată' : 'Nemotivată'}
                           </p>
                         </div>
-                        <p className="text-xs text-gray-500 dark:text-gray-400 flex-shrink-0">{a.date}</p>
-                      </div>
-                    ))}
-
-                    {activeTab === 'realizari' && data.achievements.map((r, i) => (
-                      <div key={i} className={`flex items-center gap-3 p-4 rounded-xl border border-transparent ${r.color}`}>
-                        <svg className="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/>
-                        </svg>
-                        <div>
-                          <p className="text-sm font-bold">{r.title}</p>
-                          <p className="text-xs opacity-80">{r.desc}</p>
-                        </div>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 flex-shrink-0">{fmtShort(a.date)}</p>
                       </div>
                     ))}
                   </div>

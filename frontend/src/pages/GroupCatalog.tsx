@@ -228,29 +228,78 @@ export const GroupCatalog = () => {
 
   return (
     <div className="space-y-6 p-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
+      {/* Header — single row with inline stats */}
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3 }}
+        className="bg-white dark:bg-gray-800 rounded-2xl px-5 py-3 shadow-sm border border-gray-200 dark:border-gray-700 flex items-center gap-4"
+      >
+        {/* Back + Title */}
+        <div className="flex items-center gap-3 flex-shrink-0">
           <button
             onClick={() => navigate('/dashboard/catalog')}
-            className="w-10 h-10 flex items-center justify-center rounded-xl bg-emerald-100 dark:bg-gray-800 hover:bg-emerald-200 dark:hover:bg-gray-700 transition-colors shadow-sm"
+            className="w-9 h-9 flex items-center justify-center rounded-xl bg-emerald-100 dark:bg-gray-700 hover:bg-emerald-200 dark:hover:bg-gray-600 transition-colors"
           >
-            <svg className="w-5 h-5 text-emerald-700 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-4 h-4 text-emerald-700 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7"/>
             </svg>
           </button>
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+            <h1 className="text-lg font-bold text-gray-900 dark:text-white leading-tight">
               Catalog {group.groupName}
             </h1>
-            <p className="text-gray-600 dark:text-gray-400">
-              {students.length} studenți
-            </p>
+            <p className="text-xs text-gray-500 dark:text-gray-400">{students.length} studenți</p>
           </div>
         </div>
 
-        <div className="flex items-center gap-3">
-          {/* Dropdown Materie */}
+        {/* Divider */}
+        <div className="w-px h-8 bg-gray-200 dark:bg-gray-600 flex-shrink-0" />
+
+        {/* Inline Stat Cards */}
+        <div className="flex items-center gap-3 flex-1">
+          <div className="flex items-center gap-3 px-4 py-2 bg-gray-50 dark:bg-gray-700/60 rounded-xl border border-gray-200 dark:border-gray-600">
+            <div className="w-8 h-8 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg flex items-center justify-center flex-shrink-0">
+              <svg className="w-4 h-4 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+              </svg>
+            </div>
+            <div>
+              <p className="text-xs text-gray-500 dark:text-gray-400 leading-none mb-0.5">Studenți</p>
+              <p className="text-xl font-bold text-gray-900 dark:text-white leading-none">{stats.totalStudents}</p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-3 px-4 py-2 bg-gray-50 dark:bg-gray-700/60 rounded-xl border border-gray-200 dark:border-gray-600">
+            <div className="w-8 h-8 bg-amber-100 dark:bg-amber-900/30 rounded-lg flex items-center justify-center flex-shrink-0">
+              <svg className="w-4 h-4 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/>
+              </svg>
+            </div>
+            <div>
+              <p className="text-xs text-gray-500 dark:text-gray-400 leading-none mb-0.5">Medie Grupă</p>
+              <p className="text-xl font-bold text-gray-900 dark:text-white leading-none">{stats.groupAverage.toFixed(2)}</p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-3 px-4 py-2 bg-gray-50 dark:bg-gray-700/60 rounded-xl border border-gray-200 dark:border-gray-600">
+            <div className="w-8 h-8 bg-red-100 dark:bg-red-900/30 rounded-lg flex items-center justify-center flex-shrink-0">
+              <svg className="w-4 h-4 text-red-500 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+              </svg>
+            </div>
+            <div>
+              <p className="text-xs text-gray-500 dark:text-gray-400 leading-none mb-0.5">Absențe Totale</p>
+              <p className="text-xl font-bold text-gray-900 dark:text-white leading-none">{stats.totalAbsences}</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Divider */}
+        <div className="w-px h-8 bg-gray-200 dark:bg-gray-600 flex-shrink-0" />
+
+        {/* Controls */}
+        <div className="flex items-center gap-3 flex-shrink-0">
           <SubjectDropdown
             value={selectedSubject}
             onChange={setSelectedSubject}
@@ -262,74 +311,24 @@ export const GroupCatalog = () => {
             }}
             placeholder={subjects.length === 0 ? 'Nicio materie' : undefined}
           />
-
-          {/* Buton Ascunde Notele */}
           <button
             onClick={() => { setNotesHidden(!notesHidden); setSelectedStudentRow(null); }}
-            className={`px-6 py-3 rounded-2xl font-semibold transition-all duration-200 flex items-center gap-2 shadow-md ${
+            className={`px-4 py-2 rounded-xl font-semibold text-sm transition-all duration-200 flex items-center gap-2 shadow-sm ${
               notesHidden
                 ? 'border-2 border-orange-500 text-orange-600 dark:text-orange-400 hover:bg-orange-50 dark:hover:bg-orange-900/20'
                 : 'bg-emerald-500 hover:bg-emerald-600 dark:bg-emerald-600 dark:hover:bg-emerald-700 text-white'
             }`}
           >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={notesHidden
                 ? "M15 12a3 3 0 11-6 0 3 3 0 016 0z M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
                 : "M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"}
               />
             </svg>
-            {notesHidden ? 'Notele sunt Ascunse' : 'Ascunde Notele'}
+            {notesHidden ? 'Ascunse' : 'Ascunde Notele'}
           </button>
         </div>
-      </div>
-
-      {/* Stat Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-          className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-stone-200 dark:border-gray-700">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 bg-emerald-100 dark:bg-emerald-900/30 rounded-xl flex items-center justify-center text-emerald-600 dark:text-emerald-400">
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
-              </svg>
-            </div>
-            <div>
-              <p className="text-stone-500 dark:text-gray-400 text-xs font-medium uppercase tracking-wide">Studenți</p>
-              <p className="text-4xl font-bold text-stone-900 dark:text-white">{stats.totalStudents}</p>
-            </div>
-          </div>
-        </motion.div>
-
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
-          className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-stone-200 dark:border-gray-700">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 bg-amber-100 dark:bg-amber-900/30 rounded-xl flex items-center justify-center text-amber-600 dark:text-amber-400">
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/>
-              </svg>
-            </div>
-            <div>
-              <p className="text-stone-500 dark:text-gray-400 text-xs font-medium uppercase tracking-wide">Medie Grupă</p>
-              <p className="text-4xl font-bold text-stone-900 dark:text-white">{stats.groupAverage.toFixed(2)}</p>
-            </div>
-          </div>
-        </motion.div>
-
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
-          className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-stone-200 dark:border-gray-700">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 bg-red-100 dark:bg-red-900/30 rounded-xl flex items-center justify-center text-red-500 dark:text-red-400">
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-              </svg>
-            </div>
-            <div>
-              <p className="text-stone-500 dark:text-gray-400 text-xs font-medium uppercase tracking-wide">Absențe Totale</p>
-              <p className="text-4xl font-bold text-stone-900 dark:text-white">{stats.totalAbsences}</p>
-            </div>
-          </div>
-        </motion.div>
-      </div>
+      </motion.div>
 
       {/* Tabel Studenți */}
       <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">

@@ -4,13 +4,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 interface StudentFiltersProps {
   searchQuery: string;
   onSearchChange: (query: string) => void;
-  selectedGroup: string;
-  onGroupChange: (group: string) => void;
   selectedYear: string;
   onYearChange: (year: string) => void;
   sortBy: string;
   onSortChange: (sort: string) => void;
-  groups: string[];
 }
 
 interface DropdownOption {
@@ -81,19 +78,11 @@ const CustomDropdown: React.FC<{
 export const StudentFilters: React.FC<StudentFiltersProps> = ({
   searchQuery,
   onSearchChange,
-  selectedGroup,
-  onGroupChange,
   selectedYear,
   onYearChange,
   sortBy,
   onSortChange,
-  groups,
 }) => {
-  const groupOptions: DropdownOption[] = [
-    { value: '', label: 'Toate Grupele' },
-    ...groups.map(g => ({ value: g, label: g })),
-  ];
-
   const yearOptions: DropdownOption[] = [
     { value: '', label: 'Toți Anii' },
     { value: '1', label: 'Anul 1' },
@@ -135,17 +124,6 @@ export const StudentFilters: React.FC<StudentFiltersProps> = ({
 
         {/* Custom Dropdowns */}
         <div className="flex flex-col sm:flex-row gap-3">
-          <CustomDropdown
-            options={groupOptions}
-            value={selectedGroup}
-            onChange={onGroupChange}
-            placeholder="Toate Grupele"
-            icon={
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
-              </svg>
-            }
-          />
           <CustomDropdown
             options={yearOptions}
             value={selectedYear}

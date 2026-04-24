@@ -1,20 +1,101 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Users2, GraduationCap, BookOpen, User, Search, ChevronDown } from 'lucide-react';
 import useGroups from '../hooks/useGroups';
 import type { Group } from '../context/GroupProvider';
+
+const yearOptions = [
+  { value: '', label: 'Toți Anii' },
+  { value: '1', label: 'Anul 1' },
+  { value: '2', label: 'Anul 2' },
+  { value: '3', label: 'Anul 3' },
+  { value: '4', label: 'Anul 4' },
+];
+
+const YearDropdown: React.FC<{ value: string; onChange: (v: string) => void }> = ({ value, onChange }) => {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  const selected = yearOptions.find(o => o.value === value) ?? yearOptions[0];
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
+
+  return (
+    <div ref={ref} className="relative">
+      <button
+        type="button"
+        onClick={() => setOpen(o => !o)}
+        className="flex items-center gap-1.5 text-xs bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl px-3 py-2 text-gray-600 dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 cursor-pointer whitespace-nowrap"
+      >
+        {selected.label}
+        <ChevronDown className={`w-3 h-3 transition-transform duration-200 ${open ? 'rotate-180' : ''}`} />
+      </button>
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0, y: -4 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -4 }}
+            transition={{ duration: 0.15 }}
+            className="absolute z-50 mt-1 w-full min-w-[110px] bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-lg overflow-hidden"
+          >
+            {yearOptions.map(opt => (
+              <button
+                key={opt.value}
+                type="button"
+                onClick={() => { onChange(opt.value); setOpen(false); }}
+                className={`w-full text-left px-3 py-2 text-xs transition-colors duration-150 ${
+                  opt.value === value
+                    ? 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 font-semibold'
+                    : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
+                }`}
+              >
+                {opt.label}
+              </button>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+};
 
 export const Catalog = () => {
   const navigate = useNavigate();
   const { getAllGroups } = useGroups();
   const [groups, setGroups] = useState<Group[]>([]);
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedYear, setSelectedYear] = useState('');
 
   useEffect(() => {
     getAllGroups().then(data => {
       setGroups(data);
     }).finally(() => setLoading(false));
   }, []);
+
+  const filtered = useMemo(() => {
+    let result = [...groups];
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase();
+      result = result.filter(g =>
+        g.groupName.toLowerCase().includes(q) ||
+        (g.specialization ?? '').toLowerCase().includes(q) ||
+        (g.coordinator ?? '').toLowerCase().includes(q)
+      );
+    }
+    if (selectedYear) {
+      result = result.filter(g => g.year === parseInt(selectedYear));
+    }
+    result.sort((a, b) => a.groupName.localeCompare(b.groupName, 'ro'));
+    return result;
+  }, [groups, searchQuery, selectedYear]);
 
   const handleGroupClick = (groupId: number) => {
     navigate(`/dashboard/catalog/${groupId}`);
@@ -29,91 +110,138 @@ export const Catalog = () => {
   }
 
   return (
-    <div className="space-y-6 p-6">
-      {/* Header */}
+    <div className="space-y-6 min-h-full pb-8">
+      {/* Header bar — same pattern as Groups/Students */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
-        className="text-center"
+        className="bg-white dark:bg-gray-800 rounded-2xl px-5 py-3 shadow-sm border border-gray-200 dark:border-gray-700 flex items-center gap-3"
       >
-        <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-3">
+        <h1 className="text-lg font-bold text-gray-900 dark:text-white whitespace-nowrap">
           Catalog Digital
         </h1>
-        <p className="text-gray-600 dark:text-gray-400 text-lg">
-          Selectează o grupă pentru a vizualiza catalogul
-        </p>
+
+        {/* Search */}
+        <div className="relative flex-[2]">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={e => setSearchQuery(e.target.value)}
+            placeholder="Caută grupă, specializare sau coordonator..."
+            className="pl-9 pr-3 py-2 text-sm w-full bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-gray-900 dark:text-white placeholder-gray-400 transition-all"
+          />
+        </div>
+
+        {/* Year filter */}
+        <YearDropdown value={selectedYear} onChange={setSelectedYear} />
+
+        {/* Divider */}
+        <div className="w-px h-6 bg-gray-200 dark:bg-gray-600" />
+
+        {/* Count badge */}
+        <div className="flex items-center gap-2 px-4 py-2 bg-gray-50 dark:bg-gray-700/60 rounded-xl border border-gray-200 dark:border-gray-600 whitespace-nowrap">
+          <Users2 className="w-4 h-4 text-emerald-500" />
+          <span className="text-xs text-gray-500 dark:text-gray-400">Grupe</span>
+          <span className="text-sm font-bold text-gray-900 dark:text-white">{groups.length}</span>
+        </div>
       </motion.div>
 
-      {/* Grid de Grupe */}
+      {/* Grid */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
         transition={{ duration: 0.3, delay: 0.1 }}
-        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
       >
-        {groups.map((group, index) => (
-          <motion.button
-            key={group.id}
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.3, delay: index * 0.05 }}
-            onClick={() => handleGroupClick(group.id)}
-            className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-lg hover:border-blue-300 dark:hover:border-blue-600 transition-all duration-200 text-left group"
-          >
-            {/* Icon & Nume Grupă */}
-            <div className="flex items-center gap-4 mb-4">
-              <div className="w-14 h-14 bg-gradient-to-r from-emerald-500 to-emerald-600 rounded-2xl flex items-center justify-center shadow-md group-hover:shadow-xl transition-shadow">
-                <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
-                </svg>
-              </div>
-              <div>
-                <h3 className="text-2xl font-bold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                  {group.groupName}
-                </h3>
-                <p className="text-sm text-gray-500 dark:text-gray-400 font-medium uppercase tracking-wide">
-                  ANUL {group.year}
-                </p>
-              </div>
-            </div>
-
-            {/* Info */}
-            <div className="space-y-2">
-              <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
-                <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
-                </svg>
-                <span className="text-sm font-medium">{group.currentCapacity} studenți</span>
-              </div>
-              <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
-                <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
-                </svg>
-                <span className="text-sm">{group.specialization}</span>
-              </div>
-            </div>
-          </motion.button>
-        ))}
-      </motion.div>
-
-      {/* Empty State */}
-      {groups.length === 0 && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="text-center py-12"
-        >
-          <div className="w-20 h-20 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4">
-            <svg className="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
-            </svg>
+        {filtered.length === 0 ? (
+          <div className="bg-white dark:bg-gray-800 rounded-2xl p-12 text-center shadow-sm border border-gray-200 dark:border-gray-700">
+            <Users2 className="w-16 h-16 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
+            <p className="text-gray-500 dark:text-gray-400 font-medium">Nicio grupă găsită</p>
+            <p className="text-gray-400 dark:text-gray-500 text-sm mt-1">
+              {searchQuery || selectedYear
+                ? 'Încearcă să modifici filtrele de căutare'
+                : 'Nu există grupe înregistrate'}
+            </p>
           </div>
-          <p className="text-gray-500 dark:text-gray-400 text-lg">
-            Nu există grupe
-          </p>
-        </motion.div>
-      )}
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {filtered.map((group, index) => {
+              const capacityPercentage = Math.min((group.currentCapacity / group.maxCapacity) * 100, 100);
+              const capacityColor =
+                capacityPercentage >= 90 ? 'bg-red-400' :
+                capacityPercentage >= 70 ? 'bg-orange-400' : 'bg-emerald-400';
+              const capacityText =
+                capacityPercentage >= 90 ? 'text-red-500' :
+                capacityPercentage >= 70 ? 'text-orange-500' : 'text-emerald-500';
+
+              return (
+                <motion.div
+                  key={group.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3, delay: Math.min(index * 0.05, 0.6) }}
+                  whileHover={{ y: -4, boxShadow: '0 12px 32px rgba(0,0,0,0.10)' }}
+                  onClick={() => handleGroupClick(group.id)}
+                  className="group bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 hover:border-emerald-200 dark:hover:border-emerald-700 transition-all duration-300 cursor-pointer overflow-hidden"
+                >
+                  {/* Top accent */}
+                  <div className="h-1.5 w-full bg-gradient-to-r from-emerald-400 to-emerald-600" />
+
+                  <div className="p-5">
+                    {/* Icon + name */}
+                    <div className="flex items-start gap-3 mb-3">
+                      <div className="w-11 h-11 rounded-xl flex items-center justify-center bg-gradient-to-br from-emerald-500 to-emerald-600 shadow-sm flex-shrink-0">
+                        <Users2 className="w-6 h-6 text-white" />
+                      </div>
+                      <div>
+                        <h3 className="text-base font-bold text-gray-900 dark:text-white leading-tight">
+                          {group.groupName}
+                        </h3>
+                        <span className="inline-block mt-0.5 px-2 py-0.5 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-300 text-[11px] font-semibold rounded-full">
+                          ANUL {group.year} · SEM {group.semester}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Info rows */}
+                    <div className="space-y-1.5 mb-4">
+                      <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
+                        <GraduationCap className="w-3.5 h-3.5 text-emerald-500 flex-shrink-0" />
+                        <span className="truncate font-medium">{group.faculty || '—'}</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
+                        <BookOpen className="w-3.5 h-3.5 text-blue-400 flex-shrink-0" />
+                        <span className="truncate">{group.specialization || '—'}</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
+                        <User className="w-3.5 h-3.5 text-purple-400 flex-shrink-0" />
+                        <span className="truncate">{group.coordinator || '—'}</span>
+                      </div>
+                    </div>
+
+                    {/* Capacity */}
+                    <div className="pt-3 border-t border-gray-100 dark:border-gray-700 space-y-1.5">
+                      <div className="flex items-center justify-between text-xs">
+                        <span className="text-gray-400 dark:text-gray-500 font-medium">Capacitate</span>
+                        <span className={`font-bold ${capacityText}`}>
+                          {group.currentCapacity}/{group.maxCapacity}
+                        </span>
+                      </div>
+                      <div className="w-full h-1.5 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
+                        <div
+                          className={`h-full ${capacityColor} rounded-full transition-all duration-500`}
+                          style={{ width: `${capacityPercentage}%` }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+              );
+            })}
+          </div>
+        )}
+      </motion.div>
     </div>
   );
 };

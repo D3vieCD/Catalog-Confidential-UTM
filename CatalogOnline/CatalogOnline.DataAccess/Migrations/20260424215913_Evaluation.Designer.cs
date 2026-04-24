@@ -4,6 +4,7 @@ using CatalogOnline.DataAccess.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CatalogOnline.DataAccess.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260424215913_Evaluation")]
+    partial class Evaluation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -52,7 +55,7 @@ namespace CatalogOnline.DataAccess.Migrations
 
                     b.HasIndex("StudentId");
 
-                    b.ToTable("Absence", (string)null);
+                    b.ToTable("Absence");
                 });
 
             modelBuilder.Entity("CatalogOnline.Domain.Entities.Calendar.CalendarEventData", b =>
@@ -93,7 +96,7 @@ namespace CatalogOnline.DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("CalendarEvents", (string)null);
+                    b.ToTable("CalendarEvents");
                 });
 
             modelBuilder.Entity("CatalogOnline.Domain.Entities.Evaluation.EvaluationData", b =>
@@ -124,7 +127,7 @@ namespace CatalogOnline.DataAccess.Migrations
 
                     b.HasIndex("SubjectId");
 
-                    b.ToTable("Evaluation", (string)null);
+                    b.ToTable("Evaluation");
                 });
 
             modelBuilder.Entity("CatalogOnline.Domain.Entities.Grade.GradeData", b =>
@@ -157,7 +160,7 @@ namespace CatalogOnline.DataAccess.Migrations
 
                     b.HasIndex("StudentId");
 
-                    b.ToTable("Grade", (string)null);
+                    b.ToTable("Grade");
                 });
 
             modelBuilder.Entity("CatalogOnline.Domain.Entities.Group.GroupData", b =>
@@ -191,7 +194,7 @@ namespace CatalogOnline.DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Group", (string)null);
+                    b.ToTable("Group");
                 });
 
             modelBuilder.Entity("CatalogOnline.Domain.Entities.Students.StudentData", b =>
@@ -227,7 +230,7 @@ namespace CatalogOnline.DataAccess.Migrations
 
                     b.HasIndex("GroupId");
 
-                    b.ToTable("Student", (string)null);
+                    b.ToTable("Student");
                 });
 
             modelBuilder.Entity("CatalogOnline.Domain.Entities.Subject.SubjectData", b =>
@@ -250,7 +253,7 @@ namespace CatalogOnline.DataAccess.Migrations
 
                     b.HasIndex("GroupId");
 
-                    b.ToTable("Subject", (string)null);
+                    b.ToTable("Subject");
                 });
 
             modelBuilder.Entity("CatalogOnline.Domain.Entities.User.UserData", b =>
@@ -291,7 +294,7 @@ namespace CatalogOnline.DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("User", (string)null);
+                    b.ToTable("User");
                 });
 
             modelBuilder.Entity("CatalogOnline.Domain.Entities.Absence.AbsenceData", b =>
