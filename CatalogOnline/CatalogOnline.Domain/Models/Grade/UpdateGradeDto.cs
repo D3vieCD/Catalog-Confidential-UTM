@@ -9,7 +9,8 @@ namespace CatalogOnline.Domain.Models.Grade
      public class UpdateGradeDto
      {
           public int StudentId { get; set; }
-          public string SubjectName { get; set; }
+          public int? EvaluationId { get; set; }
+          public string SubjectName { get; set; } = string.Empty;
           public int GradeValue { get; set; }
           public DateTime DateAwarded { get; set; }
      }

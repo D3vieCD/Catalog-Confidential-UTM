@@ -1,10 +1,71 @@
-import { useState, useMemo, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { Plus, Users2 } from 'lucide-react';
-import { GroupStats, GroupCard, GroupFilters, GroupModal, GroupDetailPanel } from '../components/groups';
+import { useState, useMemo, useEffect, useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Plus, Users2, Search, ChevronDown } from 'lucide-react';
+import { GroupStats, GroupCard, GroupModal, GroupDetailPanel } from '../components/groups';
 import { ConfirmModal } from '../components/ui/ConfirmModal';
 import type { CreateGroupDto, Group } from '../context/GroupProvider';
 import useGroups from '../hooks/useGroups';
+
+const yearOptions = [
+  { value: '', label: 'Toți Anii' },
+  { value: '1', label: 'Anul 1' },
+  { value: '2', label: 'Anul 2' },
+  { value: '3', label: 'Anul 3' },
+  { value: '4', label: 'Anul 4' },
+];
+
+const YearDropdown: React.FC<{ value: string; onChange: (v: string) => void }> = ({ value, onChange }) => {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  const selected = yearOptions.find(o => o.value === value) ?? yearOptions[0];
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
+
+  return (
+    <div ref={ref} className="relative">
+      <button
+        type="button"
+        onClick={() => setOpen(o => !o)}
+        className="flex items-center gap-1.5 text-xs bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl px-3 py-2 text-gray-600 dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 cursor-pointer whitespace-nowrap"
+      >
+        {selected.label}
+        <ChevronDown className={`w-3 h-3 transition-transform duration-200 ${open ? 'rotate-180' : ''}`} />
+      </button>
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0, y: -4 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -4 }}
+            transition={{ duration: 0.15 }}
+            className="absolute z-50 mt-1 w-full min-w-[110px] bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-lg overflow-hidden"
+          >
+            {yearOptions.map(opt => (
+              <button
+                key={opt.value}
+                type="button"
+                onClick={() => { onChange(opt.value); setOpen(false); }}
+                className={`w-full text-left px-3 py-2 text-xs transition-colors duration-150 ${
+                  opt.value === value
+                    ? 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 font-semibold'
+                    : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
+                }`}
+              >
+                {opt.label}
+              </button>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+};
 
 const mapGroup = (g: Group): Group => ({
   id: Number(g.id),
@@ -52,7 +113,6 @@ export const Groups = () => {
   // Filters
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedYear, setSelectedYear] = useState('');
-  const [sortBy, setSortBy] = useState('az');
 
   // Modals
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -61,7 +121,7 @@ export const Groups = () => {
   const [deletingGroup, setDeletingGroup] = useState<Group | null>(null);
   const [viewingGroup, setViewingGroup] = useState<Group | null>(null);
 
-  // Filtered & sorted groups
+  // Filtered groups
   const filteredGroups = useMemo(() => {
     let result = [...groups];
 
@@ -78,29 +138,10 @@ export const Groups = () => {
       result = result.filter(g => g.year === parseInt(selectedYear));
     }
 
-    switch (sortBy) {
-      case 'az':
-        result.sort((a, b) => a.groupName.localeCompare(b.groupName, 'ro'));
-        break;
-      case 'za':
-        result.sort((a, b) => b.groupName.localeCompare(a.groupName, 'ro'));
-        break;
-      case 'year-asc':
-        result.sort((a, b) => a.year - b.year);
-        break;
-      case 'year-desc':
-        result.sort((a, b) => b.year - a.year);
-        break;
-      case 'capacity-asc':
-        result.sort((a, b) => a.currentCapacity - b.currentCapacity);
-        break;
-      case 'capacity-desc':
-        result.sort((a, b) => b.currentCapacity - a.currentCapacity);
-        break;
-    }
+    result.sort((a, b) => a.groupName.localeCompare(b.groupName, 'ro'));
 
     return result;
-  }, [groups, searchQuery, selectedYear, sortBy]);
+  }, [groups, searchQuery, selectedYear]);
 
   // Handlers
   const handleOpenAdd = () => {
@@ -169,53 +210,53 @@ export const Groups = () => {
 
   return (
     <div className="space-y-6 min-h-full pb-8">
-      {/* Header */}
+      {/* Header — single row */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
-        className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
+        className="bg-white dark:bg-gray-800 rounded-2xl px-5 py-3 shadow-sm border border-gray-200 dark:border-gray-700 flex items-center gap-3"
       >
-        <div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">
-            Gestiune Grupe
-          </h1>
-          <p className="text-gray-600 dark:text-gray-400 mt-1 text-sm">
-            Total: {groups.length} grupe academice
-          </p>
+        <h1 className="text-lg font-bold text-gray-900 dark:text-white whitespace-nowrap">
+          Gestiune Grupe
+        </h1>
+
+        {/* Search */}
+        <div className="relative flex-[2]">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Caută grupă sau coordonator..."
+            className="pl-9 pr-3 py-2.5 text-sm w-full bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-gray-900 dark:text-white placeholder-gray-400 transition-all"
+          />
         </div>
 
-        <div className="flex items-center gap-3">
-          <button
-            onClick={handleOpenAdd}
-            className="px-4 sm:px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-medium transition-all duration-200 shadow-sm hover:shadow-md flex items-center gap-2"
-          >
-            <Plus className="w-5 h-5" />
-            <span className="hidden sm:inline">Adaugă Grupă</span>
-            <span className="sm:hidden">Adaugă</span>
-          </button>
-        </div>
+        {/* Year filter */}
+        <YearDropdown value={selectedYear} onChange={setSelectedYear} />
+
+        {/* Divider */}
+        <div className="w-px h-6 bg-gray-200 dark:bg-gray-600" />
+
+        {/* Stats inline */}
+        <GroupStats
+          totalGroups={groups.length}
+          totalStudents={groups.reduce((sum, g) => sum + g.currentCapacity, 0)}
+          totalFaculties={faculties.length}
+        />
+
+        {/* Spacer */}
+        <div className="flex-1" />
+
+        <button
+          onClick={handleOpenAdd}
+          className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-medium transition-all duration-200 shadow-sm hover:shadow-md flex items-center gap-2 whitespace-nowrap text-sm"
+        >
+          <Plus className="w-4 h-4" />
+          <span>Adaugă Grupă</span>
+        </button>
       </motion.div>
-
-      {/* Stats */}
-      <GroupStats
-        totalGroups={groups.length}
-        totalStudents={groups.reduce((sum, g) => sum + g.currentCapacity, 0)}
-        avgStudentsPerGroup={groups.length > 0
-          ? Math.round(groups.reduce((sum, g) => sum + g.currentCapacity, 0) / groups.length)
-          : 0}
-        totalFaculties={faculties.length}
-      />
-
-      {/* Filters */}
-      <GroupFilters
-        searchQuery={searchQuery}
-        onSearchChange={setSearchQuery}
-        selectedYear={selectedYear}
-        onYearChange={setSelectedYear}
-        sortBy={sortBy}
-        onSortChange={setSortBy}
-      />
 
       {/* Groups Grid */}
       <motion.div

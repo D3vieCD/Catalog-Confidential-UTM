@@ -1,4 +1,5 @@
 ﻿using CatalogOnline.Domain.Entities.Absence;
+using CatalogOnline.Domain.Entities.Evaluation;
 using CatalogOnline.Domain.Entities.Subject;
 using CatalogOnline.Domain.Entities.Grade;
 using CatalogOnline.Domain.Entities.Group;
@@ -45,6 +46,27 @@ namespace CatalogOnline.DataAccess.Context
                    .HasForeignKey(a => a.StudentId)
                    .OnDelete(DeleteBehavior.Cascade);
 
+               // Subject → Evaluations (one-to-many)
+               modelBuilder.Entity<SubjectData>()
+                   .HasMany(s => s.Evaluations)
+                   .WithOne(e => e.Subject)
+                   .HasForeignKey(e => e.SubjectId)
+                   .OnDelete(DeleteBehavior.Cascade);
+
+               // Evaluation → Grades (one-to-many, NoAction to avoid multiple cascade paths)
+               modelBuilder.Entity<EvaluationData>()
+                   .HasMany(e => e.Grades)
+                   .WithOne(g => g.Evaluation)
+                   .HasForeignKey(g => g.EvaluationId)
+                   .OnDelete(DeleteBehavior.NoAction);
+
+               // Evaluation → Absences (one-to-many, NoAction to avoid multiple cascade paths)
+               modelBuilder.Entity<EvaluationData>()
+                   .HasMany(e => e.Absences)
+                   .WithOne(a => a.Evaluation)
+                   .HasForeignKey(a => a.EvaluationId)
+                   .OnDelete(DeleteBehavior.NoAction);
+
           }
 
           public DbSet<UserData> User { get; set; }
@@ -53,7 +75,7 @@ namespace CatalogOnline.DataAccess.Context
           public DbSet<StudentData> Student { get; set; }
           public DbSet<AbsenceData> Absence { get; set; }
           public DbSet<SubjectData> Subject { get; set; }
-     public DbSet<CalendarEventData> CalendarEvents { get; set; }
-
+          public DbSet<EvaluationData> Evaluation { get; set; }
+          public DbSet<CalendarEventData> CalendarEvents { get; set; }
      }
 }
