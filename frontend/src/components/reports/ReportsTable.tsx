@@ -1,14 +1,14 @@
 import { motion } from 'framer-motion';
-import type { Report } from '../../_mock/mockReports';
+import useReports from '../../hooks/useReports';
+import type { ReportHistoryItem } from '../../context/ReportProvider';
 
 interface ReportsTableProps {
-  reports: Report[];
+  reports: ReportHistoryItem[];
 }
 
-/**
- * ReportsTable - Tabel cu istoricul rapoartelor generate
- */
 export const ReportsTable = ({ reports }: ReportsTableProps) => {
+  const { downloadReport } = useReports();
+
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     const day = date.getDate();
@@ -17,19 +17,17 @@ export const ReportsTable = ({ reports }: ReportsTableProps) => {
     return `${day} ${month.charAt(0).toUpperCase() + month.slice(1)} ${year}`;
   };
 
-  const getTypeLabel = (type: Report['type']) => {
+  const getTypeLabel = (type: string) => {
     switch (type) {
-      case 'note':
-        return 'Note';
-      case 'absente':
-        return 'Absențe';
-      case 'complet':
-        return 'Complet';
+      case 'Note': return 'Note';
+      case 'Absente': return 'Absențe';
+      case 'Complet': return 'Complet';
+      default: return type;
     }
   };
 
-  const handleDownload = (report: Report) => {
-    alert(`Descărcare raport:\n\nGrupă: ${report.groupName}\nTip: ${getTypeLabel(report.type)}\nData: ${formatDate(report.date)}\n\nÎn producție, aici s-ar descărca fișierul Excel.`);
+  const handleDownload = async (report: ReportHistoryItem) => {
+    await downloadReport(report.id);
   };
 
   if (reports.length === 0) {
@@ -59,21 +57,11 @@ export const ReportsTable = ({ reports }: ReportsTableProps) => {
         <table className="w-full">
           <thead className="bg-gray-50 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700">
             <tr>
-              <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
-                Data
-              </th>
-              <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
-                Grupă
-              </th>
-              <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
-                Tip
-              </th>
-              <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
-                Status
-              </th>
-              <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
-                Acțiuni
-              </th>
+              <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">Data</th>
+              <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">Grupă</th>
+              <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">Tip</th>
+              <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">Status</th>
+              <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">Acțiuni</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
@@ -85,29 +73,23 @@ export const ReportsTable = ({ reports }: ReportsTableProps) => {
                 transition={{ delay: index * 0.05 }}
                 className="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
               >
-                {/* Data */}
                 <td className="px-6 py-4">
-                  <p className="text-gray-900 dark:text-white font-medium">{formatDate(report.date)}</p>
+                  <p className="text-gray-900 dark:text-white font-medium">{formatDate(report.generatedAt)}</p>
                 </td>
-
-                {/* Grupă */}
                 <td className="px-6 py-4">
                   <p className="text-gray-900 dark:text-white font-semibold">{report.groupName}</p>
+                  {report.studentName && (
+                    <p className="text-xs text-gray-400 dark:text-gray-500">{report.studentName}</p>
+                  )}
                 </td>
-
-                {/* Tip */}
                 <td className="px-6 py-4">
-                  <p className="text-gray-600 dark:text-gray-400">{getTypeLabel(report.type)}</p>
+                  <p className="text-gray-600 dark:text-gray-400">{getTypeLabel(report.reportType)}</p>
                 </td>
-
-                {/* Status */}
                 <td className="px-6 py-4">
                   <span className="px-3 py-1 rounded-full text-xs font-bold bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400">
-                    {report.status === 'generat' ? 'Generat' : 'Procesare'}
+                    Generat
                   </span>
                 </td>
-
-                {/* Acțiuni */}
                 <td className="px-6 py-4">
                   <button
                     onClick={() => handleDownload(report)}

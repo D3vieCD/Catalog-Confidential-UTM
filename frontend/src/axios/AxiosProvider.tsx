@@ -9,16 +9,14 @@ export const AxiosProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     const navigate = useNavigate();
 
     const axiosInstance = useMemo(() => {
-        return axios.create({
+        const instance = axios.create({
             baseURL: "http://localhost:5227/api",
             headers: {
                 "Content-Type": "application/json",
             },
         });
-    }, []);
 
-    useEffect(() => {
-        const requestInterceptor = axiosInstance.interceptors.request.use((config) => {
+        instance.interceptors.request.use((config) => {
             const token = localStorage.getItem("authToken");
             if (token) {
                 config.headers.Authorization = `Bearer ${token}`;
@@ -26,6 +24,10 @@ export const AxiosProvider: React.FC<{ children: React.ReactNode }> = ({ childre
             return config;
         });
 
+        return instance;
+    }, []);
+
+    useEffect(() => {
         const responseInterceptor = axiosInstance.interceptors.response.use(
             (response: AxiosResponse) => response,
             (error: AxiosError) => {
@@ -41,7 +43,6 @@ export const AxiosProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         );
 
         return () => {
-            axiosInstance.interceptors.request.eject(requestInterceptor);
             axiosInstance.interceptors.response.eject(responseInterceptor);
         };
     }, [axiosInstance, navigate]);

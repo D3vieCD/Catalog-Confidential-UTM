@@ -1,31 +1,39 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { ReportStats, ExportSection, ImportSection, ReportsTable } from '../components/reports';
-import { getReports, getReportStats } from '../_mock/mockReports';
-import type { Report } from '../_mock/mockReports';
+import useReports from '../hooks/useReports';
+import type { ReportHistoryItem, ReportStats as StatsType } from '../context/ReportProvider';
 
-/**
- * Reports - Pagina de management rapoarte
- * Permite export/import Excel pentru note și absențe
- */
 export const Reports = () => {
-  const [reports, setReports] = useState<Report[]>([]);
-  const [stats, setStats] = useState(getReportStats());
+  const { getReportHistory, getReportStats } = useReports();
+  const [reports, setReports] = useState<ReportHistoryItem[]>([]);
+  const [stats, setStats] = useState<StatsType>({
+    totalReports: 0,
+    activeGroups: 0,
+    exportsThisMonth: 0,
+    monthlyImports: 0,
+  });
 
   useEffect(() => {
-    loadReports();
+    loadData();
   }, []);
 
-  const loadReports = () => {
-    const allReports = getReports();
-    setReports(allReports);
-    setStats(getReportStats());
+  const loadData = async () => {
+    try {
+      const [history, reportStats] = await Promise.all([
+        getReportHistory(),
+        getReportStats(),
+      ]);
+      setReports(history);
+      setStats(reportStats);
+    } catch {
+    }
   };
 
   const handleReportGenerated = () => {
-    // Refresh datele după ce s-a generat un raport nou
-    loadReports();
+    loadData();
   };
+
   return (
     <div className="space-y-8 p-8">
       {/* Header */}
@@ -43,13 +51,11 @@ export const Reports = () => {
 
       {/* Stats Cards */}
       <ReportStats stats={stats} />
+
       {/* Export & Import Sections */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Export Section */}
         <ExportSection onReportGenerated={handleReportGenerated} />
-
-        {/* Import Section */}
-        <ImportSection />
+        <ImportSection onGroupCreated={handleReportGenerated} />
       </div>
 
       {/* Reports Table */}

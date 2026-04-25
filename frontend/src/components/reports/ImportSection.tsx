@@ -2,8 +2,9 @@ import { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CustomSelect } from '../ui/CustomSelect';
 import * as XLSX from 'xlsx';
-import { addStudent, addGroup as addGroupToStudents } from '../../_mock/mockStudents';
-import { addGroup as addGroupToGroups } from '../../_mock/mockGroups';
+import useGroups from '../../hooks/useGroups';
+import useStudents from '../../hooks/useStudents';
+import useReports from '../../hooks/useReports';
 
 interface ParsedStudent {
   name: string;
@@ -15,17 +16,20 @@ interface ParsedStudent {
 
 type Step = 'upload' | 'preview' | 'done';
 
-/**
- * ImportSection - Încarcă fișier Excel/CSV și creează automat o grupă cu studenții
- * Coloane așteptate: Nume, Prenume, Email, Telefon
- */
-export const ImportSection = () => {
+interface ImportSectionProps {
+  onGroupCreated?: () => void;
+}
+
+export const ImportSection = ({ onGroupCreated }: ImportSectionProps) => {
+  const { createGroup } = useGroups();
+  const { createStudent } = useStudents();
+  const { logImport } = useReports();
+
   const [step, setStep] = useState<Step>('upload');
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [students, setStudents] = useState<ParsedStudent[]>([]);
   const [groupName, setGroupName] = useState('');
   const [groupYear, setGroupYear] = useState<number>(1);
-  const [subjectsInput, setSubjectsInput] = useState('Materie generală');
   const [isProcessing, setIsProcessing] = useState(false);
   const [createdCount, setCreatedCount] = useState(0);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -44,7 +48,6 @@ export const ImportSection = () => {
           return;
         }
 
-        // Ignorăm primul rând (header)
         const parsed: ParsedStudent[] = rows.slice(1)
           .filter((row) => row.some((cell) => cell !== undefined && cell !== ''))
           .map((row) => {
@@ -103,45 +106,38 @@ export const ImportSection = () => {
     }
 
     setIsProcessing(true);
-    const name = groupName.trim().toUpperCase();
-
-    // Creează grupa în ambele store-uri
-    addGroupToStudents(name);
-    const subjects = subjectsInput
-      .split(',')
-      .map((s) => s.trim())
-      .filter((s) => s.length > 0);
-
-    addGroupToGroups({
-      name,
-      year: groupYear,
-      faculty: 'Informatică',
-      specialization: 'Informatică Aplicată',
-      coordinator: 'Nespecificat',
-      maxCapacity: Math.max(validStudents.length, 30),
-      semester: 'I',
-      status: 'ACTIV',
-      subjects,
-    });
-
-    // Adaugă fiecare student
-    let count = 0;
-    for (const s of validStudents) {
-      addStudent({
-        name: s.name,
-        email: s.email,
-        group: name,
+    try {
+      const name = groupName.trim().toUpperCase();
+      const group = await createGroup({
+        groupName: name,
         year: groupYear,
-        status: 'active',
+        faculty: 'Informatică',
+        specialization: 'Informatică Aplicată',
+        coordinator: 'Nespecificat',
+        maxCapacity: Math.max(validStudents.length, 30),
+        semester: 1,
       });
-      count++;
-      // Mică pauză pentru a evita id-uri duplicate (Date.now())
-      await new Promise((r) => setTimeout(r, 2));
-    }
 
-    setCreatedCount(count);
-    setIsProcessing(false);
-    setStep('done');
+      let count = 0;
+      for (const s of validStudents) {
+        await createStudent({
+          fullName: s.name,
+          email: s.email,
+          phoneNumber: s.phone || '0000000000',
+          groupId: group.id,
+        });
+        count++;
+      }
+
+      setCreatedCount(count);
+      await logImport({ groupId: group.id, studentCount: count });
+      setStep('done');
+      onGroupCreated?.();
+    } catch {
+      alert('Eroare la importul datelor. Verifică că conexiunea la server este activă.');
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   const handleReset = () => {
@@ -150,7 +146,6 @@ export const ImportSection = () => {
     setStudents([]);
     setGroupName('');
     setGroupYear(1);
-    setSubjectsInput('Materie generală');
     setCreatedCount(0);
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
@@ -222,16 +217,12 @@ export const ImportSection = () => {
               </div>
             </div>
 
-            {/* Info + Download template */}
             <div className="mt-4 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
-              {/* Header info */}
               <div className="px-4 py-3 bg-gray-50 dark:bg-gray-700/50 border-b border-gray-200 dark:border-gray-700">
                 <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                   Format așteptat — prima linie este header
                 </p>
               </div>
-
-              {/* Coloane */}
               <div className="grid grid-cols-4 divide-x divide-gray-200 dark:divide-gray-700">
                 {[
                   { col: 'A', label: 'Nume', eg: 'Popescu' },
@@ -248,8 +239,6 @@ export const ImportSection = () => {
                   </div>
                 ))}
               </div>
-
-              {/* Download button */}
               <div className="px-4 py-3 bg-gray-50 dark:bg-gray-700/50 border-t border-gray-200 dark:border-gray-700 flex items-center justify-between">
                 <p className="text-xs text-gray-500 dark:text-gray-400">
                   Nu ai un fișier pregătit? Descarcă un exemplu gata completat.
@@ -271,7 +260,6 @@ export const ImportSection = () => {
         {/* STEP 2: Preview + grup */}
         {step === 'preview' && (
           <motion.div key="preview" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex flex-col gap-4">
-            {/* Fișier selectat */}
             <div className="flex items-center justify-between p-3 bg-green-50 dark:bg-green-900/20 rounded-xl border border-green-200 dark:border-green-800">
               <div className="flex items-center gap-2">
                 <svg className="w-5 h-5 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -285,7 +273,6 @@ export const ImportSection = () => {
               </div>
             </div>
 
-            {/* Preview tabel */}
             <div className="rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
               <div className="max-h-52 overflow-y-auto">
                 <table className="w-full text-sm">
@@ -318,7 +305,6 @@ export const ImportSection = () => {
               </div>
             </div>
 
-            {/* Setări grupă */}
             <div className="grid grid-cols-2 gap-3 mb-1">
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
@@ -337,26 +323,11 @@ export const ImportSection = () => {
                 <CustomSelect
                   value={String(groupYear)}
                   onChange={(v) => setGroupYear(Number(v))}
-                  options={[1, 2, 3, 4].map(y => ({ value: String(y), label: `Anul ${y}` }))}
+                  options={[1, 2, 3, 4].map((y) => ({ value: String(y), label: `Anul ${y}` }))}
                 />
               </div>
             </div>
 
-            {/* Materii */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Materii <span className="text-gray-400 font-normal">(separate prin virgulă)</span>
-              </label>
-              <input
-                type="text"
-                value={subjectsInput}
-                onChange={(e) => setSubjectsInput(e.target.value)}
-                placeholder="ex: Matematică, Informatică"
-                className="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
-              />
-            </div>
-
-            {/* Butoane */}
             <div className="flex gap-3">
               <button
                 onClick={handleReset}

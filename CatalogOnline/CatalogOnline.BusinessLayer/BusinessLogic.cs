@@ -56,5 +56,9 @@ namespace CatalogOnline.BusinessLayer
           {
                return new JwtService();
           }
+          public IReportAction ReportAction()
+          {
+               return new ReportService();
+          }
      }
 }
