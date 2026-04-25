@@ -48,5 +48,13 @@ namespace CatalogOnline.BusinessLayer
           {
                return new EvaluationService();
           }
+          public IAuthAction AuthAction()
+          {
+               return new AuthService();
+          }
+          public IJwtAction JwtAction()
+          {
+               return new JwtService();
+          }
      }
 }

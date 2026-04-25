@@ -1,59 +1,47 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button, Input, Checkbox } from '../../components/ui';
-import { Divider } from '../../components/auth';
-import { storage } from '../../utils';
-import  paths  from '../../routes/paths';
-
-/**
- * Register Form - Formularul de înregistrare
- * RESPONSIVE: Full width pe mobile, 1/2 pe desktop
- */
+import { useAuth } from '../../hooks/useAuth';
+import paths from '../../routes/paths';
+import { motion } from 'framer-motion';
 
 export const RegisterForm = () => {
   const navigate = useNavigate();
-  const [name, setName] = useState('');
+  const { register, loading } = useAuth();
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [userName, setUserName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
 
-  const handleRegister = () => {
+  const handleRegister = async () => {
     setError('');
-    setLoading(true);
 
-    // Validări
-    if (!name || !email || !password || !confirmPassword) {
+    if (!firstName || !lastName || !userName || !email || !password || !confirmPassword) {
       setError('Toate câmpurile sunt obligatorii!');
-      setLoading(false);
       return;
     }
 
     if (password !== confirmPassword) {
       setError('Parolele nu se potrivesc!');
-      setLoading(false);
       return;
     }
 
-    if (password.length < 6) {
-      setError('Parola trebuie să aibă cel puțin 6 caractere!');
-      setLoading(false);
+    if (password.length < 8) {
+      setError('Parola trebuie să aibă cel puțin 8 caractere!');
       return;
     }
 
-    // Simulare înregistrare reușită
-    // Aici ar trebui să faci call la API
-    setTimeout(() => {
-      // Salvăm datele (simulare)
-      storage.set('isRegistered', 'true');
-      storage.set('userName', name);
-      storage.set('userEmail', email);
-
-      setLoading(false);
-      // Redirecționăm la login
-      navigate(paths.login);
-    }, 1500);
+    try {
+      await register({ userName, firstName, lastName, email, password, confirmPassword });
+      setSuccess(true);
+      setTimeout(() => navigate(paths.login), 1500);
+    } catch (err: any) {
+      setError(err.message || 'Înregistrare eșuată!');
+    }
   };
 
   return (
@@ -76,7 +64,7 @@ export const RegisterForm = () => {
 
         {/* Error Message */}
         {error && (
-          <div className="mb-4 p-3 rounded-lg flex items-center gap-2 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400">
+          <div className="mb-3 p-3 rounded-lg flex items-center gap-2 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400">
             <svg className="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
               <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
             </svg>
@@ -84,21 +72,55 @@ export const RegisterForm = () => {
           </div>
         )}
 
-        {/* Name Input */}
-        <div className="mb-2">
+        {/* Success Message */}
+        {success && (
+          <div className="mb-3 p-3 rounded-lg flex items-center gap-2 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400">
+            <svg className="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+            </svg>
+            <span className="text-sm font-medium">Cont creat! Te redirecționăm...</span>
+          </div>
+        )}
+
+        {/* Prenume + Nume */}
+        <div className="grid grid-cols-2 gap-3 mb-2">
           <Input
-            label="Nume complet"
+            label="Prenume"
             type="text"
-            placeholder="Ion Popescu"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+            placeholder="Ion"
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
+            fullWidth
+            disabled={loading}
+            className="py-2"
+          />
+          <Input
+            label="Nume"
+            type="text"
+            placeholder="Popescu"
+            value={lastName}
+            onChange={(e) => setLastName(e.target.value)}
             fullWidth
             disabled={loading}
             className="py-2"
           />
         </div>
 
-        {/* Email Input */}
+        {/* Username */}
+        <div className="mb-2">
+          <Input
+            label="Nume utilizator"
+            type="text"
+            placeholder="ionpopescu"
+            value={userName}
+            onChange={(e) => setUserName(e.target.value)}
+            fullWidth
+            disabled={loading}
+            className="py-2"
+          />
+        </div>
+
+        {/* Email */}
         <div className="mb-2">
           <Input
             label="Email"
@@ -112,12 +134,12 @@ export const RegisterForm = () => {
           />
         </div>
 
-        {/* Password + Confirm - pe același rând */}
+        {/* Parolă + Confirmă */}
         <div className="grid grid-cols-2 gap-3 mb-2">
           <Input
             label="Parolă"
             type="password"
-            placeholder="••••••"
+            placeholder="••••••••"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             fullWidth
@@ -127,7 +149,7 @@ export const RegisterForm = () => {
           <Input
             label="Confirmă parola"
             type="password"
-            placeholder="••••••"
+            placeholder="••••••••"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             onKeyDown={(e) => {
@@ -139,7 +161,7 @@ export const RegisterForm = () => {
           />
         </div>
 
-        {/* Terms & Privacy */}
+        {/* Terms */}
         <div className="flex items-center mb-3">
           <Checkbox label="Sunt de acord cu termenii și condițiile" disabled={loading} />
         </div>
@@ -150,51 +172,34 @@ export const RegisterForm = () => {
           fullWidth
           onClick={handleRegister}
           loading={loading}
-          disabled={!name || !email || !password || !confirmPassword}
+          disabled={!firstName || !lastName || !userName || !email || !password || !confirmPassword}
         >
           Creează cont
         </Button>
 
-        {/* Divider */}
-        <Divider />
-
-        {/* Social Buttons - 3 coloane compacte */}
-        <div className="grid grid-cols-3 gap-2">
-          <button type="button" className="flex items-center justify-center gap-2 py-2 px-3 rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 transition-all">
-            <svg className="w-4 h-4 flex-shrink-0" viewBox="0 0 24 24">
-              <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-              <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-              <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
-              <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-            </svg>
-            <span className="text-xs font-medium text-gray-700 dark:text-gray-200">Google</span>
-          </button>
-          <button type="button" className="flex items-center justify-center gap-2 py-2 px-3 rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 transition-all">
-            <svg className="w-4 h-4 flex-shrink-0" viewBox="0 0 23 23">
-              <path fill="#f35325" d="M1 1h10v10H1z"/>
-              <path fill="#81bc06" d="M12 1h10v10H12z"/>
-              <path fill="#05a6f0" d="M1 12h10v10H1z"/>
-              <path fill="#ffba08" d="M12 12h10v10H12z"/>
-            </svg>
-            <span className="text-xs font-medium text-gray-700 dark:text-gray-200">Microsoft</span>
-          </button>
-          <button type="button" className="flex items-center justify-center gap-2 py-2 px-3 rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 transition-all">
-            <svg className="w-4 h-4 flex-shrink-0" viewBox="0 0 24 24">
-              <path fill="currentColor" className="text-gray-800 dark:text-white" d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-            </svg>
-            <span className="text-xs font-medium text-gray-700 dark:text-gray-200">GitHub</span>
-          </button>
-        </div>
-
         {/* Login */}
         <p className="text-center text-sm text-gray-600 dark:text-gray-400 mt-4 transition-colors">
           Ai deja cont?{' '}
-          <button
+          <motion.button
             onClick={() => navigate(paths.login)}
-            className="text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 font-semibold transition-colors"
+            className="text-emerald-600 dark:text-emerald-400 font-semibold relative inline-block"
+            whileHover="hover"
+            whileTap={{ y: 1 }}
           >
-            Intră în cont
-          </button>
+            <motion.span
+              variants={{ hover: { y: -2 } }}
+              transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+              className="inline-block"
+            >
+              Intră în cont
+            </motion.span>
+            <motion.span
+              className="absolute bottom-0 left-0 h-[2px] bg-emerald-500 dark:bg-emerald-400 rounded-full"
+              variants={{ hover: { width: '100%' } }}
+              initial={{ width: '0%' }}
+              transition={{ duration: 0.25, ease: 'easeOut' }}
+            />
+          </motion.button>
         </p>
       </div>
     </div>

@@ -1,4 +1,4 @@
-﻿using CatalogOnline.BusinessLayer.Core;
+using CatalogOnline.BusinessLayer.Core;
 using CatalogOnline.BusinessLayer.Interfaces;
 using CatalogOnline.Domain.Models.Group;
 using CatalogOnline.Domain.Models.Responses;
@@ -7,25 +7,25 @@ namespace CatalogOnline.BusinessLayer.Structure
 {
      public class GroupService : GroupActions, IGroupAction
      {
-          public GroupActionResponse CreateGroupAction(CreateGroupDto createData)
+          public GroupActionResponse CreateGroupAction(CreateGroupDto createData, int userId)
           {
-               return CreateGroupActionExecution(createData);
+               return CreateGroupActionExecution(createData, userId);
           }
-          public GroupActionResponse DeleteGroupAction(int id)
+          public GroupActionResponse DeleteGroupAction(int id, int userId)
           {
-               return DeleteGroupActionExecution(id);
+               return DeleteGroupActionExecution(id, userId);
           }
-          public GroupActionResponse UpdateGroupAction(int groupId, UpdateGroupDto groupData)
+          public GroupActionResponse UpdateGroupAction(int groupId, UpdateGroupDto groupData, int userId)
           {
-               return UpdateGroupActionExecution(groupId, groupData);
+               return UpdateGroupActionExecution(groupId, groupData, userId);
           }
-          public GroupActionResponse GetAllGroupsAction()
+          public GroupActionResponse GetAllGroupsAction(int userId)
           {
-               return GetAllGroupsActionExecution();
+               return GetAllGroupsActionExecution(userId);
           }
-          public GroupActionResponse GetGroupByIdAction(int id)
+          public GroupActionResponse GetGroupByIdAction(int id, int userId)
           {
-               return GetGroupByIdActionExecution(id);
+               return GetGroupByIdActionExecution(id, userId);
           }
      }
 }

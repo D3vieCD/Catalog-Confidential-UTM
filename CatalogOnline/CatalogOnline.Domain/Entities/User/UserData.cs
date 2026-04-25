@@ -29,8 +29,11 @@ namespace CatalogOnline.Domain.Entities.User
 
 
           [Required]
-          [StringLength(48, MinimumLength = 8)]
+          [StringLength(100)]
           public string Password { get; set; }= string.Empty;
+
+          [StringLength(20)]
+          public string Role { get; set; } = "User";
 
           [DataType(DataType.Date)]
           public DateTime CreatedOn { get; set; } = DateTime.Now;

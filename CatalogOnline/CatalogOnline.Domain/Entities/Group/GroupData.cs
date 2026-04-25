@@ -25,6 +25,8 @@ namespace CatalogOnline.Domain.Entities.Group
           public int MaxCapacity  { get; set; }
           public int Semester { get; set; }
 
+          public int UserId { get; set; }
+
           [JsonIgnore]
           public List<StudentData> Students { get; set; } = new List<StudentData>();
 

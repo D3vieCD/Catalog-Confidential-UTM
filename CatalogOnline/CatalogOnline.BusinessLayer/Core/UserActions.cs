@@ -16,7 +16,7 @@ namespace CatalogOnline.BusinessLayer.Core
                     var user = new UserData
                     {
                          UserName = createData.UserName,
-                         Password = createData.Password,
+                         Password = BCrypt.Net.BCrypt.HashPassword(createData.Password),
                          Email = createData.Email,
                          FirstName = createData.FirstName,
                          LastName = createData.LastName,
@@ -69,7 +69,7 @@ namespace CatalogOnline.BusinessLayer.Core
                          };
                     }
                     user.UserName = updateData.UserName;
-                    user.Password = updateData.Password;
+                    user.Password = BCrypt.Net.BCrypt.HashPassword(updateData.Password);
                     user.Email = updateData.Email;
                     user.FirstName = updateData.FirstName;
                     user.LastName = updateData.LastName;
