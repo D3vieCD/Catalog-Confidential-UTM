@@ -4,6 +4,7 @@ using CatalogOnline.DataAccess.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CatalogOnline.DataAccess.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260425193936_AddReportTable")]
+    partial class AddReportTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -195,35 +198,6 @@ namespace CatalogOnline.DataAccess.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Group");
-                });
-
-            modelBuilder.Entity("CatalogOnline.Domain.Entities.Report.ImportLogData", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("GroupId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("ImportedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("StudentCount")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("GroupId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("ImportLog");
                 });
 
             modelBuilder.Entity("CatalogOnline.Domain.Entities.Report.ReportData", b =>
@@ -426,25 +400,6 @@ namespace CatalogOnline.DataAccess.Migrations
                     b.Navigation("Evaluation");
 
                     b.Navigation("Student");
-                });
-
-            modelBuilder.Entity("CatalogOnline.Domain.Entities.Report.ImportLogData", b =>
-                {
-                    b.HasOne("CatalogOnline.Domain.Entities.Group.GroupData", "Group")
-                        .WithMany()
-                        .HasForeignKey("GroupId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("CatalogOnline.Domain.Entities.User.UserData", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Group");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("CatalogOnline.Domain.Entities.Report.ReportData", b =>

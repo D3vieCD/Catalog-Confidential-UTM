@@ -6,6 +6,7 @@ using CatalogOnline.Domain.Entities.Group;
 using CatalogOnline.Domain.Entities.Students;
 using CatalogOnline.Domain.Entities.User;
 using CatalogOnline.Domain.Entities.Calendar;
+using CatalogOnline.Domain.Entities.Report;
 using Microsoft.EntityFrameworkCore;
 
 namespace CatalogOnline.DataAccess.Context
@@ -67,6 +68,41 @@ namespace CatalogOnline.DataAccess.Context
                    .HasForeignKey(a => a.EvaluationId)
                    .OnDelete(DeleteBehavior.NoAction);
 
+               // User → Reports (one-to-many)
+               modelBuilder.Entity<ReportData>()
+                   .HasOne(r => r.User)
+                   .WithMany()
+                   .HasForeignKey(r => r.UserId)
+                   .OnDelete(DeleteBehavior.Cascade);
+
+               // Group → Reports (one-to-many, NoAction to avoid multiple cascade paths)
+               modelBuilder.Entity<ReportData>()
+                   .HasOne(r => r.Group)
+                   .WithMany()
+                   .HasForeignKey(r => r.GroupId)
+                   .OnDelete(DeleteBehavior.NoAction);
+
+               // Student → Reports (optional, NoAction)
+               modelBuilder.Entity<ReportData>()
+                   .HasOne(r => r.Student)
+                   .WithMany()
+                   .HasForeignKey(r => r.StudentId)
+                   .OnDelete(DeleteBehavior.NoAction);
+
+               // User → ImportLog (one-to-many, Cascade)
+               modelBuilder.Entity<ImportLogData>()
+                   .HasOne(i => i.User)
+                   .WithMany()
+                   .HasForeignKey(i => i.UserId)
+                   .OnDelete(DeleteBehavior.Cascade);
+
+               // Group → ImportLog (one-to-many, NoAction to avoid multiple cascade paths)
+               modelBuilder.Entity<ImportLogData>()
+                   .HasOne(i => i.Group)
+                   .WithMany()
+                   .HasForeignKey(i => i.GroupId)
+                   .OnDelete(DeleteBehavior.NoAction);
+
           }
 
           public DbSet<UserData> User { get; set; }
@@ -77,5 +113,7 @@ namespace CatalogOnline.DataAccess.Context
           public DbSet<SubjectData> Subject { get; set; }
           public DbSet<EvaluationData> Evaluation { get; set; }
           public DbSet<CalendarEventData> CalendarEvents { get; set; }
+          public DbSet<ReportData> Report { get; set; }
+          public DbSet<ImportLogData> ImportLog { get; set; }
      }
 }
