@@ -1,4 +1,4 @@
-﻿using CatalogOnline.DataAccess.Context;
+using CatalogOnline.DataAccess.Context;
 using CatalogOnline.Domain.Entities.Group;
 using CatalogOnline.Domain.Models.Group;
 using CatalogOnline.Domain.Models.Responses;
@@ -8,7 +8,7 @@ namespace CatalogOnline.BusinessLayer.Core
 {
      public class GroupActions
      {
-          public GroupActionResponse CreateGroupActionExecution(CreateGroupDto createData)
+          public GroupActionResponse CreateGroupActionExecution(CreateGroupDto createData, int userId)
           {
                using (var appDbContext = new AppDbContext())
                {
@@ -20,7 +20,8 @@ namespace CatalogOnline.BusinessLayer.Core
                          Specialization = createData.Specialization,
                          Coordinator = createData.Coordinator,
                          MaxCapacity = createData.MaxCapacity,
-                         Semester = createData.Semester
+                         Semester = createData.Semester,
+                         UserId = userId
                     };
                     appDbContext.Group.Add(group);
                     appDbContext.SaveChanges();
@@ -33,11 +34,11 @@ namespace CatalogOnline.BusinessLayer.Core
                }
           }
 
-          public GroupActionResponse DeleteGroupActionExecution(int groupId)
+          public GroupActionResponse DeleteGroupActionExecution(int groupId, int userId)
           {
                using (var appDbContext = new AppDbContext())
                {
-                    var group = appDbContext.Group.Find(groupId);
+                    var group = appDbContext.Group.FirstOrDefault(g => g.Id == groupId && g.UserId == userId);
                     if (group == null)
                          return new GroupActionResponse { IsValid = false, Message = "Group not found." };
 
@@ -47,11 +48,11 @@ namespace CatalogOnline.BusinessLayer.Core
                }
           }
 
-          public GroupActionResponse UpdateGroupActionExecution(int groupId, UpdateGroupDto updateData)
+          public GroupActionResponse UpdateGroupActionExecution(int groupId, UpdateGroupDto updateData, int userId)
           {
                using (var appDbContext = new AppDbContext())
                {
-                    var group = appDbContext.Group.Find(groupId);
+                    var group = appDbContext.Group.FirstOrDefault(g => g.Id == groupId && g.UserId == userId);
                     if (group == null)
                          return new GroupActionResponse { IsValid = false, Message = "Group not found." };
 
@@ -67,11 +68,13 @@ namespace CatalogOnline.BusinessLayer.Core
                }
           }
 
-          public GroupActionResponse GetGroupByIdActionExecution(int groupId)
+          public GroupActionResponse GetGroupByIdActionExecution(int groupId, int userId)
           {
                using (var appDbContext = new AppDbContext())
                {
-                    var group = appDbContext.Group.Find(groupId);
+                    var group = appDbContext.Group
+                         .Include(g => g.Students)
+                         .FirstOrDefault(g => g.Id == groupId && g.UserId == userId);
                     return new GroupActionResponse
                     {
                          IsValid = group != null,
@@ -81,11 +84,14 @@ namespace CatalogOnline.BusinessLayer.Core
                }
           }
 
-          public GroupActionResponse GetAllGroupsActionExecution()
+          public GroupActionResponse GetAllGroupsActionExecution(int userId)
           {
                using (var appDbContext = new AppDbContext())
                {
-                    var groups = appDbContext.Group.Include(g => g.Students).ToList();
+                    var groups = appDbContext.Group
+                         .Include(g => g.Students)
+                         .Where(g => g.UserId == userId)
+                         .ToList();
                     groups.ForEach(g => g.CurrentCapacity = g.Students.Count);
                     return new GroupActionResponse
                     {

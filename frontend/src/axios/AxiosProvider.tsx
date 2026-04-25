@@ -18,22 +18,19 @@ export const AxiosProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     }, []);
 
     useEffect(() => {
-        // const requestInterceptor = axiosInstance.interceptors.request.use((config) => {
-        //     const token = localStorage.getItem("token");
-        //     if (token) {
-        //         config.headers.Authorization = `Bearer ${token}`;
-        //     }
-        //     return config;
-        // });
+        const requestInterceptor = axiosInstance.interceptors.request.use((config) => {
+            const token = localStorage.getItem("authToken");
+            if (token) {
+                config.headers.Authorization = `Bearer ${token}`;
+            }
+            return config;
+        });
 
         const responseInterceptor = axiosInstance.interceptors.response.use(
             (response: AxiosResponse) => response,
             (error: AxiosError) => {
                 if (error.response) {
                     switch (error.response.status) {
-                        case 401:
-                            navigate(paths.error.page404);
-                            break;
                         case 403:
                             navigate(paths.error.page403);
                             break;
@@ -44,7 +41,7 @@ export const AxiosProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         );
 
         return () => {
-            // axiosInstance.interceptors.request.eject(requestInterceptor);
+            axiosInstance.interceptors.request.eject(requestInterceptor);
             axiosInstance.interceptors.response.eject(responseInterceptor);
         };
     }, [axiosInstance, navigate]);

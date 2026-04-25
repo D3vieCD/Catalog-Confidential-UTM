@@ -1,35 +1,31 @@
-﻿using CatalogOnline.BusinessLayer.Core;
+using CatalogOnline.BusinessLayer.Core;
 using CatalogOnline.BusinessLayer.Interfaces;
 using CatalogOnline.Domain.Models.Responses;
 using CatalogOnline.Domain.Models.Student;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CatalogOnline.BusinessLayer.Structure
 {
-    public class StudentService:StudentActions, IStudentAction
+     public class StudentService : StudentActions, IStudentAction
      {
-          public StudentActionResponse CreateStudentAction(CreateStudentDto createData)
+          public StudentActionResponse CreateStudentAction(CreateStudentDto createData, int userId)
           {
-               return CreateStudentActionExecution(createData);
+               return CreateStudentActionExecution(createData, userId);
           }
-          public StudentActionResponse   DeleteStudentAction(int id)
+          public StudentActionResponse DeleteStudentAction(int id, int userId)
           {
-               return DeleteStudentActionExecution(id);
+               return DeleteStudentActionExecution(id, userId);
           }
-          public StudentActionResponse UpdateStudentAction(int studentId, UpdateStudentDto studentData)
+          public StudentActionResponse UpdateStudentAction(int studentId, UpdateStudentDto studentData, int userId)
           {
-               return UpdateStudentActionExecution(studentId, studentData);
+               return UpdateStudentActionExecution(studentId, studentData, userId);
           }
-          public StudentActionResponse GetAllStudentsAction()
+          public StudentActionResponse GetAllStudentsAction(int userId)
           {
-               return GetAllStudentsActionExecution();
+               return GetAllStudentsActionExecution(userId);
           }
-          public StudentActionResponse GetStudentByIdAction(int id)
+          public StudentActionResponse GetStudentByIdAction(int id, int userId)
           {
-               return GetStudentByIdActionExecution(id);
+               return GetStudentByIdActionExecution(id, userId);
           }
      }
 }

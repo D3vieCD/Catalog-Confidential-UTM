@@ -4,12 +4,15 @@ import { CalendarHeader } from '../components/calendar/CalendarHeader';
 import { CalendarGrid } from '../components/calendar/CalendarGrid';
 import { CalendarSidebar } from '../components/calendar/CalendarSidebar';
 import { Modal } from '../components/ui/Modal';
-import { calendarService, CalendarEventPayload } from '../axios/calendarService';
-import type { CalendarEvent } from '../_mock/mockCalendar';
+import useCalendar from '../hooks/useCalendar';
+import type { CalendarEvent as MockCalendarEvent } from '../_mock/mockCalendar';
+
 export const Calendar = () => {
+  const { getAllEvents, createEvent, updateEvent, deleteEvent } = useCalendar();
+
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [events, setEvents] = useState<CalendarEvent[]>([]);
+  const [events, setEvents] = useState<MockCalendarEvent[]>([]);
   const [modalState, setModalState] = useState<{
     isOpen: boolean;
     title: string;
@@ -22,20 +25,22 @@ export const Calendar = () => {
     message: '',
     type: 'info'
   });
+
   useEffect(() => {
     loadEvents();
   }, []);
+
   const loadEvents = async () => {
     try {
-      const data = await calendarService.getAllEvents();
-      const converted: CalendarEvent[] = data.map((ev: any) => ({
+      const data = await getAllEvents();
+      const converted: MockCalendarEvent[] = data.map(ev => ({
         id: String(ev.id),
         title: ev.title,
         description: ev.description,
         date: new Date(ev.startDate),
         startTime: ev.startDate.substring(11, 16),
         endTime: ev.endDate ? ev.endDate.substring(11, 16) : '',
-        type: (ev.eventType as CalendarEvent['type']) || 'class',
+        type: (ev.eventType as MockCalendarEvent['type']) || 'class',
         color: ev.color || '#3b82f6'
       }));
       setEvents(converted);
@@ -43,6 +48,7 @@ export const Calendar = () => {
       console.error('Eroare la încărcarea evenimentelor:', error);
     }
   };
+
   const formatLocalDate = (date: Date, hours: number, minutes: number): string => {
     const y = date.getFullYear();
     const m = String(date.getMonth() + 1).padStart(2, '0');
@@ -51,6 +57,7 @@ export const Calendar = () => {
     const min = String(minutes).padStart(2, '0');
     return `${y}-${m}-${d}T${h}:${min}:00`;
   };
+
   const handlePreviousMonth = () => {
     setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1));
   };
@@ -58,14 +65,17 @@ export const Calendar = () => {
   const handleNextMonth = () => {
     setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1));
   };
+
   const handleToday = () => {
     const today = new Date();
     setCurrentMonth(today);
     setSelectedDate(today);
   };
+
   const handleDateSelect = (date: Date) => {
     setSelectedDate(date);
   };
+
   const handleAddEvent = () => {
     const title = prompt('Titlul evenimentului:');
     if (!title) return;
@@ -73,81 +83,57 @@ export const Calendar = () => {
     const timeInput = prompt('Ora începutului (ex: 09:00):') || '09:00';
     const [hours, minutes] = timeInput.split(':').map(Number);
 
-    const payload: CalendarEventPayload = {
+    createEvent({
       title,
       description,
       startDate: formatLocalDate(selectedDate, hours || 9, minutes || 0),
       color: '#3b82f6',
       eventType: 'class',
       userId: 1
-    };
-    calendarService.createEvent(payload).then(() => {
+    }).then(() => {
       loadEvents();
-      setModalState({
-        isOpen: true,
-        title: 'Succes!',
-        message: 'Evenimentul a fost adăugat cu succes!',
-        type: 'success'
-      });
+      setModalState({ isOpen: true, title: 'Succes!', message: 'Evenimentul a fost adăugat cu succes!', type: 'success' });
     }).catch(() => {
-      setModalState({
-        isOpen: true,
-        title: 'Eroare',
-        message: 'Nu s-a putut adăuga evenimentul.',
-        type: 'warning'
-      });
+      setModalState({ isOpen: true, title: 'Eroare', message: 'Nu s-a putut adăuga evenimentul.', type: 'warning' });
     });
   };
+
   const handleEditEvent = () => {
-    const selectedDayEvents = events.filter(event => {
-      const eventDate = new Date(event.date);
-      return eventDate.toDateString() === selectedDate.toDateString();
-    });
+    const selectedDayEvents = events.filter(event =>
+      new Date(event.date).toDateString() === selectedDate.toDateString()
+    );
 
     if (selectedDayEvents.length === 0) {
-      setModalState({
-        isOpen: true,
-        title: 'Niciun Eveniment',
-        message: 'Nu există evenimente pentru această zi!',
-        type: 'warning'
-      });
+      setModalState({ isOpen: true, title: 'Niciun Eveniment', message: 'Nu există evenimente pentru această zi!', type: 'warning' });
       return;
     }
+
     const ev = selectedDayEvents[0];
     const newTitle = prompt('Titlu nou:', ev.title);
     if (!newTitle) return;
     const newTime = prompt('Ora nouă (ex: 10:00):', ev.startTime) || ev.startTime;
     const [hours, minutes] = newTime.split(':').map(Number);
 
-    calendarService.updateEvent(Number(ev.id), {
+    updateEvent(Number(ev.id), {
       title: newTitle,
       startDate: formatLocalDate(selectedDate, hours || 9, minutes || 0),
       userId: 1
     }).then(() => {
       loadEvents();
-      setModalState({
-        isOpen: true,
-        title: 'Succes!',
-        message: 'Evenimentul a fost actualizat!',
-        type: 'success'
-      });
+      setModalState({ isOpen: true, title: 'Succes!', message: 'Evenimentul a fost actualizat!', type: 'success' });
     });
   };
+
   const handleDeleteEvent = () => {
-    const selectedDayEvents = events.filter(event => {
-      const eventDate = new Date(event.date);
-      return eventDate.toDateString() === selectedDate.toDateString();
-    });
+    const selectedDayEvents = events.filter(event =>
+      new Date(event.date).toDateString() === selectedDate.toDateString()
+    );
 
     if (selectedDayEvents.length === 0) {
-      setModalState({
-        isOpen: true,
-        title: 'Niciun Eveniment',
-        message: 'Nu există evenimente de șters pentru această zi!',
-        type: 'warning'
-      });
+      setModalState({ isOpen: true, title: 'Niciun Eveniment', message: 'Nu există evenimente de șters pentru această zi!', type: 'warning' });
       return;
     }
+
     setModalState({
       isOpen: true,
       title: 'Confirmare Ștergere',
@@ -155,22 +141,18 @@ export const Calendar = () => {
       type: 'confirm',
       onConfirm: async () => {
         for (const ev of selectedDayEvents) {
-          await calendarService.deleteEvent(Number(ev.id));
+          await deleteEvent(Number(ev.id));
         }
         loadEvents();
-        setModalState({
-          isOpen: true,
-          title: 'Succes!',
-          message: 'Evenimentele au fost șterse!',
-          type: 'success'
-        });
+        setModalState({ isOpen: true, title: 'Succes!', message: 'Evenimentele au fost șterse!', type: 'success' });
       }
     });
   };
-  const selectedDayEvents = events.filter(event => {
-    const eventDate = new Date(event.date);
-    return eventDate.toDateString() === selectedDate.toDateString();
-  });
+
+  const selectedDayEvents = events.filter(event =>
+    new Date(event.date).toDateString() === selectedDate.toDateString()
+  );
+
   return (
     <div className="space-y-6">
       <motion.div
@@ -178,13 +160,10 @@ export const Calendar = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
       >
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-          Calendar Academic
-        </h1>
-        <p className="text-gray-600 dark:text-gray-400 mt-1">
-          Vizualizează orarul și evenimentele importante
-        </p>
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Calendar Academic</h1>
+        <p className="text-gray-600 dark:text-gray-400 mt-1">Vizualizează orarul și evenimentele importante</p>
       </motion.div>
+
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-4">
           <CalendarHeader
@@ -203,6 +182,7 @@ export const Calendar = () => {
             events={events}
           />
         </div>
+
         <div className="lg:col-span-1">
           <div className="bg-white dark:bg-gray-800 rounded-2xl p-5 shadow space-y-4">
             <h2 className="text-lg font-bold text-gray-900 dark:text-white">
@@ -229,6 +209,7 @@ export const Calendar = () => {
           </div>
         </div>
       </div>
+
       <Modal
         isOpen={modalState.isOpen}
         onClose={() => setModalState({ ...modalState, isOpen: false })}

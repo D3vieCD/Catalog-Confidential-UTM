@@ -1,50 +1,24 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button, Input, Checkbox } from '../../components/ui';
-import { SocialLoginButton, Divider } from '../../components/auth';
-import { MOCK_USERS } from '../../_mock/mockUsers';
-import { storage } from '../../utils';
-import  paths  from '../../routes/paths';
-
-/**
- * Login Form - Formularul de autentificare
- * RESPONSIVE: Full width pe mobile, 1/2 pe desktop
- */
+import { useAuth } from '../../hooks/useAuth';
+import paths from '../../routes/paths';
+import { motion } from 'framer-motion';
 
 export const LoginForm = () => {
   const navigate = useNavigate();
-  const [email, setEmail] = useState('');
+  const { login, loading } = useAuth();
+  const [credential, setCredential] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     setError('');
-    setLoading(true);
-
-    // Verificăm dacă există utilizatorul în mock data
-    const user = MOCK_USERS.find(
-      (u) => u.email === email && u.password === password
-    );
-
-    if (user) {
-      // Login reușit
-      storage.set('isLoggedIn', 'true');
-      storage.set('userEmail', email);
-      storage.set('userName', user.name);
-      storage.set('userRole', user.role);
-      storage.set('showAnimation', 'true');
-
-      // Redirect bazat pe rol
-      if (user.role === 'admin') {
-        navigate(paths.admin);
-      } else {
-        navigate(paths.dashboard);
-      }
-    } else {
-      // Login eșuat
-      setError('Email sau parolă incorectă!');
-      setLoading(false);
+    try {
+      await login(credential, password);
+      navigate(paths.dashboard);
+    } catch (err: any) {
+      setError(err.message || 'Email sau parolă incorectă!');
     }
   };
 
@@ -76,14 +50,14 @@ export const LoginForm = () => {
           </div>
         )}
 
-        {/* Email Input */}
+        {/* Email / Username Input */}
         <div className="mb-3">
           <Input
-            label="Email"
-            type="email"
+            label="Email sau username"
+            type="text"
             placeholder="profesor@scoala.ro"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            value={credential}
+            onChange={(e) => setCredential(e.target.value)}
             fullWidth
             disabled={loading}
           />
@@ -108,12 +82,26 @@ export const LoginForm = () => {
         {/* Remember & Forgot */}
         <div className="flex items-center justify-between mb-4">
           <Checkbox label="Ține-mă minte" disabled={loading} />
-          <button
+          <motion.button
             onClick={() => console.log('Forgot password')}
-            className="text-xs md:text-sm text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 font-medium transition-colors"
+            className="text-xs md:text-sm text-emerald-600 dark:text-emerald-400 font-medium relative inline-block"
+            whileHover="hover"
+            whileTap={{ y: 1 }}
           >
-            Ai uitat parola?
-          </button>
+            <motion.span
+              variants={{ hover: { y: -2 } }}
+              transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+              className="inline-block"
+            >
+              Ai uitat parola?
+            </motion.span>
+            <motion.span
+              className="absolute bottom-0 left-0 h-[2px] bg-emerald-500 dark:bg-emerald-400 rounded-full"
+              variants={{ hover: { width: '100%' } }}
+              initial={{ width: '0%' }}
+              transition={{ duration: 0.25, ease: 'easeOut' }}
+            />
+          </motion.button>
         </div>
 
         {/* Button */}
@@ -122,30 +110,34 @@ export const LoginForm = () => {
           fullWidth
           onClick={handleLogin}
           loading={loading}
-          disabled={!email || !password}
+          disabled={!credential || !password}
         >
           Intră în cont
         </Button>
 
-        {/* Divider */}
-        <Divider />
-
-        {/* Social Buttons */}
-        <div className="space-y-2">
-          <SocialLoginButton provider="google" fullWidth />
-          <SocialLoginButton provider="microsoft" fullWidth />
-          <SocialLoginButton provider="github" fullWidth />
-        </div>
-
         {/* Register */}
         <p className="text-center text-sm text-gray-600 dark:text-gray-400 mt-4 transition-colors">
           Nu ai cont?{' '}
-          <button
+          <motion.button
             onClick={() => navigate(paths.register)}
-            className="text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 font-semibold transition-colors"
+            className="text-emerald-600 dark:text-emerald-400 font-semibold relative inline-block"
+            whileHover="hover"
+            whileTap={{ y: 1 }}
           >
-            Înregistrează-te
-          </button>
+            <motion.span
+              variants={{ hover: { y: -2 } }}
+              transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+              className="inline-block"
+            >
+              Înregistrează-te
+            </motion.span>
+            <motion.span
+              className="absolute bottom-0 left-0 h-[2px] bg-emerald-500 dark:bg-emerald-400 rounded-full"
+              variants={{ hover: { width: '100%' } }}
+              initial={{ width: '0%' }}
+              transition={{ duration: 0.25, ease: 'easeOut' }}
+            />
+          </motion.button>
         </p>
       </div>
     </div>
