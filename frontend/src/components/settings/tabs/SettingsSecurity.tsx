@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { SettingsInput } from '../ui';
+import useSettings from '../../../hooks/useSettings';
 
 interface SecurityData {
   current: string;
@@ -15,10 +16,10 @@ interface SettingsSecurityProps {
 type MessageType = 'error' | 'success' | null;
 
 export const SettingsSecurity: React.FC<SettingsSecurityProps> = ({ security, setSecurity }) => {
+  const { changePassword, loading } = useSettings();
   const [message, setMessage] = useState<{ type: MessageType; text: string }>({ type: null, text: '' });
 
-  const handleChangePassword = () => {
-    // Validare
+  const handleChangePassword = async () => {
     if (!security.current || !security.new || !security.confirm) {
       setMessage({ type: 'error', text: 'Te rog completează toate câmpurile!' });
       return;
@@ -34,15 +35,21 @@ export const SettingsSecurity: React.FC<SettingsSecurityProps> = ({ security, se
       return;
     }
 
-    // TODO: Implementează logica de schimbare a parolei
-    console.log('Schimbă parola...', security);
-    setMessage({ type: 'success', text: 'Parola a fost schimbată cu succes!' });
-
-    // Reset form after 2 seconds
-    setTimeout(() => {
-      setSecurity({ current: '', new: '', confirm: '' });
-      setMessage({ type: null, text: '' });
-    }, 2000);
+    try {
+      const msg = await changePassword({
+        currentPassword: security.current,
+        newPassword: security.new,
+        confirmPassword: security.confirm,
+      });
+      setMessage({ type: 'success', text: msg });
+      setTimeout(() => {
+        setSecurity({ current: '', new: '', confirm: '' });
+        setMessage({ type: null, text: '' });
+      }, 2000);
+    } catch (err: any) {
+      const msg = err?.response?.data || 'A apărut o eroare la schimbarea parolei!';
+      setMessage({ type: 'error', text: msg });
+    }
   };
 
   return (
@@ -81,16 +88,23 @@ export const SettingsSecurity: React.FC<SettingsSecurityProps> = ({ security, se
         <div className="flex justify-end">
           <button
             onClick={handleChangePassword}
-            className="px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-medium transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105 flex items-center gap-2"
+            disabled={loading}
+            className="px-6 py-3 bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-xl font-medium transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105 flex items-center gap-2"
           >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/>
-            </svg>
+            {loading ? (
+              <svg className="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
+              </svg>
+            ) : (
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/>
+              </svg>
+            )}
             Schimbă Parola
           </button>
         </div>
 
-        {/* Message Display */}
         {message.type && (
           <div className={`mt-4 p-4 rounded-xl flex items-center gap-3 ${
             message.type === 'error'
@@ -107,9 +121,7 @@ export const SettingsSecurity: React.FC<SettingsSecurityProps> = ({ security, se
               </svg>
             )}
             <span className={`text-sm font-medium ${
-              message.type === 'error'
-                ? 'text-red-800 dark:text-red-300'
-                : 'text-green-800 dark:text-green-300'
+              message.type === 'error' ? 'text-red-800 dark:text-red-300' : 'text-green-800 dark:text-green-300'
             }`}>
               {message.text}
             </span>
