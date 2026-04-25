@@ -60,5 +60,9 @@ namespace CatalogOnline.BusinessLayer
           {
                return new ReportService();
           }
+          public ISettingsAction SettingsAction()
+          {
+               return new SettingsService();
+          }
      }
 }
