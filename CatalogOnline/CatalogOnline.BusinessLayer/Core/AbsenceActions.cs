@@ -11,12 +11,20 @@ namespace CatalogOnline.BusinessLayer.Core
           {
                using (var appDbContext = new AppDbContext())
                {
+                    if (createData.EvaluationId.HasValue)
+                    {
+                         var existing = appDbContext.Absence
+                              .FirstOrDefault(a => a.StudentId == createData.StudentId && a.EvaluationId == createData.EvaluationId);
+                         if (existing != null)
+                              return new AbsenceActionResponse { IsValid = true, Message = "Absence already exists.", Absence = existing };
+                    }
                     var absence = new AbsenceData
                     {
                          StudentId = createData.StudentId,
                          SubjectName = createData.SubjectName,
                          Date = createData.Date,
-                         IsMotivated = createData.IsMotivated
+                         IsMotivated = createData.IsMotivated,
+                         EvaluationId = createData.EvaluationId
                     };
                     appDbContext.Absence.Add(absence);
                     appDbContext.SaveChanges();
@@ -54,6 +62,7 @@ namespace CatalogOnline.BusinessLayer.Core
                     absence.SubjectName = updateData.SubjectName;
                     absence.Date = updateData.Date;
                     absence.IsMotivated = updateData.IsMotivated;
+                    absence.EvaluationId = updateData.EvaluationId;
                     appDbContext.SaveChanges();
                     return new AbsenceActionResponse { IsValid = true, Message = "Absence updated successfully.", Absence = absence };
                }

@@ -7,6 +7,7 @@ export interface Grade {
     subjectName: string;
     gradeValue: number;
     dateAwarded: string;
+    evaluationId?: number;
 }
 
 export interface GradeActionResponse {
@@ -21,12 +22,14 @@ export interface CreateGradeDto {
     subjectName: string;
     gradeValue: number;
     dateAwarded: string;
+    evaluationId?: number;
 }
 
 export interface UpdateGradeDto {
     subjectName: string;
     gradeValue: number;
     dateAwarded: string;
+    evaluationId?: number;
 }
 
 export interface GradesContextType {

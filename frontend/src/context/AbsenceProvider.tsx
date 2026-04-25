@@ -7,6 +7,7 @@ export interface Absence {
     subjectName: string;
     date: string;
     isMotivated: boolean;
+    evaluationId?: number;
 }
 
 export interface AbsenceActionResponse {
@@ -21,12 +22,14 @@ export interface CreateAbsenceDto {
     subjectName: string;
     date: string;
     isMotivated: boolean;
+    evaluationId?: number;
 }
 
 export interface UpdateAbsenceDto {
     subjectName: string;
     date: string;
     isMotivated: boolean;
+    evaluationId?: number;
 }
 
 export interface AbsencesContextType {
