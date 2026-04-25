@@ -12,12 +12,25 @@ namespace CatalogOnline.BusinessLayer.Core
           {
                using (var appDbContext = new AppDbContext())
                {
+                    if (createData.EvaluationId.HasValue)
+                    {
+                         var existing = appDbContext.Grade
+                              .FirstOrDefault(g => g.StudentId == createData.StudentId && g.EvaluationId == createData.EvaluationId);
+                         if (existing != null)
+                         {
+                              existing.GradeValue = createData.GradeValue;
+                              existing.DateAwarded = createData.DateAwarded;
+                              appDbContext.SaveChanges();
+                              return new GradeActionResponse { IsValid = true, Message = "Grade updated successfully.", Grade = existing };
+                         }
+                    }
                     var grade = new GradeData
                     {
                          StudentId = createData.StudentId,
                          SubjectName = createData.SubjectName,
                          GradeValue = createData.GradeValue,
-                         DateAwarded = createData.DateAwarded
+                         DateAwarded = createData.DateAwarded,
+                         EvaluationId = createData.EvaluationId
                     };
                     appDbContext.Grade.Add(grade);
                     appDbContext.SaveChanges();
@@ -55,6 +68,7 @@ namespace CatalogOnline.BusinessLayer.Core
                     grade.SubjectName = updateData.SubjectName;
                     grade.GradeValue = updateData.GradeValue;
                     grade.DateAwarded = updateData.DateAwarded;
+                    grade.EvaluationId = updateData.EvaluationId;
                     appDbContext.SaveChanges();
                     return new GradeActionResponse { IsValid = true, Message = "Grade updated successfully.", Grade = grade };
                }
