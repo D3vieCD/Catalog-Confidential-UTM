@@ -1,176 +1,77 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import * as XLSX from 'xlsx';
-import { getGroups } from '../../_mock/mockGroups';
-import { getStudents } from '../../_mock/mockStudents';
-import { getStudentGrades, getStudentAbsences } from '../../_mock/mockGrades';
-import { addReport } from '../../_mock/mockReports';
-import type { Report } from '../../_mock/mockReports';
+import useGroups from '../../hooks/useGroups';
+import useStudents from '../../hooks/useStudents';
+import useReports from '../../hooks/useReports';
+import type { Group } from '../../context/GroupProvider';
+import type { Student } from '../../context/StudentProvider';
 import { CustomSelect } from '../ui/CustomSelect';
 
 interface ExportSectionProps {
-  onReportGenerated: (report: Report) => void;
+  onReportGenerated: () => void;
 }
 
-type ReportType = 'note' | 'absente' | 'complet';
+type ReportType = 'Note' | 'Absente' | 'Complet';
 type Scope = 'grupa' | 'student';
 
 export const ExportSection = ({ onReportGenerated }: ExportSectionProps) => {
-  const groups = getGroups().filter(g => g.status === 'ACTIV');
-  const [selectedGroup, setSelectedGroup] = useState(groups[0]?.id || '');
-  const [reportType, setReportType] = useState<ReportType>('note');
+  const { getAllGroups } = useGroups();
+  const { getAllStudents } = useStudents();
+  const { generateReport, loading } = useReports();
+
+  const [groups, setGroups] = useState<Group[]>([]);
+  const [allStudents, setAllStudents] = useState<Student[]>([]);
+  const [selectedGroupId, setSelectedGroupId] = useState<number>(0);
+  const [reportType, setReportType] = useState<ReportType>('Note');
   const [scope, setScope] = useState<Scope>('grupa');
-  const [selectedStudentId, setSelectedStudentId] = useState('');
-  const [isGenerating, setIsGenerating] = useState(false);
+  const [selectedStudentId, setSelectedStudentId] = useState<number>(0);
 
-  const group = groups.find(g => g.id === selectedGroup);
+  useEffect(() => {
+    getAllGroups()
+      .then((data) => {
+        setGroups(data);
+        if (data.length > 0) setSelectedGroupId(data[0].id);
+      })
+      .catch(() => {});
+    getAllStudents()
+      .then(setAllStudents)
+      .catch(() => {});
+  }, []);
 
-  const studentsInGroup = useMemo(() => {
-    if (!group) return [];
-    return getStudents().filter(s => s.group === group.name && s.status === 'active');
-  }, [selectedGroup, group]);
+  const studentsInGroup = useMemo(
+    () => allStudents.filter((s) => s.groupId === selectedGroupId),
+    [allStudents, selectedGroupId]
+  );
 
-  // Când se schimbă grupa, resetăm studentul selectat
-  const handleGroupChange = (id: string) => {
-    setSelectedGroup(id);
-    setSelectedStudentId('');
-  };
-
-  const fmt = (iso: string) =>
-    new Date(iso).toLocaleDateString('ro-RO', { day: '2-digit', month: '2-digit', year: 'numeric' });
-
-  const buildWorkbook = (studentIds: string[], type: ReportType) => {
-    const wb = XLSX.utils.book_new();
-    const today = fmt(new Date().toISOString());
-    const subjects = group!.subjects.length > 0 ? group!.subjects : ['—'];
-
-    subjects.forEach(subject => {
-      const aoa: (string | number)[][] = [];
-
-      // ── Secțiune META ──
-      aoa.push(['CATALOG ACADEMIC — ' + group!.name]);
-      aoa.push(['Grupă:', group!.name, '', 'Specializare:', group!.specialization]);
-      aoa.push(['Coordonator:', group!.coordinator, '', 'An studiu:', `Anul ${group!.year}`]);
-      aoa.push(['Materie:', subject, '', 'Data raport:', today]);
-      aoa.push([]);
-
-      if (type === 'note' || type === 'complet') {
-        // ── Găsim numărul maxim de note pentru aliniere coloane ──
-        const allGrades = studentIds.map(id =>
-          getStudentGrades(id, subject).sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
-        );
-        const maxGrades = Math.max(...allGrades.map(g => g.length), 0);
-
-        // Header note
-        const noteHeader: (string | number)[] = ['#', 'Nume Student', 'Email', 'Grupă'];
-        for (let i = 1; i <= maxGrades; i++) {
-          noteHeader.push(`Notă ${i}`, `Data ${i}`);
-        }
-        noteHeader.push('Medie');
-        if (type === 'complet') noteHeader.push('Absențe Nemotivate', 'Absențe Motivate', 'Total Absențe');
-        aoa.push(noteHeader);
-
-        // Rânduri studenți
-        studentIds.forEach((id, idx) => {
-          const s = getStudents().find(st => st.id === id);
-          if (!s) return;
-          const grades = allGrades[idx];
-          const validGrades = grades.filter(g => g.value !== null);
-          const avg = validGrades.length > 0
-            ? (validGrades.reduce((sum, g) => sum + (g.value || 0), 0) / validGrades.length).toFixed(2)
-            : '—';
-
-          const row: (string | number)[] = [idx + 1, s.name, s.email, s.group];
-          for (let i = 0; i < maxGrades; i++) {
-            row.push(grades[i]?.value ?? '—', grades[i] ? fmt(grades[i].date) : '—');
-          }
-          row.push(avg);
-
-          if (type === 'complet') {
-            const absences = getStudentAbsences(id, subject);
-            const nemotivate = absences.filter(a => !a.motivated).length;
-            const motivate = absences.filter(a => a.motivated).length;
-            row.push(nemotivate, motivate, absences.length);
-          }
-          aoa.push(row);
-        });
-      } else {
-        // ── DOAR ABSENȚE ──
-        aoa.push(['#', 'Nume Student', 'Email', 'Grupă', 'Data Absenței', 'Motivată']);
-
-        studentIds.forEach((id, idx) => {
-          const s = getStudents().find(st => st.id === id);
-          if (!s) return;
-          const absences = getStudentAbsences(id, subject)
-            .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
-
-          if (absences.length === 0) {
-            aoa.push([idx + 1, s.name, s.email, s.group, '—', '—']);
-          } else {
-            absences.forEach((ab, ai) => {
-              aoa.push([
-                ai === 0 ? idx + 1 : '',
-                ai === 0 ? s.name : '',
-                ai === 0 ? s.email : '',
-                ai === 0 ? s.group : '',
-                fmt(ab.date),
-                ab.motivated ? 'Da' : 'Nu',
-              ]);
-            });
-          }
-        });
-      }
-
-      const ws = XLSX.utils.aoa_to_sheet(aoa);
-
-      // Lățimi coloane automate
-      ws['!cols'] = [
-        { wch: 4 }, { wch: 24 }, { wch: 28 }, { wch: 10 },
-        ...Array(20).fill({ wch: 10 }),
-      ];
-
-      // Merge pentru titlu
-      ws['!merges'] = [{ s: { r: 0, c: 0 }, e: { r: 0, c: 7 } }];
-
-      const sheetName = subject.slice(0, 30);
-      XLSX.utils.book_append_sheet(wb, ws, sheetName);
-    });
-
-    return wb;
+  const handleGroupChange = (value: string) => {
+    setSelectedGroupId(Number(value));
+    setSelectedStudentId(0);
   };
 
   const handleExport = async () => {
-    if (!group) return;
+    if (!selectedGroupId) return;
     if (scope === 'student' && !selectedStudentId) return;
 
-    setIsGenerating(true);
-    await new Promise(r => setTimeout(r, 400));
-
-    const ids = scope === 'grupa'
-      ? studentsInGroup.map(s => s.id)
-      : [selectedStudentId];
-
-    const wb = buildWorkbook(ids, reportType);
-
-    const scopeLabel = scope === 'grupa'
-      ? group.name
-      : (getStudents().find(s => s.id === selectedStudentId)?.name?.replace(' ', '_') || 'student');
-    const fileName = `raport_${scopeLabel}_${reportType}_${new Date().toISOString().slice(0, 10)}.xlsx`;
-
-    XLSX.writeFile(wb, fileName);
-
-    const report = addReport(selectedGroup, group.name, reportType);
-    onReportGenerated(report);
-    setIsGenerating(false);
+    try {
+      await generateReport({
+        groupId: selectedGroupId,
+        studentId: scope === 'student' ? selectedStudentId : undefined,
+        reportType,
+        format: 'XLSX',
+      });
+      onReportGenerated();
+    } catch {
+      alert('Eroare la generarea raportului. Verifică că grupa are date (note/absențe) și că serverul este activ.');
+    }
   };
 
   const reportTypes = [
-    { id: 'note' as const, label: 'Doar Note', icon: '📝' },
-    { id: 'absente' as const, label: 'Doar Absențe', icon: '📅' },
-    { id: 'complet' as const, label: 'Raport Complet (Note + Absențe)', icon: '📊' },
+    { id: 'Note' as const, label: 'Doar Note' },
+    { id: 'Absente' as const, label: 'Doar Absențe' },
+    { id: 'Complet' as const, label: 'Raport Complet (Note + Absențe)' },
   ];
 
-  const canExport = group && (scope === 'grupa' || selectedStudentId);
+  const canExport = selectedGroupId > 0 && (scope === 'grupa' || selectedStudentId > 0);
 
   return (
     <motion.div
@@ -197,9 +98,9 @@ export const ExportSection = ({ onReportGenerated }: ExportSectionProps) => {
           Selectează Grupa
         </label>
         <CustomSelect
-          value={selectedGroup}
+          value={String(selectedGroupId)}
           onChange={handleGroupChange}
-          options={groups.map(g => ({ value: g.id, label: `${g.name} — ${g.specialization}` }))}
+          options={groups.map((g) => ({ value: String(g.id), label: `${g.groupName} — ${g.specialization}` }))}
         />
       </div>
 
@@ -220,7 +121,7 @@ export const ExportSection = ({ onReportGenerated }: ExportSectionProps) => {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
               </svg>
             )},
-          ] as { id: Scope; label: string; icon: React.ReactNode }[]).map(opt => (
+          ] as { id: Scope; label: string; icon: React.ReactNode }[]).map((opt) => (
             <button
               key={opt.id}
               onClick={() => setScope(opt.id)}
@@ -237,7 +138,7 @@ export const ExportSection = ({ onReportGenerated }: ExportSectionProps) => {
         </div>
       </div>
 
-      {/* Student dropdown (dacă scope = student) */}
+      {/* Student dropdown */}
       <AnimatePresence>
         {scope === 'student' && (
           <motion.div
@@ -252,14 +153,14 @@ export const ExportSection = ({ onReportGenerated }: ExportSectionProps) => {
             </label>
             {studentsInGroup.length === 0 ? (
               <p className="text-sm text-gray-400 dark:text-gray-500 italic px-1">
-                Nu există studenți activi în această grupă.
+                Nu există studenți în această grupă.
               </p>
             ) : (
               <CustomSelect
-                value={selectedStudentId}
-                onChange={setSelectedStudentId}
+                value={String(selectedStudentId)}
+                onChange={(v) => setSelectedStudentId(Number(v))}
                 placeholder="— Alege un student —"
-                options={studentsInGroup.map(s => ({ value: s.id, label: s.name }))}
+                options={studentsInGroup.map((s) => ({ value: String(s.id), label: s.fullName }))}
               />
             )}
           </motion.div>
@@ -298,10 +199,10 @@ export const ExportSection = ({ onReportGenerated }: ExportSectionProps) => {
       {/* Buton Export */}
       <button
         onClick={handleExport}
-        disabled={!canExport || isGenerating}
-        className="w-full px-6 py-4 bg-emerald-600 hover:bg-emerald-700 disabled:from-gray-400 disabled:to-gray-500 disabled:cursor-not-allowed text-white font-semibold rounded-xl transition-all shadow-lg flex items-center justify-center gap-2"
+        disabled={!canExport || loading}
+        className="w-full px-6 py-4 bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold rounded-xl transition-all shadow-lg flex items-center justify-center gap-2"
       >
-        {isGenerating ? (
+        {loading ? (
           <>
             <svg className="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24">
               <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>

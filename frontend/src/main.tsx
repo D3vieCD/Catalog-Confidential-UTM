@@ -12,6 +12,7 @@ import { AbsencesProvider } from './context/AbsenceProvider.tsx'
 import { SubjectsProvider } from './context/SubjectProvider.tsx'
 import { EvaluationsProvider } from './context/EvaluationProvider.tsx'
 import { CalendarProvider } from './context/CalendarProvider.tsx'
+import { ReportsProvider } from './context/ReportProvider.tsx'
 createRoot(document.getElementById('root')!).render(
   <BrowserRouter>
     <StrictMode>
@@ -24,7 +25,9 @@ createRoot(document.getElementById('root')!).render(
                   <SubjectsProvider>
                     <EvaluationsProvider>
                       <CalendarProvider>
-                        <App />
+                        <ReportsProvider>
+                          <App />
+                        </ReportsProvider>
                       </CalendarProvider>
                     </EvaluationsProvider>
                   </SubjectsProvider>

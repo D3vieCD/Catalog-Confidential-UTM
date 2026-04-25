@@ -1,13 +1,10 @@
 import { motion } from 'framer-motion';
-import type { ReportStats as StatsType } from '../../_mock/mockReports';
+import type { ReportStats } from '../../context/ReportProvider';
 
 interface ReportStatsProps {
-  stats: StatsType;
+  stats: ReportStats;
 }
 
-/**
- * ReportStats - Carduri cu statistici pentru rapoarte
- */
 export const ReportStats = ({ stats }: ReportStatsProps) => {
   const cards = [
     {
@@ -34,7 +31,7 @@ export const ReportStats = ({ stats }: ReportStatsProps) => {
     },
     {
       title: 'Exporturi Luna',
-      value: stats.monthlyExports,
+      value: stats.exportsThisMonth,
       icon: (
         <svg className="w-8 h-8 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"/>
@@ -66,12 +63,9 @@ export const ReportStats = ({ stats }: ReportStatsProps) => {
           transition={{ delay: index * 0.1 }}
           className={`relative bg-white dark:bg-gray-800 rounded-2xl p-6 border-l-4 ${card.borderColor} shadow-sm hover:shadow-md transition-all`}
         >
-          {/* Icon în colțul din dreapta sus */}
           <div className={`absolute top-4 right-4 ${card.bgIcon} p-3 rounded-xl`}>
             {card.icon}
           </div>
-
-          {/* Text și număr */}
           <div className="pr-16">
             <p className="text-sm text-gray-600 dark:text-gray-400 font-medium mb-2">{card.title}</p>
             <p className="text-5xl font-bold text-gray-900 dark:text-white">{card.value}</p>
