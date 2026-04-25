@@ -35,6 +35,14 @@ namespace CatalogOnline.Domain.Entities.User
           [StringLength(20)]
           public string Role { get; set; } = "User";
 
+          [StringLength(20)]
+          public string? Phone { get; set; }
+
+          [StringLength(500)]
+          public string? Bio { get; set; }
+
+          public string? Avatar { get; set; }
+
           [DataType(DataType.Date)]
           public DateTime CreatedOn { get; set; } = DateTime.Now;
      }
