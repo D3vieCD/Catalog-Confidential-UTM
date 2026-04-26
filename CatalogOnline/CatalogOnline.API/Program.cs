@@ -1,4 +1,5 @@
 using CatalogOnline.DataAccess;
+using CatalogOnline.BusinessLayer.Core;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -44,6 +45,12 @@ builder.Services.AddCors(options =>
 
 CatalogOnline.DataAccess.DbSession.ConnectionString =
     builder.Configuration.GetConnectionString("DefaultConnection");
+
+EmailSession.From     = builder.Configuration["Email:From"]     ?? string.Empty;
+EmailSession.Host     = builder.Configuration["Email:Host"]     ?? string.Empty;
+EmailSession.Port     = int.TryParse(builder.Configuration["Email:Port"], out var port) ? port : 587;
+EmailSession.UserName = builder.Configuration["Email:UserName"] ?? string.Empty;
+EmailSession.Password = builder.Configuration["Email:Password"] ?? string.Empty;
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
      .AddJwtBearer(options =>

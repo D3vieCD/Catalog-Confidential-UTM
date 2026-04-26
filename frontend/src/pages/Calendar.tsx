@@ -8,14 +8,14 @@ import { CalendarEventModal, type EventFormData } from '../components/calendar/C
 import { Modal } from '../components/ui/Modal';
 import useCalendar from '../hooks/useCalendar';
 import { storage } from '../utils';
-import type { CalendarEvent as MockCalendarEvent } from '../_mock/mockCalendar';
+import type { CalendarEvent } from '../types/calendar';
 
 export const Calendar = () => {
   const { getAllEvents, createEvent, updateEvent, deleteEvent } = useCalendar();
 
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [events, setEvents] = useState<MockCalendarEvent[]>([]);
+  const [events, setEvents] = useState<CalendarEvent[]>([]);
 
   const [eventModal, setEventModal] = useState<{
     isOpen: boolean;
@@ -43,14 +43,14 @@ export const Calendar = () => {
   const loadEvents = async () => {
     try {
       const data = await getAllEvents();
-      const converted: MockCalendarEvent[] = data.map(ev => ({
+      const converted: CalendarEvent[] = data.map(ev => ({
         id: String(ev.id),
         title: ev.title,
         description: ev.description,
         date: new Date(ev.startDate),
         startTime: ev.startDate.substring(11, 16),
         endTime: ev.endDate ? ev.endDate.substring(11, 16) : '',
-        type: (ev.eventType as MockCalendarEvent['type']) || 'class',
+        type: (ev.eventType as CalendarEvent['type']) || 'class',
         color: ev.color || '#3b82f6'
       }));
       setEvents(converted);
@@ -86,7 +86,7 @@ export const Calendar = () => {
     setEventModal({ isOpen: true, mode: 'add' });
   };
 
-  const handleEditEvent = (ev: MockCalendarEvent) => {
+  const handleEditEvent = (ev: CalendarEvent) => {
     setEventModal({
       isOpen: true,
       mode: 'edit',
@@ -101,7 +101,7 @@ export const Calendar = () => {
     });
   };
 
-  const handleDeleteEvent = (ev: MockCalendarEvent) => {
+  const handleDeleteEvent = (ev: CalendarEvent) => {
     setDeleteModal({ isOpen: true, eventId: Number(ev.id), eventTitle: ev.title });
   };
 

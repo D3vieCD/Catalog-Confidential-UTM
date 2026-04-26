@@ -1,8 +1,70 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAdmin, type AdminUser } from '../../hooks/useAdmin';
 
 type RoleFilter = 'toate' | 'admin' | 'profesor';
+
+const ROLE_OPTIONS = [
+  { label: 'Toate rolurile', value: 'toate' },
+  { label: 'Admin',          value: 'admin' },
+  { label: 'Profesor',       value: 'profesor' },
+];
+
+function Dropdown({ value, onChange }: { value: string; onChange: (v: RoleFilter) => void }) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
+
+  const selected = ROLE_OPTIONS.find((o) => o.value === value)?.label ?? 'Toate rolurile';
+
+  return (
+    <div ref={ref} className="relative">
+      <button
+        type="button"
+        onClick={() => setOpen((p) => !p)}
+        className="flex items-center gap-2 px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-2xl bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 text-sm shadow-sm transition-all focus:ring-2 focus:ring-emerald-500 outline-none whitespace-nowrap"
+      >
+        {selected}
+        <svg className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
+          fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+      <AnimatePresence>
+        {open && (
+          <motion.ul
+            initial={{ opacity: 0, y: -6, scale: 0.97 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -6, scale: 0.97 }}
+            transition={{ duration: 0.15 }}
+            className="absolute z-50 mt-2 min-w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-lg overflow-hidden"
+          >
+            {ROLE_OPTIONS.map((opt) => (
+              <li
+                key={opt.value}
+                onClick={() => { onChange(opt.value as RoleFilter); setOpen(false); }}
+                className={`px-4 py-2.5 text-sm cursor-pointer transition-colors
+                  ${opt.value === value
+                    ? 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400 font-medium'
+                    : 'text-gray-700 dark:text-gray-300 hover:bg-stone-50 dark:hover:bg-gray-700'
+                  }`}
+              >
+                {opt.label}
+              </li>
+            ))}
+          </motion.ul>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
 
 const ROLE_BADGE: Record<string, string> = {
   admin:    'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400',
@@ -13,11 +75,15 @@ const ROLE_BADGE: Record<string, string> = {
 const displayRole = (role: string) => role === 'admin' ? 'admin' : 'profesor';
 
 export const AdminUsers = () => {
-  const { getAllUsers, deleteUser, updateUserRole, loading } = useAdmin();
+  const { getAllUsers, deleteUser, updateUserRole, resetUserPassword, loading } = useAdmin();
   const [users, setUsers] = useState<AdminUser[]>([]);
   const [roleFilter, setRoleFilter] = useState<RoleFilter>('toate');
   const [search, setSearch] = useState('');
   const [toast, setToast] = useState<{ message: string; visible: boolean }>({ message: '', visible: false });
+  const [pwdModal, setPwdModal] = useState<{ open: boolean; userId: number | null; name: string }>({ open: false, userId: null, name: '' });
+  const [newPwd, setNewPwd] = useState('');
+  const [showPwd, setShowPwd] = useState(false);
+  const [savingPwd, setSavingPwd] = useState(false);
 
   useEffect(() => {
     getAllUsers().then(setUsers).catch(() => {});
@@ -47,39 +113,47 @@ export const AdminUsers = () => {
     showToast(`Rol actualizat: ${user.firstName} ${user.lastName} → ${displayRole(newRole)}`);
   };
 
-  const showToast = (message: string) => {
+  const handleResetPassword = async () => {
+    if (!pwdModal.userId || newPwd.length < 6) return;
+    setSavingPwd(true);
+    try {
+      await resetUserPassword(pwdModal.userId, newPwd);
+      setPwdModal({ open: false, userId: null, name: '' });
+      setNewPwd('');
+      showToast(`Parola pentru ${pwdModal.name} a fost resetată.`);
+    } catch {
+      showToast('Eroare la resetarea parolei.', false);
+    } finally {
+      setSavingPwd(false);
+    }
+  };
+
+  const showToast = (message: string, ok = true) => {
     setToast({ message, visible: true });
     setTimeout(() => setToast((t) => ({ ...t, visible: false })), 3500);
   };
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
+      <div className="flex items-center gap-3 flex-wrap">
+        <div className="mr-2">
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Utilizatori</h1>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
             {users.length} utilizatori în sistem
           </p>
         </div>
-      </div>
 
-      <div className="bg-white dark:bg-gray-800 rounded-2xl p-4 shadow-sm border border-stone-200 dark:border-gray-700 flex flex-wrap gap-3">
-        <input
-          type="text"
-          placeholder="Caută după nume, username sau email..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="flex-1 min-w-48 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm transition-all"
-        />
-        <select
-          value={roleFilter}
-          onChange={(e) => setRoleFilter(e.target.value as RoleFilter)}
-          className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all"
-        >
-          <option value="toate">Toate rolurile</option>
-          <option value="admin">Admin</option>
-          <option value="profesor">Profesor</option>
-        </select>
+        <div className="flex-1 min-w-48">
+          <input
+            type="text"
+            placeholder="Caută după nume, username sau email..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-2xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none bg-white dark:bg-gray-800 text-gray-900 dark:text-white text-sm transition-all shadow-sm"
+          />
+        </div>
+
+        <Dropdown value={roleFilter} onChange={setRoleFilter} />
       </div>
 
       <motion.div
@@ -129,6 +203,15 @@ export const AdminUsers = () => {
                     <td className="px-6 py-4">
                       <div className="flex items-center justify-end gap-1">
                         <button
+                          onClick={() => { setPwdModal({ open: true, userId: user.id, name: `${user.firstName} ${user.lastName}` }); setNewPwd(''); setShowPwd(false); }}
+                          title="Resetează parola"
+                          className="p-1.5 rounded-lg hover:bg-sky-50 dark:hover:bg-sky-900/20 text-gray-400 hover:text-sky-600 dark:hover:text-sky-400 transition-colors"
+                        >
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
+                          </svg>
+                        </button>
+                        <button
                           onClick={() => handleToggleRole(user)}
                           title={user.role === 'admin' ? 'Retrogradează la profesor' : 'Promovează la admin'}
                           className="p-1.5 rounded-lg hover:bg-amber-50 dark:hover:bg-amber-900/20 text-gray-400 hover:text-amber-600 dark:hover:text-amber-400 transition-colors"
@@ -163,6 +246,70 @@ export const AdminUsers = () => {
           </div>
         )}
       </motion.div>
+
+      {/* Modal resetare parolă */}
+      <AnimatePresence>
+        {pwdModal.open && (
+          <motion.div
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm"
+            onClick={(e) => { if (e.target === e.currentTarget) setPwdModal({ open: false, userId: null, name: '' }); }}
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 10 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95, y: 10 }}
+              transition={{ duration: 0.18 }}
+              className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl w-full max-w-sm mx-4 p-6"
+            >
+              <div className="flex items-center justify-between mb-5">
+                <div>
+                  <h2 className="text-base font-bold text-gray-900 dark:text-white">Resetare parolă</h2>
+                  <p className="text-xs text-gray-400 mt-0.5">{pwdModal.name}</p>
+                </div>
+                <button onClick={() => setPwdModal({ open: false, userId: null, name: '' })}
+                  className="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-400 transition-colors">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+
+              <div className="space-y-1.5 mb-5">
+                <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">Parolă nouă</label>
+                <div className="relative">
+                  <input
+                    type={showPwd ? 'text' : 'password'}
+                    value={newPwd}
+                    onChange={(e) => setNewPwd(e.target.value)}
+                    placeholder="Minimum 6 caractere"
+                    className="w-full px-4 py-3 pr-10 border border-gray-200 dark:border-gray-600 rounded-xl text-sm bg-gray-50 dark:bg-gray-700/50 text-gray-900 dark:text-white placeholder-gray-400 focus:bg-white dark:focus:bg-gray-700 focus:ring-2 focus:ring-sky-500 focus:border-transparent outline-none transition-all"
+                  />
+                  <button type="button" onClick={() => setShowPwd(p => !p)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
+                    {showPwd
+                      ? <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" /></svg>
+                      : <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+                    }
+                  </button>
+                </div>
+                {newPwd.length > 0 && newPwd.length < 6 && (
+                  <p className="text-xs text-red-500 mt-1">Parola trebuie să aibă cel puțin 6 caractere.</p>
+                )}
+              </div>
+
+              <div className="flex gap-3">
+                <button onClick={() => setPwdModal({ open: false, userId: null, name: '' })}
+                  className="flex-1 px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-300 text-sm font-medium hover:bg-stone-50 dark:hover:bg-gray-700 transition-colors">
+                  Anulează
+                </button>
+                <button onClick={handleResetPassword} disabled={newPwd.length < 6 || savingPwd}
+                  className="flex-1 px-4 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-700 disabled:opacity-50 disabled:cursor-not-allowed text-white text-sm font-medium transition-colors">
+                  {savingPwd ? 'Se salvează...' : 'Resetează'}
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <AnimatePresence>
         {toast.visible && (

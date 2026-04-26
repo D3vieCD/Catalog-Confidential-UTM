@@ -45,5 +45,7 @@ namespace CatalogOnline.Domain.Entities.User
 
           [DataType(DataType.Date)]
           public DateTime CreatedOn { get; set; } = DateTime.Now;
+
+          public bool IsEmailVerified { get; set; } = false;
      }
 }

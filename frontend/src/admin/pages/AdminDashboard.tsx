@@ -1,12 +1,94 @@
-import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { useState, useEffect, useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useAdmin, type AdminStats, type AdminActivity } from '../../hooks/useAdmin';
 
+function UserDropdown({
+  users,
+  selected,
+  onChange,
+}: {
+  users: { id: number; firstName: string; lastName: string }[];
+  selected: number | null;
+  onChange: (id: number | null) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
+
+  const label = selected
+    ? (() => { const u = users.find(u => u.id === selected); return u ? `${u.firstName} ${u.lastName}` : 'Toți utilizatorii'; })()
+    : 'Toți utilizatorii';
+
+  const opts = [{ id: null, label: 'Toți utilizatorii' }, ...users.map(u => ({ id: u.id, label: `${u.firstName} ${u.lastName}` }))];
+
+  return (
+    <div ref={ref} className="relative">
+      <button
+        type="button"
+        onClick={() => setOpen(p => !p)}
+        className="flex items-center gap-2 px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-2xl bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 text-sm shadow-sm transition-all focus:ring-2 focus:ring-emerald-500 outline-none whitespace-nowrap min-w-[180px]"
+      >
+        <span className="flex-1 text-left">{label}</span>
+        <svg className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${open ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+      <AnimatePresence>
+        {open && (
+          <motion.ul
+            initial={{ opacity: 0, y: -6, scale: 0.97 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -6, scale: 0.97 }}
+            transition={{ duration: 0.15 }}
+            className="absolute z-50 mt-2 min-w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-lg overflow-hidden"
+          >
+            {opts.map(opt => (
+              <li
+                key={opt.id ?? 'all'}
+                onClick={() => { onChange(opt.id); setOpen(false); }}
+                className={`px-4 py-2.5 text-sm cursor-pointer transition-colors ${
+                  (opt.id === selected || (opt.id === null && selected === null))
+                    ? 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400 font-medium'
+                    : 'text-gray-700 dark:text-gray-300 hover:bg-stone-50 dark:hover:bg-gray-700'
+                }`}
+              >
+                {opt.label}
+              </li>
+            ))}
+          </motion.ul>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
 const TYPE_CONFIG: Record<string, { bg: string; text: string; label: string }> = {
-  create: { bg: 'bg-emerald-100 dark:bg-emerald-900/30', text: 'text-emerald-600 dark:text-emerald-400', label: 'Adăugat' },
-  update: { bg: 'bg-amber-100 dark:bg-amber-900/30',   text: 'text-amber-600 dark:text-amber-400',   label: 'Modificat' },
-  delete: { bg: 'bg-red-100 dark:bg-red-900/30',       text: 'text-red-600 dark:text-red-400',       label: 'Șters' },
+  grade:   { bg: 'bg-emerald-100 dark:bg-emerald-900/30', text: 'text-emerald-700 dark:text-emerald-400', label: 'Notă' },
+  absence: { bg: 'bg-amber-100 dark:bg-amber-900/30',     text: 'text-amber-700 dark:text-amber-400',     label: 'Absență' },
+  user:    { bg: 'bg-blue-100 dark:bg-blue-900/30',       text: 'text-blue-700 dark:text-blue-400',       label: 'Utilizator' },
+  student: { bg: 'bg-violet-100 dark:bg-violet-900/30',   text: 'text-violet-700 dark:text-violet-400',   label: 'Student' },
+  import:  { bg: 'bg-sky-100 dark:bg-sky-900/30',         text: 'text-sky-700 dark:text-sky-400',         label: 'Import' },
+  create:  { bg: 'bg-emerald-100 dark:bg-emerald-900/30', text: 'text-emerald-700 dark:text-emerald-400', label: 'Adăugat' },
+  update:  { bg: 'bg-amber-100 dark:bg-amber-900/30',     text: 'text-amber-700 dark:text-amber-400',     label: 'Modificat' },
+  delete:  { bg: 'bg-red-100 dark:bg-red-900/30',         text: 'text-red-700 dark:text-red-400',         label: 'Șters' },
 };
+
+type ActivityFilter = 'toate' | 'grade' | 'absence' | 'user' | 'student' | 'import';
+const FILTER_OPTS: { key: ActivityFilter; label: string }[] = [
+  { key: 'toate',   label: 'Toate' },
+  { key: 'grade',   label: 'Note' },
+  { key: 'absence', label: 'Absențe' },
+  { key: 'student', label: 'Studenți' },
+  { key: 'import',  label: 'Importuri' },
+  { key: 'user',    label: 'Utilizatori' },
+];
 
 const statCards = (stats: AdminStats) => [
   {
@@ -56,20 +138,37 @@ const statCards = (stats: AdminStats) => [
 ];
 
 export const AdminDashboard = () => {
-  const { getAdminStats, getAdminActivity } = useAdmin();
+  const { getAdminStats, getAdminActivity, getAllUsers } = useAdmin();
   const [stats, setStats] = useState<AdminStats | null>(null);
   const [activities, setActivities] = useState<AdminActivity[]>([]);
+  const [actFilter, setActFilter] = useState<ActivityFilter>('toate');
   const [loadingData, setLoadingData] = useState(true);
+  const [users, setUsers] = useState<{ id: number; firstName: string; lastName: string }[]>([]);
+  const [selectedUser, setSelectedUser] = useState<number | null>(null);
+  const [loadingAct, setLoadingAct] = useState(false);
 
   useEffect(() => {
-    Promise.all([getAdminStats(), getAdminActivity()])
-      .then(([s, a]) => {
+    Promise.all([getAdminStats(), getAdminActivity(), getAllUsers()])
+      .then(([s, a, u]) => {
         setStats(s);
         setActivities(a);
+        setUsers(u.map(({ id, firstName, lastName }) => ({ id, firstName, lastName })));
       })
       .catch(() => {})
       .finally(() => setLoadingData(false));
   }, []);
+
+  const handleUserFilter = async (userId: number | null) => {
+    setSelectedUser(userId);
+    setActFilter('toate');
+    setLoadingAct(true);
+    try {
+      const a = await getAdminActivity(userId ?? undefined);
+      setActivities(a);
+    } finally {
+      setLoadingAct(false);
+    }
+  };
 
   if (loadingData || !stats) {
     return (
@@ -115,37 +214,77 @@ export const AdminDashboard = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="xl:col-span-2 bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-stone-200 dark:border-gray-700"
+          className="xl:col-span-2 bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-stone-200 dark:border-gray-700 flex flex-col"
         >
-          <h2 className="text-base font-semibold text-gray-900 dark:text-white mb-4">
-            Activitate Recentă
-          </h2>
-          {activities.length === 0 ? (
-            <p className="text-sm text-gray-400 dark:text-gray-500 text-center py-8">
-              Nicio activitate înregistrată.
-            </p>
-          ) : (
-            <div className="space-y-3">
-              {activities.map((log, idx) => {
-                const cfg = TYPE_CONFIG[log.type] ?? TYPE_CONFIG['create'];
-                return (
-                  <div key={`${log.type}-${log.id}-${idx}`} className="flex items-start gap-3">
-                    <span className={`mt-0.5 px-2 py-0.5 rounded-full text-xs font-semibold flex-shrink-0 ${cfg.bg} ${cfg.text}`}>
-                      {cfg.label}
-                    </span>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm text-gray-800 dark:text-gray-200 truncate">
-                        <span className="font-medium">{log.action}</span>{' '}
-                        <span className="text-gray-500 dark:text-gray-400">{log.target}</span>
-                      </p>
-                      <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">{log.timestamp}</p>
-                    </div>
-                  </div>
-                );
-              })}
+          <div className="flex items-start justify-between mb-4 flex-wrap gap-3">
+            <div>
+              <h2 className="text-base font-semibold text-gray-900 dark:text-white">Activitate Recentă</h2>
+              <p className="text-xs text-gray-400 mt-0.5">
+                {selectedUser
+                  ? `Activitate completă — ${users.find(u => u.id === selectedUser)?.firstName ?? ''} ${users.find(u => u.id === selectedUser)?.lastName ?? ''}`
+                  : `${activities.length} înregistrări în ultimele 2 zile`}
+              </p>
             </div>
-          )}
+            <div className="flex flex-col items-end gap-2">
+              <UserDropdown users={users} selected={selectedUser} onChange={handleUserFilter} />
+              {/* Type filter */}
+              <div className="flex items-center gap-1 bg-stone-100 dark:bg-gray-700/50 p-1 rounded-xl flex-wrap">
+                {FILTER_OPTS
+                  .filter(f => selectedUser ? !['user'].includes(f.key) : !['student', 'import'].includes(f.key))
+                  .map((f) => (
+                    <button
+                      key={f.key}
+                      onClick={() => setActFilter(f.key)}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                        actFilter === f.key
+                          ? 'bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-sm'
+                          : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
+                      }`}
+                    >
+                      {f.label}
+                    </button>
+                  ))}
+              </div>
+            </div>
+          </div>
+
+          {loadingAct
+            ? <div className="text-center py-8 text-sm text-gray-400 dark:text-gray-500">Se încarcă...</div>
+            : (() => {
+            const filtered = actFilter === 'toate'
+              ? activities
+              : activities.filter((a) => a.type === actFilter);
+            return filtered.length === 0 ? (
+              <p className="text-sm text-gray-400 dark:text-gray-500 text-center py-8">
+                Nicio activitate înregistrată.
+              </p>
+            ) : (
+              <div className="overflow-y-auto max-h-[420px] space-y-0 pr-1 -mr-1">
+                {filtered.map((log, idx) => {
+                  const cfg = TYPE_CONFIG[log.type] ?? TYPE_CONFIG['create'];
+                  return (
+                    <div
+                      key={`${log.type}-${log.id}-${idx}`}
+                      className={`flex items-start gap-3 py-3 ${idx < filtered.length - 1 ? 'border-b border-stone-100 dark:border-gray-700/60' : ''}`}
+                    >
+                      <span className={`mt-0.5 px-2 py-0.5 rounded-full text-xs font-semibold flex-shrink-0 ${cfg.bg} ${cfg.text}`}>
+                        {cfg.label}
+                      </span>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm text-gray-800 dark:text-gray-200 truncate">
+                          <span className="font-medium">{log.action}</span>{' '}
+                          <span className="text-gray-500 dark:text-gray-400">{log.target}</span>
+                        </p>
+                        <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">{log.timestamp}</p>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            );
+          })()}
         </motion.div>
+
 
         {/* Stare Sistem */}
         <motion.div

@@ -27,6 +27,10 @@ export interface AuthContextType {
     isAuthenticated: () => boolean;
     getUser: () => { name: string; email: string; role: string; avatar: string };
     updateUser: (userData: { name?: string; email?: string; role?: string; avatar?: string }) => void;
+    forgotPassword: (email: string) => Promise<void>;
+    resetPassword: (token: string, newPassword: string, confirmPassword: string) => Promise<void>;
+    verifyEmail: (userId: number, code: string) => Promise<void>;
+    resendVerification: (userId: number) => Promise<void>;
 }
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -50,7 +54,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             storage.set('userRole', data.role);
             storage.set('showAnimation', 'true');
         } catch (err: any) {
-            const msg = err?.response?.data?.message || 'Autentificare eșuată.';
+            const data = err?.response?.data;
+            if (data?.message === 'EMAIL_NOT_VERIFIED') {
+                throw { code: 'EMAIL_NOT_VERIFIED', userId: data.userId };
+            }
+            const msg = data?.message || 'Autentificare eșuată.';
             setError(msg);
             throw new Error(msg);
         } finally {
@@ -58,11 +66,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
     }
 
-    async function register(data: RegisterData): Promise<void> {
+    async function register(data: RegisterData): Promise<{ userId: number }> {
         try {
             setLoading(true);
             setError(null);
-            await axios.post('/auth/register', data);
+            const res = await axios.post('/auth/register', data);
+            return res.data;
         } catch (err: any) {
             const msg = err?.response?.data?.message || 'Înregistrare eșuată.';
             setError(msg);
@@ -97,8 +106,64 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (userData.avatar !== undefined) storage.set('userAvatar', userData.avatar);
     }
 
+    async function verifyEmail(userId: number, code: string): Promise<void> {
+        try {
+            setLoading(true);
+            setError(null);
+            await axios.post('/auth/verify-email', { userId, code });
+        } catch (err: any) {
+            const msg = err?.response?.data?.message || 'Cod invalid.';
+            setError(msg);
+            throw new Error(msg);
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    async function resendVerification(userId: number): Promise<void> {
+        try {
+            setLoading(true);
+            setError(null);
+            await axios.post('/auth/resend-verification', userId);
+        } catch (err: any) {
+            const msg = err?.response?.data?.message || 'A apărut o eroare.';
+            setError(msg);
+            throw new Error(msg);
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    async function forgotPassword(email: string): Promise<void> {
+        try {
+            setLoading(true);
+            setError(null);
+            await axios.post('/auth/forgot-password', { email });
+        } catch (err: any) {
+            const msg = err?.response?.data?.message || 'A apărut o eroare.';
+            setError(msg);
+            throw new Error(msg);
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    async function resetPassword(token: string, newPassword: string, confirmPassword: string): Promise<void> {
+        try {
+            setLoading(true);
+            setError(null);
+            await axios.post('/auth/reset-password', { token, newPassword, confirmPassword });
+        } catch (err: any) {
+            const msg = err?.response?.data?.message || 'A apărut o eroare.';
+            setError(msg);
+            throw new Error(msg);
+        } finally {
+            setLoading(false);
+        }
+    }
+
     return (
-        <AuthContext.Provider value={{ loading, error, login, register, logout, isAuthenticated, getUser, updateUser }}>
+        <AuthContext.Provider value={{ loading, error, login, register, logout, isAuthenticated, getUser, updateUser, forgotPassword, resetPassword, verifyEmail, resendVerification }}>
             {children}
         </AuthContext.Provider>
     );

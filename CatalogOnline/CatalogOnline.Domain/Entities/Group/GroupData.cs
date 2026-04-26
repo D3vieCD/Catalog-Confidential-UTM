@@ -27,6 +27,8 @@ namespace CatalogOnline.Domain.Entities.Group
 
           public int UserId { get; set; }
 
+          public bool IsArchived { get; set; } = false;
+
           [JsonIgnore]
           public List<StudentData> Students { get; set; } = new List<StudentData>();
 

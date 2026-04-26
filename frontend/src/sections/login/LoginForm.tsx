@@ -18,6 +18,10 @@ export const LoginForm = () => {
       await login(credential, password);
       navigate(paths.dashboard);
     } catch (err: any) {
+      if (err?.code === 'EMAIL_NOT_VERIFIED') {
+        navigate(`${paths.verifyEmail}?userId=${err.userId}`);
+        return;
+      }
       setError(err.message || 'Email sau parolă incorectă!');
     }
   };
@@ -83,7 +87,7 @@ export const LoginForm = () => {
         <div className="flex items-center justify-between mb-4">
           <Checkbox label="Ține-mă minte" disabled={loading} />
           <motion.button
-            onClick={() => console.log('Forgot password')}
+            onClick={() => navigate(paths.forgotPassword)}
             className="text-xs md:text-sm text-emerald-600 dark:text-emerald-400 font-medium relative inline-block"
             whileHover="hover"
             whileTap={{ y: 1 }}

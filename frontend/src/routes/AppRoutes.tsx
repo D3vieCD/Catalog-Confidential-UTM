@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AxiosProvider } from '../axios/AxiosProvider';
-import { Login, Register, Dashboard, Calendar, Settings, Students, Groups, Catalog, GroupCatalog, Reports } from '../pages';
+import { Login, Register, ForgotPassword, ResetPassword, VerifyEmail, Dashboard, Calendar, Settings, Students, Groups, Catalog, GroupCatalog, Reports } from '../pages';
 import { Page403, Page404, Page500 } from '../pages/error';
 import { DashboardLayout } from '../layouts/dashboard/DashboardLayout';
 import { AdminLayout } from '../admin/components/layout/AdminLayout';
@@ -86,6 +86,24 @@ export const AppRoutes = () => {
               <Register />
             </PublicRoute>
           }
+        />
+
+        {/* Verify Email Page */}
+        <Route
+          path={paths.verifyEmail}
+          element={<VerifyEmail />}
+        />
+
+        {/* Forgot Password Page */}
+        <Route
+          path={paths.forgotPassword}
+          element={<ForgotPassword />}
+        />
+
+        {/* Reset Password Page */}
+        <Route
+          path={paths.resetPassword}
+          element={<ResetPassword />}
         />
 
         {/* Dashboard Page - Protejat */}
