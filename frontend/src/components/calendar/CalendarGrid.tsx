@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import type { CalendarEvent } from '../../_mock/mockCalendar';
+import type { CalendarEvent } from '../../types/calendar';
 
 interface CalendarGridProps {
   currentMonth: Date;

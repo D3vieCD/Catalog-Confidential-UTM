@@ -1,7 +1,6 @@
 import { motion } from 'framer-motion';
 import { Pencil, Trash2, Users2, GraduationCap, BookOpen, User } from 'lucide-react';
 import type { Group } from '../../context/GroupProvider';
-// import type { Group } from '../../_mock/mockGroups';
 
 interface GroupCardProps {
   group: Group;

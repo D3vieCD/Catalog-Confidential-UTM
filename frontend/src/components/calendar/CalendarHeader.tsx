@@ -1,6 +1,5 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { AddButton } from './buttons';
 
 interface CalendarHeaderProps {
   currentMonth: Date;
@@ -14,7 +13,6 @@ export const CalendarHeader: React.FC<CalendarHeaderProps> = ({
   currentMonth,
   onPreviousMonth,
   onNextMonth,
-  onAdd,
 }) => {
   const monthNames = [
     'Ianuarie', 'Februarie', 'Martie', 'Aprilie', 'Mai', 'Iunie',
@@ -63,9 +61,6 @@ export const CalendarHeader: React.FC<CalendarHeaderProps> = ({
           </button>
         </div>
 
-        <div className="flex items-center gap-3">
-          <AddButton onClick={onAdd} />
-        </div>
       </div>
 
       {/* Week Days Header */}

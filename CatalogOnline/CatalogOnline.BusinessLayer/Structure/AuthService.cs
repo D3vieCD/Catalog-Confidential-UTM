@@ -21,5 +21,20 @@ namespace CatalogOnline.BusinessLayer.Structure
           {
                return RegisterAdminActionExecution(registerData, validKey);
           }
+
+          public AuthActionResponse GetProfileAction(int userId)
+          {
+               return GetProfileActionExecution(userId);
+          }
+
+          public AuthActionResponse UpdateProfileAction(int userId, AuthUpdateProfileDto data)
+          {
+               return UpdateProfileActionExecution(userId, data);
+          }
+
+          public AuthActionResponse ChangePasswordAction(int userId, AuthChangePasswordDto data)
+          {
+               return ChangePasswordActionExecution(userId, data);
+          }
      }
 }

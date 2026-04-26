@@ -11,9 +11,29 @@ namespace CatalogOnline.BusinessLayer.Structure
                return GetAdminStatsActionExecution();
           }
 
-          public AdminActionResponse GetAdminActivityAction()
+          public AdminActionResponse GetAdminActivityAction(int? userId = null)
           {
-               return GetAdminActivityActionExecution();
+               return GetAdminActivityActionExecution(userId);
+          }
+
+          public AdminActionResponse GetAdminGroupsAction()
+          {
+               return GetAdminGroupsActionExecution();
+          }
+
+          public AdminActionResponse ArchiveAdminGroupAction(int groupId)
+          {
+               return ArchiveAdminGroupActionExecution(groupId);
+          }
+
+          public AdminActionResponse GetAdminStudentsAction()
+          {
+               return GetAdminStudentsActionExecution();
+          }
+
+          public AdminActionResponse ResetUserDataAction(int targetUserId)
+          {
+               return ResetUserDataActionExecution(targetUserId);
           }
      }
 }

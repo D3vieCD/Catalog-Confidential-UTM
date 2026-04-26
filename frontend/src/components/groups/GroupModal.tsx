@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, AlertCircle } from 'lucide-react';
-// import type { Group, GroupFormData } from '../../_mock/mockGroups';
 import { Modal } from '../ui/Modal';
 import type { CreateGroupDto, Group, SemesterNumber } from '../../context/GroupProvider';
 

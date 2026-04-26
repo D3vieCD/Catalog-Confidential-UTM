@@ -136,5 +136,65 @@ namespace CatalogOnline.BusinessLayer.Core
 
                return new AuthActionResponse { IsValid = true, Message = "Cont de administrator creat cu succes." };
           }
+
+          public AuthActionResponse GetProfileActionExecution(int userId)
+          {
+               using var appDbContext = new AppDbContext();
+               var user = appDbContext.User.FirstOrDefault(u => u.Id == userId);
+               if (user == null)
+                    return new AuthActionResponse { IsValid = false, Message = "Utilizatorul nu a fost găsit." };
+
+               return new AuthActionResponse
+               {
+                    IsValid = true,
+                    Message = "Profil recuperat.",
+                    UserId = user.Id,
+                    UserName = user.UserName,
+                    Email = user.Email,
+                    Role = user.Role,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    Phone = user.Phone,
+                    Bio = user.Bio
+               };
+          }
+
+          public AuthActionResponse UpdateProfileActionExecution(int userId, AuthUpdateProfileDto data)
+          {
+               using var appDbContext = new AppDbContext();
+               var user = appDbContext.User.FirstOrDefault(u => u.Id == userId);
+               if (user == null)
+                    return new AuthActionResponse { IsValid = false, Message = "Utilizatorul nu a fost găsit." };
+
+               user.FirstName = data.FirstName;
+               user.LastName = data.LastName;
+               user.Phone = data.Phone;
+               user.Bio = data.Bio;
+               appDbContext.SaveChanges();
+
+               return new AuthActionResponse { IsValid = true, Message = "Profil actualizat cu succes." };
+          }
+
+          public AuthActionResponse ChangePasswordActionExecution(int userId, AuthChangePasswordDto data)
+          {
+               if (string.IsNullOrWhiteSpace(data.NewPassword))
+                    return new AuthActionResponse { IsValid = false, Message = "Parola nouă este necesară." };
+
+               if (data.NewPassword != data.ConfirmPassword)
+                    return new AuthActionResponse { IsValid = false, Message = "Parolele nu coincid." };
+
+               using var appDbContext = new AppDbContext();
+               var user = appDbContext.User.FirstOrDefault(u => u.Id == userId);
+               if (user == null)
+                    return new AuthActionResponse { IsValid = false, Message = "Utilizatorul nu a fost găsit." };
+
+               if (!BCrypt.Net.BCrypt.Verify(data.OldPassword, user.Password))
+                    return new AuthActionResponse { IsValid = false, Message = "Parola veche este incorectă." };
+
+               user.Password = BCrypt.Net.BCrypt.HashPassword(data.NewPassword);
+               appDbContext.SaveChanges();
+
+               return new AuthActionResponse { IsValid = true, Message = "Parola a fost schimbată cu succes." };
+          }
      }
 }

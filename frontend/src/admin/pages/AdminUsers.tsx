@@ -1,8 +1,70 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAdmin, type AdminUser } from '../../hooks/useAdmin';
 
 type RoleFilter = 'toate' | 'admin' | 'profesor';
+
+const ROLE_OPTIONS = [
+  { label: 'Toate rolurile', value: 'toate' },
+  { label: 'Admin',          value: 'admin' },
+  { label: 'Profesor',       value: 'profesor' },
+];
+
+function Dropdown({ value, onChange }: { value: string; onChange: (v: RoleFilter) => void }) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
+
+  const selected = ROLE_OPTIONS.find((o) => o.value === value)?.label ?? 'Toate rolurile';
+
+  return (
+    <div ref={ref} className="relative">
+      <button
+        type="button"
+        onClick={() => setOpen((p) => !p)}
+        className="flex items-center gap-2 px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-2xl bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 text-sm shadow-sm transition-all focus:ring-2 focus:ring-emerald-500 outline-none whitespace-nowrap"
+      >
+        {selected}
+        <svg className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
+          fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+      <AnimatePresence>
+        {open && (
+          <motion.ul
+            initial={{ opacity: 0, y: -6, scale: 0.97 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -6, scale: 0.97 }}
+            transition={{ duration: 0.15 }}
+            className="absolute z-50 mt-2 min-w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-lg overflow-hidden"
+          >
+            {ROLE_OPTIONS.map((opt) => (
+              <li
+                key={opt.value}
+                onClick={() => { onChange(opt.value as RoleFilter); setOpen(false); }}
+                className={`px-4 py-2.5 text-sm cursor-pointer transition-colors
+                  ${opt.value === value
+                    ? 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400 font-medium'
+                    : 'text-gray-700 dark:text-gray-300 hover:bg-stone-50 dark:hover:bg-gray-700'
+                  }`}
+              >
+                {opt.label}
+              </li>
+            ))}
+          </motion.ul>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
 
 const ROLE_BADGE: Record<string, string> = {
   admin:    'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400',
@@ -54,32 +116,25 @@ export const AdminUsers = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
+      <div className="flex items-center gap-3 flex-wrap">
+        <div className="mr-2">
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Utilizatori</h1>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
             {users.length} utilizatori în sistem
           </p>
         </div>
-      </div>
 
-      <div className="bg-white dark:bg-gray-800 rounded-2xl p-4 shadow-sm border border-stone-200 dark:border-gray-700 flex flex-wrap gap-3">
-        <input
-          type="text"
-          placeholder="Caută după nume, username sau email..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="flex-1 min-w-48 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm transition-all"
-        />
-        <select
-          value={roleFilter}
-          onChange={(e) => setRoleFilter(e.target.value as RoleFilter)}
-          className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all"
-        >
-          <option value="toate">Toate rolurile</option>
-          <option value="admin">Admin</option>
-          <option value="profesor">Profesor</option>
-        </select>
+        <div className="flex-1 min-w-48">
+          <input
+            type="text"
+            placeholder="Caută după nume, username sau email..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-2xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none bg-white dark:bg-gray-800 text-gray-900 dark:text-white text-sm transition-all shadow-sm"
+          />
+        </div>
+
+        <Dropdown value={roleFilter} onChange={setRoleFilter} />
       </div>
 
       <motion.div
