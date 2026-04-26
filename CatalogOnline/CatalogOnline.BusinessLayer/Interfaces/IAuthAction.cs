@@ -11,5 +11,9 @@ namespace CatalogOnline.BusinessLayer.Interfaces
           AuthActionResponse GetProfileAction(int userId);
           AuthActionResponse UpdateProfileAction(int userId, AuthUpdateProfileDto data);
           AuthActionResponse ChangePasswordAction(int userId, AuthChangePasswordDto data);
+          AuthActionResponse VerifyEmailAction(int userId, string code);
+          AuthActionResponse ResendVerificationCodeAction(int userId);
+          AuthActionResponse ForgotPasswordAction(ForgotPasswordDto data, string frontendBaseUrl);
+          AuthActionResponse ResetPasswordAction(ResetPasswordTokenDto data);
      }
 }

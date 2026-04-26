@@ -4,6 +4,7 @@ using CatalogOnline.DataAccess.Context;
 using CatalogOnline.Domain.Entities.User;
 using CatalogOnline.Domain.Models.Auth;
 using CatalogOnline.Domain.Models.Responses;
+using System.Security.Cryptography;
 
 namespace CatalogOnline.BusinessLayer.Core
 {
@@ -57,7 +58,19 @@ namespace CatalogOnline.BusinessLayer.Core
                appDbContext.User.Add(user);
                appDbContext.SaveChanges();
 
-               return new AuthActionResponse { IsValid = true, Message = "Înregistrare reușită." };
+               var code = new Random().Next(100000, 999999).ToString();
+               appDbContext.EmailVerification.Add(new EmailVerificationData
+               {
+                    UserId = user.Id,
+                    Code = code,
+                    ExpiresAt = DateTime.UtcNow.AddMinutes(15),
+                    IsUsed = false
+               });
+               appDbContext.SaveChanges();
+
+               EmailService.SendVerificationCodeEmail(user.Email, $"{user.FirstName} {user.LastName}".Trim(), code);
+
+               return new AuthActionResponse { IsValid = true, Message = "Înregistrare reușită. Verifică emailul pentru codul de confirmare.", UserId = user.Id };
           }
 
           public AuthActionResponse LoginActionExecution(LoginDto loginData)
@@ -78,6 +91,9 @@ namespace CatalogOnline.BusinessLayer.Core
 
                if (user == null || !BCrypt.Net.BCrypt.Verify(loginData.Password, user.Password))
                     return new AuthActionResponse { IsValid = false, Message = "Credențiale invalide." };
+
+               if (!user.IsEmailVerified)
+                    return new AuthActionResponse { IsValid = false, Message = "EMAIL_NOT_VERIFIED", UserId = user.Id };
 
                var jwtResponse = _jwtAction.GenerateTokenAction(user.Id, user.UserName, user.Role);
 
@@ -195,6 +211,121 @@ namespace CatalogOnline.BusinessLayer.Core
                appDbContext.SaveChanges();
 
                return new AuthActionResponse { IsValid = true, Message = "Parola a fost schimbată cu succes." };
+          }
+
+          public AuthActionResponse VerifyEmailActionExecution(int userId, string code)
+          {
+               using var appDbContext = new AppDbContext();
+               var verification = appDbContext.EmailVerification
+                    .FirstOrDefault(v => v.UserId == userId && v.Code == code && !v.IsUsed && v.ExpiresAt > DateTime.UtcNow);
+
+               if (verification == null)
+                    return new AuthActionResponse { IsValid = false, Message = "Codul este invalid sau a expirat." };
+
+               verification.IsUsed = true;
+               var user = appDbContext.User.FirstOrDefault(u => u.Id == userId);
+               if (user != null) user.IsEmailVerified = true;
+               appDbContext.SaveChanges();
+
+               return new AuthActionResponse { IsValid = true, Message = "Email verificat cu succes." };
+          }
+
+          public AuthActionResponse ResendVerificationCodeActionExecution(int userId)
+          {
+               using var appDbContext = new AppDbContext();
+               var user = appDbContext.User.FirstOrDefault(u => u.Id == userId);
+               if (user == null)
+                    return new AuthActionResponse { IsValid = false, Message = "Utilizatorul nu a fost găsit." };
+
+               if (user.IsEmailVerified)
+                    return new AuthActionResponse { IsValid = false, Message = "Emailul este deja verificat." };
+
+               var oldCodes = appDbContext.EmailVerification
+                    .Where(v => v.UserId == userId && !v.IsUsed)
+                    .ToList();
+               foreach (var v in oldCodes) v.IsUsed = true;
+
+               var code = new Random().Next(100000, 999999).ToString();
+               appDbContext.EmailVerification.Add(new EmailVerificationData
+               {
+                    UserId = userId,
+                    Code = code,
+                    ExpiresAt = DateTime.UtcNow.AddMinutes(15),
+                    IsUsed = false
+               });
+               appDbContext.SaveChanges();
+
+               EmailService.SendVerificationCodeEmail(user.Email, $"{user.FirstName} {user.LastName}".Trim(), code);
+
+               return new AuthActionResponse { IsValid = true, Message = "Cod retrimis cu succes." };
+          }
+
+          public AuthActionResponse ForgotPasswordActionExecution(ForgotPasswordDto data, string frontendBaseUrl)
+          {
+               if (string.IsNullOrWhiteSpace(data.Email))
+                    return new AuthActionResponse { IsValid = false, Message = "Email-ul este necesar." };
+
+               using var appDbContext = new AppDbContext();
+               var user = appDbContext.User.FirstOrDefault(u => u.Email == data.Email);
+
+               // Always return success to prevent email enumeration
+               if (user == null)
+                    return new AuthActionResponse { IsValid = true, Message = "Dacă emailul există, vei primi un link de resetare." };
+
+               // Invalidate old tokens for this user
+               var oldTokens = appDbContext.PasswordResetToken
+                    .Where(t => t.UserId == user.Id && !t.IsUsed)
+                    .ToList();
+               foreach (var t in oldTokens)
+                    t.IsUsed = true;
+
+               var token = Convert.ToHexString(RandomNumberGenerator.GetBytes(32));
+               var resetToken = new PasswordResetTokenData
+               {
+                    UserId = user.Id,
+                    Token = token,
+                    ExpiresAt = DateTime.UtcNow.AddMinutes(30),
+                    IsUsed = false
+               };
+               appDbContext.PasswordResetToken.Add(resetToken);
+               appDbContext.SaveChanges();
+
+               var resetLink = $"{frontendBaseUrl}/reset-password?token={token}";
+               EmailService.SendPasswordResetEmail(user.Email, $"{user.FirstName} {user.LastName}".Trim(), resetLink);
+
+               return new AuthActionResponse { IsValid = true, Message = "Dacă emailul există, vei primi un link de resetare." };
+          }
+
+          public AuthActionResponse ResetPasswordActionExecution(ResetPasswordTokenDto data)
+          {
+               if (string.IsNullOrWhiteSpace(data.Token))
+                    return new AuthActionResponse { IsValid = false, Message = "Token-ul este necesar." };
+
+               if (string.IsNullOrWhiteSpace(data.NewPassword))
+                    return new AuthActionResponse { IsValid = false, Message = "Parola nouă este necesară." };
+
+               if (data.NewPassword != data.ConfirmPassword)
+                    return new AuthActionResponse { IsValid = false, Message = "Parolele nu coincid." };
+
+               if (data.NewPassword.Length < 6)
+                    return new AuthActionResponse { IsValid = false, Message = "Parola trebuie să aibă cel puțin 6 caractere." };
+
+               using var appDbContext = new AppDbContext();
+               var resetToken = appDbContext.PasswordResetToken
+                    .FirstOrDefault(t => t.Token == data.Token && !t.IsUsed && t.ExpiresAt > DateTime.UtcNow);
+
+               if (resetToken == null)
+                    return new AuthActionResponse { IsValid = false, Message = "Link-ul de resetare este invalid sau a expirat." };
+
+               var user = appDbContext.User.FirstOrDefault(u => u.Id == resetToken.UserId);
+               if (user == null)
+                    return new AuthActionResponse { IsValid = false, Message = "Utilizatorul nu a fost găsit." };
+
+               user.Password = BCrypt.Net.BCrypt.HashPassword(data.NewPassword);
+               resetToken.IsUsed = true;
+               appDbContext.SaveChanges();
+
+               return new AuthActionResponse { IsValid = true, Message = "Parola a fost resetată cu succes." };
           }
      }
 }

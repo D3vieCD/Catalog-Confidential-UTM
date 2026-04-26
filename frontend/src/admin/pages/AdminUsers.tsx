@@ -75,11 +75,15 @@ const ROLE_BADGE: Record<string, string> = {
 const displayRole = (role: string) => role === 'admin' ? 'admin' : 'profesor';
 
 export const AdminUsers = () => {
-  const { getAllUsers, deleteUser, updateUserRole, loading } = useAdmin();
+  const { getAllUsers, deleteUser, updateUserRole, resetUserPassword, loading } = useAdmin();
   const [users, setUsers] = useState<AdminUser[]>([]);
   const [roleFilter, setRoleFilter] = useState<RoleFilter>('toate');
   const [search, setSearch] = useState('');
   const [toast, setToast] = useState<{ message: string; visible: boolean }>({ message: '', visible: false });
+  const [pwdModal, setPwdModal] = useState<{ open: boolean; userId: number | null; name: string }>({ open: false, userId: null, name: '' });
+  const [newPwd, setNewPwd] = useState('');
+  const [showPwd, setShowPwd] = useState(false);
+  const [savingPwd, setSavingPwd] = useState(false);
 
   useEffect(() => {
     getAllUsers().then(setUsers).catch(() => {});
@@ -109,7 +113,22 @@ export const AdminUsers = () => {
     showToast(`Rol actualizat: ${user.firstName} ${user.lastName} → ${displayRole(newRole)}`);
   };
 
-  const showToast = (message: string) => {
+  const handleResetPassword = async () => {
+    if (!pwdModal.userId || newPwd.length < 6) return;
+    setSavingPwd(true);
+    try {
+      await resetUserPassword(pwdModal.userId, newPwd);
+      setPwdModal({ open: false, userId: null, name: '' });
+      setNewPwd('');
+      showToast(`Parola pentru ${pwdModal.name} a fost resetată.`);
+    } catch {
+      showToast('Eroare la resetarea parolei.', false);
+    } finally {
+      setSavingPwd(false);
+    }
+  };
+
+  const showToast = (message: string, ok = true) => {
     setToast({ message, visible: true });
     setTimeout(() => setToast((t) => ({ ...t, visible: false })), 3500);
   };
@@ -184,6 +203,15 @@ export const AdminUsers = () => {
                     <td className="px-6 py-4">
                       <div className="flex items-center justify-end gap-1">
                         <button
+                          onClick={() => { setPwdModal({ open: true, userId: user.id, name: `${user.firstName} ${user.lastName}` }); setNewPwd(''); setShowPwd(false); }}
+                          title="Resetează parola"
+                          className="p-1.5 rounded-lg hover:bg-sky-50 dark:hover:bg-sky-900/20 text-gray-400 hover:text-sky-600 dark:hover:text-sky-400 transition-colors"
+                        >
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
+                          </svg>
+                        </button>
+                        <button
                           onClick={() => handleToggleRole(user)}
                           title={user.role === 'admin' ? 'Retrogradează la profesor' : 'Promovează la admin'}
                           className="p-1.5 rounded-lg hover:bg-amber-50 dark:hover:bg-amber-900/20 text-gray-400 hover:text-amber-600 dark:hover:text-amber-400 transition-colors"
@@ -218,6 +246,70 @@ export const AdminUsers = () => {
           </div>
         )}
       </motion.div>
+
+      {/* Modal resetare parolă */}
+      <AnimatePresence>
+        {pwdModal.open && (
+          <motion.div
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm"
+            onClick={(e) => { if (e.target === e.currentTarget) setPwdModal({ open: false, userId: null, name: '' }); }}
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 10 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95, y: 10 }}
+              transition={{ duration: 0.18 }}
+              className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl w-full max-w-sm mx-4 p-6"
+            >
+              <div className="flex items-center justify-between mb-5">
+                <div>
+                  <h2 className="text-base font-bold text-gray-900 dark:text-white">Resetare parolă</h2>
+                  <p className="text-xs text-gray-400 mt-0.5">{pwdModal.name}</p>
+                </div>
+                <button onClick={() => setPwdModal({ open: false, userId: null, name: '' })}
+                  className="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-400 transition-colors">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+
+              <div className="space-y-1.5 mb-5">
+                <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">Parolă nouă</label>
+                <div className="relative">
+                  <input
+                    type={showPwd ? 'text' : 'password'}
+                    value={newPwd}
+                    onChange={(e) => setNewPwd(e.target.value)}
+                    placeholder="Minimum 6 caractere"
+                    className="w-full px-4 py-3 pr-10 border border-gray-200 dark:border-gray-600 rounded-xl text-sm bg-gray-50 dark:bg-gray-700/50 text-gray-900 dark:text-white placeholder-gray-400 focus:bg-white dark:focus:bg-gray-700 focus:ring-2 focus:ring-sky-500 focus:border-transparent outline-none transition-all"
+                  />
+                  <button type="button" onClick={() => setShowPwd(p => !p)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
+                    {showPwd
+                      ? <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" /></svg>
+                      : <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+                    }
+                  </button>
+                </div>
+                {newPwd.length > 0 && newPwd.length < 6 && (
+                  <p className="text-xs text-red-500 mt-1">Parola trebuie să aibă cel puțin 6 caractere.</p>
+                )}
+              </div>
+
+              <div className="flex gap-3">
+                <button onClick={() => setPwdModal({ open: false, userId: null, name: '' })}
+                  className="flex-1 px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-300 text-sm font-medium hover:bg-stone-50 dark:hover:bg-gray-700 transition-colors">
+                  Anulează
+                </button>
+                <button onClick={handleResetPassword} disabled={newPwd.length < 6 || savingPwd}
+                  className="flex-1 px-4 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-700 disabled:opacity-50 disabled:cursor-not-allowed text-white text-sm font-medium transition-colors">
+                  {savingPwd ? 'Se salvează...' : 'Resetează'}
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <AnimatePresence>
         {toast.visible && (

@@ -36,5 +36,25 @@ namespace CatalogOnline.BusinessLayer.Structure
           {
                return ChangePasswordActionExecution(userId, data);
           }
+
+          public AuthActionResponse VerifyEmailAction(int userId, string code)
+          {
+               return VerifyEmailActionExecution(userId, code);
+          }
+
+          public AuthActionResponse ResendVerificationCodeAction(int userId)
+          {
+               return ResendVerificationCodeActionExecution(userId);
+          }
+
+          public AuthActionResponse ForgotPasswordAction(ForgotPasswordDto data, string frontendBaseUrl)
+          {
+               return ForgotPasswordActionExecution(data, frontendBaseUrl);
+          }
+
+          public AuthActionResponse ResetPasswordAction(ResetPasswordTokenDto data)
+          {
+               return ResetPasswordActionExecution(data);
+          }
      }
 }

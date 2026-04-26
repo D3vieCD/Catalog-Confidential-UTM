@@ -75,6 +75,7 @@ export interface AdminContextType {
     updateProfile: (data: { firstName: string; lastName: string; phone?: string; bio?: string }) => Promise<void>;
     changePassword: (data: { oldPassword: string; newPassword: string; confirmPassword: string }) => Promise<void>;
     resetUserData: (userId: number) => Promise<string>;
+    resetUserPassword: (userId: number, newPassword: string) => Promise<void>;
 }
 
 export const AdminContext = createContext<AdminContextType | undefined>(undefined);
@@ -207,6 +208,19 @@ export function AdminProvider({ children }: { children: ReactNode }) {
         }
     }
 
+    async function resetUserPassword(userId: number, newPassword: string): Promise<void> {
+        try {
+            setLoading(true);
+            setError(null);
+            await axios.put(`/admin/users/${userId}/password`, { newPassword });
+        } catch (err) {
+            setError("Nu s-a putut reseta parola.");
+            throw err;
+        } finally {
+            setLoading(false);
+        }
+    }
+
     async function getAdminGroups(): Promise<AdminGroupDto[]> {
         try {
             setLoading(true);
@@ -249,7 +263,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
     }
 
     return (
-        <AdminContext.Provider value={{ getAllUsers, deleteUser, updateUserRole, getAdminStats, getAdminActivity, getAdminGroups, archiveAdminGroup, getAdminStudents, getProfile, updateProfile, changePassword, resetUserData, loading, error }}>
+        <AdminContext.Provider value={{ getAllUsers, deleteUser, updateUserRole, getAdminStats, getAdminActivity, getAdminGroups, archiveAdminGroup, getAdminStudents, getProfile, updateProfile, changePassword, resetUserData, resetUserPassword, loading, error }}>
             {children}
         </AdminContext.Provider>
     );

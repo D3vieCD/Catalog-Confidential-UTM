@@ -27,7 +27,7 @@ namespace CatalogOnline.API.Controller
                var response = _authAction.RegisterAction(registerData);
                if (!response.IsValid)
                     return BadRequest(new { message = response.Message });
-               return Ok(new { message = response.Message });
+               return Ok(new { message = response.Message, userId = response.UserId });
           }
 
           [HttpPost("register-admin")]
@@ -84,7 +84,11 @@ namespace CatalogOnline.API.Controller
           {
                var response = _authAction.LoginAction(loginData);
                if (!response.IsValid)
+               {
+                    if (response.Message == "EMAIL_NOT_VERIFIED")
+                         return Unauthorized(new { message = "EMAIL_NOT_VERIFIED", userId = response.UserId });
                     return Unauthorized(new { message = response.Message });
+               }
                return Ok(new
                {
                     token = response.Token,
@@ -93,6 +97,44 @@ namespace CatalogOnline.API.Controller
                     email = response.Email,
                     role = response.Role
                });
+          }
+
+          [HttpPost("verify-email")]
+          public IActionResult VerifyEmail([FromBody] VerifyEmailDto data)
+          {
+               var response = _authAction.VerifyEmailAction(data.UserId, data.Code);
+               if (!response.IsValid)
+                    return BadRequest(new { message = response.Message });
+               return Ok(new { message = response.Message });
+          }
+
+          [HttpPost("resend-verification")]
+          public IActionResult ResendVerification([FromBody] int userId)
+          {
+               var response = _authAction.ResendVerificationCodeAction(userId);
+               if (!response.IsValid)
+                    return BadRequest(new { message = response.Message });
+               return Ok(new { message = response.Message });
+          }
+
+          [HttpPost("forgot-password")]
+          public IActionResult ForgotPassword([FromBody] ForgotPasswordDto data)
+          {
+               var origin = Request.Headers["Origin"].ToString();
+               var frontendBase = string.IsNullOrWhiteSpace(origin) ? "http://localhost:5173" : origin;
+               var response = _authAction.ForgotPasswordAction(data, frontendBase);
+               if (!response.IsValid)
+                    return BadRequest(new { message = response.Message });
+               return Ok(new { message = response.Message });
+          }
+
+          [HttpPost("reset-password")]
+          public IActionResult ResetPassword([FromBody] ResetPasswordTokenDto data)
+          {
+               var response = _authAction.ResetPasswordAction(data);
+               if (!response.IsValid)
+                    return BadRequest(new { message = response.Message });
+               return Ok(new { message = response.Message });
           }
      }
 }

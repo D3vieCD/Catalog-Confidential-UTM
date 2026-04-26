@@ -10,5 +10,6 @@ namespace CatalogOnline.BusinessLayer.Interfaces
           AdminActionResponse ArchiveAdminGroupAction(int groupId);
           AdminActionResponse GetAdminStudentsAction();
           AdminActionResponse ResetUserDataAction(int targetUserId);
+          AdminActionResponse ResetUserPasswordAction(int targetUserId, string newPassword);
      }
 }

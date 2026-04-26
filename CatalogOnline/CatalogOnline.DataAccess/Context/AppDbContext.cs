@@ -117,5 +117,7 @@ namespace CatalogOnline.DataAccess.Context
           public DbSet<ReportData> Report { get; set; }
           public DbSet<ImportLogData> ImportLog { get; set; }
           public DbSet<NotificationSeenData> NotificationSeen { get; set; }
+          public DbSet<PasswordResetTokenData> PasswordResetToken { get; set; }
+          public DbSet<EmailVerificationData> EmailVerification { get; set; }
      }
 }

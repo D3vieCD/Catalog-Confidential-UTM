@@ -1,5 +1,6 @@
 using CatalogOnline.BusinessLayer;
 using CatalogOnline.BusinessLayer.Interfaces;
+using CatalogOnline.Domain.Models.Admin;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -60,6 +61,14 @@ namespace CatalogOnline.API.Controller
                var response = _adminAction.ResetUserDataAction(userId);
                if (!response.IsValid) return BadRequest(response.Message);
                return Ok(response.Message);
+          }
+
+          [HttpPut("users/{userId}/password")]
+          public IActionResult ResetUserPassword(int userId, [FromBody] ResetPasswordDto data)
+          {
+               var response = _adminAction.ResetUserPasswordAction(userId, data.NewPassword);
+               if (!response.IsValid) return BadRequest(new { message = response.Message });
+               return Ok(new { message = response.Message });
           }
 
           [HttpPut("groups/{id}/archive")]

@@ -281,6 +281,24 @@ namespace CatalogOnline.BusinessLayer.Core
                }
           }
 
+          public AdminActionResponse ResetUserPasswordActionExecution(int targetUserId, string newPassword)
+          {
+               if (string.IsNullOrWhiteSpace(newPassword) || newPassword.Length < 6)
+                    return new AdminActionResponse { IsValid = false, Message = "Parola trebuie să aibă cel puțin 6 caractere." };
+
+               using (var appDbContext = new AppDbContext())
+               {
+                    var user = appDbContext.User.FirstOrDefault(u => u.Id == targetUserId);
+                    if (user == null)
+                         return new AdminActionResponse { IsValid = false, Message = "Utilizatorul nu a fost găsit." };
+
+                    user.Password = BCrypt.Net.BCrypt.HashPassword(newPassword);
+                    appDbContext.SaveChanges();
+
+                    return new AdminActionResponse { IsValid = true, Message = $"Parola utilizatorului {user.FirstName} {user.LastName} a fost resetată." };
+               }
+          }
+
           public AdminActionResponse ArchiveAdminGroupActionExecution(int groupId)
           {
                using (var appDbContext = new AppDbContext())

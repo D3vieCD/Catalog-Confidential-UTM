@@ -6,6 +6,9 @@
 const paths = {
   login: '/login',
   register: '/register',
+  forgotPassword: '/forgot-password',
+  resetPassword: '/reset-password',
+  verifyEmail: '/verify-email',
   dashboard: '/dashboard',
   healthy: '/healthy',
 

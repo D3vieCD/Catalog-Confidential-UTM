@@ -35,5 +35,10 @@ namespace CatalogOnline.BusinessLayer.Structure
           {
                return ResetUserDataActionExecution(targetUserId);
           }
+
+          public AdminActionResponse ResetUserPasswordAction(int targetUserId, string newPassword)
+          {
+               return ResetUserPasswordActionExecution(targetUserId, newPassword);
+          }
      }
 }
