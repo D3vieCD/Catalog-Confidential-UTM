@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Home, Users, Users2, BookOpen, BarChart3, Calendar, Settings, Sparkles, LogOut } from 'lucide-react';
+import { Home, Users, Users2, BookOpen, BarChart3, Calendar, Settings, Sparkles, LogOut, ShieldCheck } from 'lucide-react';
 import  paths  from '../../routes/paths';
 import { ConfirmModal } from '../../components/ui/ConfirmModal';
 import { storage } from '../../utils';
@@ -29,6 +29,7 @@ const menuItems = [
 export const Sidebar = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const isAdmin = storage.get('userRole') === 'admin';
 
   const [isExpanded, setIsExpanded] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
@@ -104,6 +105,31 @@ export const Sidebar = () => {
             </button>
           ))}
         </nav>
+
+        {/* Admin Panel Button */}
+        {isAdmin && (
+          <div className="px-3 pb-2">
+            <button
+              type="button"
+              onClick={() => navigate(paths.adminRoutes.home)}
+              className={`w-full flex items-center gap-4 px-3 py-3.5 rounded-xl font-medium transition-all duration-200 ${
+                location.pathname.startsWith('/admin')
+                  ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-white shadow-lg'
+                  : 'text-amber-600 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/20'
+              }`}
+              title={!isExpanded ? 'Admin Panel' : ''}
+            >
+              <span className="flex-shrink-0"><ShieldCheck className="w-6 h-6" /></span>
+              <motion.span
+                animate={{ opacity: isExpanded ? 1 : 0, width: isExpanded ? 'auto' : 0 }}
+                transition={{ duration: 0.2 }}
+                className="overflow-hidden whitespace-nowrap"
+              >
+                Admin Panel
+              </motion.span>
+            </button>
+          </div>
+        )}
 
         {/* Buton de Logout */}
         <div className="p-3 border-t border-gray-200 dark:border-gray-700">

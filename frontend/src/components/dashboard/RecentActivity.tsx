@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-interface Activity {
-  id: string;
+export interface Activity {
+  id: number;
   studentName: string;
   action: string;
   details: string;
@@ -71,7 +71,7 @@ export const RecentActivity: React.FC<RecentActivityProps> = ({ activities }) =>
         style={{ maxHeight: showAll ? '420px' : 'none' }}
       >
         {activities.slice(0, PREVIEW_COUNT).map((activity) => (
-          <div key={activity.id} className="flex items-start space-x-3">
+          <div key={`${activity.type}-${activity.id}`} className="flex items-start space-x-3">
             {getActivityIcon(activity.type)}
             <div className="flex-1 min-w-0">
               <div className="flex items-center justify-between">
@@ -95,7 +95,7 @@ export const RecentActivity: React.FC<RecentActivityProps> = ({ activities }) =>
         <AnimatePresence>
           {showAll && activities.slice(PREVIEW_COUNT).map((activity, i) => (
             <motion.div
-              key={activity.id}
+              key={`${activity.type}-${activity.id}`}
               initial={{ opacity: 0, y: -6 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -6 }}

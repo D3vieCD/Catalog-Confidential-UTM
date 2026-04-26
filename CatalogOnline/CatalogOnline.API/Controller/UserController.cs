@@ -1,13 +1,14 @@
 ﻿using CatalogOnline.BusinessLayer;
 using CatalogOnline.BusinessLayer.Interfaces;
 using CatalogOnline.Domain.Models.User;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CatalogOnline.API.Controller
 {
      [Route("api/user")]
      [ApiController]
+     [Authorize(Roles = "admin")]
      public class UserController : ControllerBase
      {
           private readonly IUserAction _userAction;
@@ -67,6 +68,14 @@ namespace CatalogOnline.API.Controller
                     return BadRequest(response.Message);
                }
                return Ok(response.User);
+          }
+
+          [HttpPut("{userId}/role")]
+          public IActionResult UpdateUserRole([FromRoute] int userId, UpdateUserRoleDto roleData)
+          {
+               var response = _userAction.UpdateUserRoleAction(userId, roleData);
+               if (!response.IsValid) return BadRequest(response.Message);
+               return Ok(response.Message);
           }
      }
 }

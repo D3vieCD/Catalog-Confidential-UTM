@@ -16,5 +16,10 @@ namespace CatalogOnline.BusinessLayer.Structure
           {
                return LoginActionExecution(loginData);
           }
+
+          public AuthActionResponse RegisterAdminAction(RegisterAdminDto registerData, string validKey)
+          {
+               return RegisterAdminActionExecution(registerData, validKey);
+          }
      }
 }

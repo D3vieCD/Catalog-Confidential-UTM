@@ -1,30 +1,17 @@
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { AreaChart, Area, ResponsiveContainer, Tooltip } from 'recharts';
-import { MOCK_SYSTEM_STATS, MOCK_ACTIVITY_LOG, MOCK_TRENDS } from '../_mock/mockAdminData';
-import type { ActivityLog } from '../_mock/mockAdminData';
+import { useAdmin, type AdminStats, type AdminActivity } from '../../hooks/useAdmin';
 
-/**
- * AdminDashboard - Pagina principală panou admin
- * 4 stat cards cu grafice trend + activity log + stare sistem
- */
-
-const TYPE_CONFIG: Record<ActivityLog['type'], { bg: string; text: string; label: string }> = {
-  create: { bg: 'bg-emerald-100 dark:bg-emerald-900/30', text: 'text-emerald-600 dark:text-emerald-400', label: 'Creat' },
+const TYPE_CONFIG: Record<string, { bg: string; text: string; label: string }> = {
+  create: { bg: 'bg-emerald-100 dark:bg-emerald-900/30', text: 'text-emerald-600 dark:text-emerald-400', label: 'Adăugat' },
   update: { bg: 'bg-amber-100 dark:bg-amber-900/30',   text: 'text-amber-600 dark:text-amber-400',   label: 'Modificat' },
   delete: { bg: 'bg-red-100 dark:bg-red-900/30',       text: 'text-red-600 dark:text-red-400',       label: 'Șters' },
-  login:  { bg: 'bg-stone-100 dark:bg-stone-700',       text: 'text-stone-600 dark:text-stone-400',   label: 'Login' },
 };
 
-const statCards = [
+const statCards = (stats: AdminStats) => [
   {
     label: 'Total Utilizatori',
-    value: MOCK_SYSTEM_STATS.totalUsers,
-    change: '+20%',
-    positive: true,
-    trend: MOCK_TRENDS.users,
-    strokeColor: '#059669',
-    fillColor: '#059669',
-    gradientId: 'grad-users',
+    value: stats.totalUsers,
     iconBg: 'bg-emerald-100 dark:bg-emerald-900/30',
     iconColor: 'text-emerald-600 dark:text-emerald-400',
     icon: (
@@ -35,13 +22,7 @@ const statCards = [
   },
   {
     label: 'Total Studenți',
-    value: MOCK_SYSTEM_STATS.totalStudents,
-    change: '+50%',
-    positive: true,
-    trend: MOCK_TRENDS.students,
-    strokeColor: '#3B82F6',
-    fillColor: '#3B82F6',
-    gradientId: 'grad-students',
+    value: stats.totalStudents,
     iconBg: 'bg-blue-100 dark:bg-blue-900/30',
     iconColor: 'text-blue-600 dark:text-blue-400',
     icon: (
@@ -52,13 +33,7 @@ const statCards = [
   },
   {
     label: 'Total Grupe',
-    value: MOCK_SYSTEM_STATS.totalGroups,
-    change: '+150%',
-    positive: true,
-    trend: MOCK_TRENDS.groups,
-    strokeColor: '#F59E0B',
-    fillColor: '#F59E0B',
-    gradientId: 'grad-groups',
+    value: stats.totalGroups,
     iconBg: 'bg-amber-100 dark:bg-amber-900/30',
     iconColor: 'text-amber-600 dark:text-amber-400',
     icon: (
@@ -69,13 +44,7 @@ const statCards = [
   },
   {
     label: 'Medie Globală',
-    value: MOCK_SYSTEM_STATS.globalAverage.toFixed(1),
-    change: '-0.1',
-    positive: false,
-    trend: MOCK_TRENDS.average,
-    strokeColor: '#78716C',
-    fillColor: '#78716C',
-    gradientId: 'grad-avg',
+    value: stats.globalAverage.toFixed(1),
     iconBg: 'bg-stone-100 dark:bg-stone-700',
     iconColor: 'text-stone-600 dark:text-stone-400',
     icon: (
@@ -86,86 +55,62 @@ const statCards = [
   },
 ];
 
-const CustomTooltip = ({ active, payload, label }: { active?: boolean; payload?: { value: number }[]; label?: string }) => {
-  if (active && payload && payload.length) {
+export const AdminDashboard = () => {
+  const { getAdminStats, getAdminActivity } = useAdmin();
+  const [stats, setStats] = useState<AdminStats | null>(null);
+  const [activities, setActivities] = useState<AdminActivity[]>([]);
+  const [loadingData, setLoadingData] = useState(true);
+
+  useEffect(() => {
+    Promise.all([getAdminStats(), getAdminActivity()])
+      .then(([s, a]) => {
+        setStats(s);
+        setActivities(a);
+      })
+      .catch(() => {})
+      .finally(() => setLoadingData(false));
+  }, []);
+
+  if (loadingData || !stats) {
     return (
-      <div className="bg-white dark:bg-gray-800 border border-stone-200 dark:border-gray-700 rounded-lg px-3 py-2 shadow-lg text-xs">
-        <p className="text-gray-500 dark:text-gray-400">{label}</p>
-        <p className="font-semibold text-gray-900 dark:text-white">{payload[0].value}</p>
+      <div className="flex items-center justify-center h-64 text-gray-400 dark:text-gray-500 text-sm">
+        Se încarcă...
       </div>
     );
   }
-  return null;
-};
 
-export const AdminDashboard = () => {
+  const cards = statCards(stats);
+
   return (
     <div className="space-y-6">
-      {/* Titlu */}
       <div>
         <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Dashboard Admin</h1>
-        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-          An școlar {MOCK_SYSTEM_STATS.currentYear} — vedere de ansamblu sistem
-        </p>
+        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Vedere de ansamblu sistem</p>
       </div>
 
-      {/* Stat Cards cu grafice */}
+      {/* Stat Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-        {statCards.map((card, index) => (
+        {cards.map((card, index) => (
           <motion.div
             key={card.label}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.07 }}
-            className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-stone-200 dark:border-gray-700 overflow-hidden"
+            className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-stone-200 dark:border-gray-700 p-5"
           >
-            {/* Top: label + icon */}
-            <div className="flex items-center justify-between px-5 pt-5 pb-3">
+            <div className="flex items-center justify-between mb-4">
               <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">{card.label}</p>
               <div className={`p-2 rounded-xl ${card.iconBg} ${card.iconColor}`}>
                 {card.icon}
               </div>
             </div>
-
-            {/* Valoare + badge schimbare */}
-            <div className="flex items-end justify-between px-5 pb-4">
-              <p className="text-3xl font-bold text-gray-900 dark:text-white">{card.value}</p>
-              <span className={`text-xs font-semibold px-2 py-1 rounded-full ${
-                card.positive
-                  ? 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400'
-                  : 'bg-red-50 dark:bg-red-900/30 text-red-500 dark:text-red-400'
-              }`}>
-                {card.change} față de oct
-              </span>
-            </div>
-
-            {/* Grafic sparkline */}
-            <ResponsiveContainer width="100%" height={70}>
-              <AreaChart data={card.trend} margin={{ top: 0, right: 0, left: 0, bottom: 0 }}>
-                <defs>
-                  <linearGradient id={card.gradientId} x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor={card.fillColor} stopOpacity={0.25} />
-                    <stop offset="95%" stopColor={card.fillColor} stopOpacity={0} />
-                  </linearGradient>
-                </defs>
-                <Tooltip content={<CustomTooltip />} />
-                <Area
-                  type="monotone"
-                  dataKey="valoare"
-                  stroke={card.strokeColor}
-                  strokeWidth={2}
-                  fill={`url(#${card.gradientId})`}
-                  dot={false}
-                  activeDot={{ r: 4, strokeWidth: 0 }}
-                />
-              </AreaChart>
-            </ResponsiveContainer>
+            <p className="text-3xl font-bold text-gray-900 dark:text-white">{card.value}</p>
           </motion.div>
         ))}
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-        {/* Activity Log */}
+        {/* Activitate Recentă */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -175,29 +120,34 @@ export const AdminDashboard = () => {
           <h2 className="text-base font-semibold text-gray-900 dark:text-white mb-4">
             Activitate Recentă
           </h2>
-          <div className="space-y-3">
-            {MOCK_ACTIVITY_LOG.map((log) => {
-              const cfg = TYPE_CONFIG[log.type];
-              return (
-                <div key={log.id} className="flex items-start gap-3">
-                  <span className={`mt-0.5 px-2 py-0.5 rounded-full text-xs font-semibold flex-shrink-0 ${cfg.bg} ${cfg.text}`}>
-                    {cfg.label}
-                  </span>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm text-gray-800 dark:text-gray-200 truncate">
-                      <span className="font-medium">{log.user}</span>{' '}
-                      {log.action}{' '}
-                      <span className="text-gray-500 dark:text-gray-400">{log.target}</span>
-                    </p>
-                    <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">{log.timestamp}</p>
+          {activities.length === 0 ? (
+            <p className="text-sm text-gray-400 dark:text-gray-500 text-center py-8">
+              Nicio activitate înregistrată.
+            </p>
+          ) : (
+            <div className="space-y-3">
+              {activities.map((log, idx) => {
+                const cfg = TYPE_CONFIG[log.type] ?? TYPE_CONFIG['create'];
+                return (
+                  <div key={`${log.type}-${log.id}-${idx}`} className="flex items-start gap-3">
+                    <span className={`mt-0.5 px-2 py-0.5 rounded-full text-xs font-semibold flex-shrink-0 ${cfg.bg} ${cfg.text}`}>
+                      {cfg.label}
+                    </span>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm text-gray-800 dark:text-gray-200 truncate">
+                        <span className="font-medium">{log.action}</span>{' '}
+                        <span className="text-gray-500 dark:text-gray-400">{log.target}</span>
+                      </p>
+                      <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">{log.timestamp}</p>
+                    </div>
                   </div>
-                </div>
-              );
-            })}
-          </div>
+                );
+              })}
+            </div>
+          )}
         </motion.div>
 
-        {/* Stare sistem */}
+        {/* Stare Sistem */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -209,30 +159,29 @@ export const AdminDashboard = () => {
           </h2>
           <div className="space-y-4">
             <div className="flex items-center justify-between py-2 border-b border-stone-100 dark:border-gray-700">
-              <span className="text-sm text-gray-500 dark:text-gray-400">An școlar</span>
-              <span className="text-sm font-semibold text-gray-900 dark:text-white">
-                {MOCK_SYSTEM_STATS.currentYear}
-              </span>
-            </div>
-            <div className="flex items-center justify-between py-2 border-b border-stone-100 dark:border-gray-700">
               <span className="text-sm text-gray-500 dark:text-gray-400">Utilizatori activi</span>
               <span className="text-sm font-semibold text-emerald-600 dark:text-emerald-400">
-                {MOCK_SYSTEM_STATS.totalUsers}
+                {stats.totalUsers}
               </span>
             </div>
             <div className="flex items-center justify-between py-2 border-b border-stone-100 dark:border-gray-700">
               <span className="text-sm text-gray-500 dark:text-gray-400">Grupe active</span>
               <span className="text-sm font-semibold text-gray-900 dark:text-white">
-                {MOCK_SYSTEM_STATS.totalGroups}
+                {stats.totalGroups}
+              </span>
+            </div>
+            <div className="flex items-center justify-between py-2 border-b border-stone-100 dark:border-gray-700">
+              <span className="text-sm text-gray-500 dark:text-gray-400">Studenți înregistrați</span>
+              <span className="text-sm font-semibold text-gray-900 dark:text-white">
+                {stats.totalStudents}
               </span>
             </div>
             <div className="flex items-center justify-between py-2">
-              <span className="text-sm text-gray-500 dark:text-gray-400">Studenți înregistrați</span>
+              <span className="text-sm text-gray-500 dark:text-gray-400">Medie globală</span>
               <span className="text-sm font-semibold text-gray-900 dark:text-white">
-                {MOCK_SYSTEM_STATS.totalStudents}
+                {stats.globalAverage.toFixed(1)}
               </span>
             </div>
-
             <div className="mt-2 p-3 rounded-xl bg-emerald-50 dark:bg-emerald-900/20 flex items-center gap-2">
               <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
               <span className="text-xs font-medium text-emerald-700 dark:text-emerald-400">

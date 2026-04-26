@@ -54,18 +54,6 @@ export const QuickActions: React.FC<QuickActionsProps> = ({ actions }) => {
       color: 'bg-stone-100 dark:bg-stone-700 text-stone-600 dark:text-stone-300',
       route: '/dashboard/reports'
     },
-    {
-      id: 'view-schedule',
-      title: 'Vezi Orar',
-      description: 'Accesează orarul complet',
-      icon: (
-        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-        </svg>
-      ),
-      color: 'bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400',
-      route: '/calendar'
-    }
   ];
 
   const actionsToRender = actions || defaultActions;

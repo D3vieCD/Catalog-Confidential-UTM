@@ -92,5 +92,49 @@ namespace CatalogOnline.BusinessLayer.Core
                     Role = user.Role
                };
           }
+
+          public AuthActionResponse RegisterAdminActionExecution(RegisterAdminDto registerData, string validKey)
+          {
+               if (registerData == null)
+                    return new AuthActionResponse { IsValid = false, Message = "Datele de înregistrare sunt necesare." };
+
+               if (registerData.SecretKey != validKey)
+                    return new AuthActionResponse { IsValid = false, Message = "Cheie secretă invalidă." };
+
+               if (string.IsNullOrWhiteSpace(registerData.UserName))
+                    return new AuthActionResponse { IsValid = false, Message = "Username-ul este necesar." };
+
+               if (string.IsNullOrWhiteSpace(registerData.Email))
+                    return new AuthActionResponse { IsValid = false, Message = "Email-ul este necesar." };
+
+               if (string.IsNullOrWhiteSpace(registerData.Password))
+                    return new AuthActionResponse { IsValid = false, Message = "Parola este necesară." };
+
+               if (registerData.Password != registerData.ConfirmPassword)
+                    return new AuthActionResponse { IsValid = false, Message = "Parolele nu coincid." };
+
+               using var appDbContext = new AppDbContext();
+
+               if (appDbContext.User.Any(u => u.UserName == registerData.UserName))
+                    return new AuthActionResponse { IsValid = false, Message = "Username-ul este deja folosit." };
+
+               if (appDbContext.User.Any(u => u.Email == registerData.Email))
+                    return new AuthActionResponse { IsValid = false, Message = "Email-ul este deja folosit." };
+
+               var user = new UserData
+               {
+                    UserName = registerData.UserName,
+                    FirstName = registerData.FirstName,
+                    LastName = registerData.LastName,
+                    Email = registerData.Email,
+                    Password = BCrypt.Net.BCrypt.HashPassword(registerData.Password),
+                    Role = "admin"
+               };
+
+               appDbContext.User.Add(user);
+               appDbContext.SaveChanges();
+
+               return new AuthActionResponse { IsValid = true, Message = "Cont de administrator creat cu succes." };
+          }
      }
 }

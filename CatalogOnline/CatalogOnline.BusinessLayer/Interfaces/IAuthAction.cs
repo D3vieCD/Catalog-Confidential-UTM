@@ -7,5 +7,6 @@ namespace CatalogOnline.BusinessLayer.Interfaces
      {
           AuthActionResponse RegisterAction(RegisterDto registerData);
           AuthActionResponse LoginAction(LoginDto loginData);
+          AuthActionResponse RegisterAdminAction(RegisterAdminDto registerData, string validKey);
      }
 }

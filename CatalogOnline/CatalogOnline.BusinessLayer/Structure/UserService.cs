@@ -28,6 +28,9 @@ namespace CatalogOnline.BusinessLayer.Structure
           {
                return GetUserByIdActionExecution(id);
           }
+          public UserActionResponse UpdateUserRoleAction(int userId, UpdateUserRoleDto roleData)
+          {
+               return UpdateUserRoleActionExecution(userId, roleData);
+          }
      }
-    
 }

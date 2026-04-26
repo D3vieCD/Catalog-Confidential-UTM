@@ -11,5 +11,6 @@ namespace CatalogOnline.BusinessLayer.Interfaces
           UserActionResponse CreateUserAction(CreateUserDto createData);
           UserActionResponse UpdateUserAction(int userId, UpdateUserDto userData);
           UserActionResponse DeleteUserAction(int id);
+          UserActionResponse UpdateUserRoleAction(int userId, UpdateUserRoleDto roleData);
      }
 }
