@@ -1,10 +1,10 @@
 import React from 'react';
 
-interface StatsCardProps {
+export interface StatsCardProps {
   title: string;
   value: number | string;
   subtitle?: string | null;
-  change: string;
+  change?: string | null;
   changeType: 'increase' | 'decrease';
   icon: string;
   color: string;
@@ -69,30 +69,32 @@ export const StatsCard: React.FC<StatsCardProps> = ({
               </p>
             )}
           </div>
-          <div className="flex items-center mt-2">
-            <span
-              className={`inline-flex items-center text-sm font-medium ${
-                isPositive ? 'text-green-600' : 'text-red-600'
-              }`}
-            >
-              <svg
-                className={`w-4 h-4 mr-1 ${
-                  isPositive ? 'rotate-0' : 'rotate-180'
+          {change && (
+            <div className="flex items-center mt-2">
+              <span
+                className={`inline-flex items-center text-sm font-medium ${
+                  isPositive ? 'text-green-600' : 'text-red-600'
                 }`}
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M5 10l7-7m0 0l7 7m-7-7v18"
-                />
-              </svg>
-              {change}
-            </span>
-          </div>
+                <svg
+                  className={`w-4 h-4 mr-1 ${
+                    isPositive ? 'rotate-0' : 'rotate-180'
+                  }`}
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M5 10l7-7m0 0l7 7m-7-7v18"
+                  />
+                </svg>
+                {change}
+              </span>
+            </div>
+          )}
         </div>
         <div className={`ml-4 p-3 rounded-xl ${color}`}>
           {getIcon(icon)}
