@@ -69,5 +69,9 @@ namespace CatalogOnline.BusinessLayer
           {
                return new DashboardService();
           }
+          public IAdminAction AdminAction()
+          {
+               return new AdminService();
+          }
      }
 }

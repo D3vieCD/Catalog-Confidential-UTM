@@ -11,12 +11,29 @@ export interface AdminUser {
     createdOn: string;
 }
 
+export interface AdminStats {
+    totalUsers: number;
+    totalStudents: number;
+    totalGroups: number;
+    globalAverage: number;
+}
+
+export interface AdminActivity {
+    id: number;
+    action: string;
+    target: string;
+    timestamp: string;
+    type: string;
+}
+
 export interface AdminContextType {
     loading: boolean;
     error: string | null;
     getAllUsers: () => Promise<AdminUser[]>;
     deleteUser: (userId: number) => Promise<void>;
     updateUserRole: (userId: number, role: string) => Promise<void>;
+    getAdminStats: () => Promise<AdminStats>;
+    getAdminActivity: () => Promise<AdminActivity[]>;
 }
 
 export const AdminContext = createContext<AdminContextType | undefined>(undefined);
@@ -66,8 +83,36 @@ export function AdminProvider({ children }: { children: ReactNode }) {
         }
     }
 
+    async function getAdminStats(): Promise<AdminStats> {
+        try {
+            setLoading(true);
+            setError(null);
+            const { data } = await axios.get<AdminStats>('/admin/stats');
+            return data;
+        } catch (err) {
+            setError("Nu s-au putut încărca statisticile.");
+            throw err;
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    async function getAdminActivity(): Promise<AdminActivity[]> {
+        try {
+            setLoading(true);
+            setError(null);
+            const { data } = await axios.get<AdminActivity[]>('/admin/activity');
+            return data || [];
+        } catch (err) {
+            setError("Nu s-a putut încărca activitatea.");
+            throw err;
+        } finally {
+            setLoading(false);
+        }
+    }
+
     return (
-        <AdminContext.Provider value={{ getAllUsers, deleteUser, updateUserRole, loading, error }}>
+        <AdminContext.Provider value={{ getAllUsers, deleteUser, updateUserRole, getAdminStats, getAdminActivity, loading, error }}>
             {children}
         </AdminContext.Provider>
     );

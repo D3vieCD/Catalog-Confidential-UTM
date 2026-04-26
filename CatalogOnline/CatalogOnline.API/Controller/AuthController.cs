@@ -29,7 +29,7 @@ namespace CatalogOnline.API.Controller
           }
 
           [HttpPost("register-admin")]
-          public IActionResult RegisterAdmin(RegisterAdminDto registerData)
+          public IActionResult RegisterAdmin([FromBody] RegisterAdminDto registerData)
           {
                var response = _authAction.RegisterAdminAction(registerData, _adminSecretKey);
                if (!response.IsValid)
