@@ -1,5 +1,6 @@
 ﻿using CatalogOnline.BusinessLayer.Interfaces;
 using CatalogOnline.BusinessLayer.Structure;
+using CatalogOnline.BusinessLayer.Core;
 using System;
 using System;
 using System;
@@ -63,6 +64,10 @@ namespace CatalogOnline.BusinessLayer
           public ISettingsAction SettingsAction()
           {
                return new SettingsService();
+          }
+          public IDashboardAction DashboardAction()
+          {
+               return new DashboardService();
           }
      }
 }
