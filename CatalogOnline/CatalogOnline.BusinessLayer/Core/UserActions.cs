@@ -108,5 +108,21 @@ namespace CatalogOnline.BusinessLayer.Core
                }
           }
 
+          public UserActionResponse UpdateUserRoleActionExecution(int userId, UpdateUserRoleDto roleData)
+          {
+               using (var appDbContext = new AppDbContext())
+               {
+                    var user = appDbContext.User.Find(userId);
+                    if (user == null)
+                         return new UserActionResponse { IsValid = false, Message = "Utilizatorul nu a fost găsit." };
+
+                    if (string.IsNullOrWhiteSpace(roleData.Role))
+                         return new UserActionResponse { IsValid = false, Message = "Rolul este necesar." };
+
+                    user.Role = roleData.Role;
+                    appDbContext.SaveChanges();
+                    return new UserActionResponse { IsValid = true, Message = "Rol actualizat cu succes." };
+               }
+          }
      }
 }

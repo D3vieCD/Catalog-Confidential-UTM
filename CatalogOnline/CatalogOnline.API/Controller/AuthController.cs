@@ -10,17 +10,28 @@ namespace CatalogOnline.API.Controller
      public class AuthController : ControllerBase
      {
           private readonly IAuthAction _authAction;
+          private readonly string _adminSecretKey;
 
-          public AuthController()
+          public AuthController(IConfiguration configuration)
           {
                var bl = new BusinessLogic();
                _authAction = bl.AuthAction();
+               _adminSecretKey = configuration["AdminSecretKey"] ?? string.Empty;
           }
 
           [HttpPost("register")]
           public IActionResult Register(RegisterDto registerData)
           {
                var response = _authAction.RegisterAction(registerData);
+               if (!response.IsValid)
+                    return BadRequest(new { message = response.Message });
+               return Ok(new { message = response.Message });
+          }
+
+          [HttpPost("register-admin")]
+          public IActionResult RegisterAdmin(RegisterAdminDto registerData)
+          {
+               var response = _authAction.RegisterAdminAction(registerData, _adminSecretKey);
                if (!response.IsValid)
                     return BadRequest(new { message = response.Message });
                return Ok(new { message = response.Message });

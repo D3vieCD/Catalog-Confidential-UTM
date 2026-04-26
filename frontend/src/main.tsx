@@ -15,6 +15,7 @@ import { CalendarProvider } from './context/CalendarProvider.tsx'
 import { ReportsProvider } from './context/ReportProvider.tsx'
 import { SettingsProvider } from './context/SettingsProvider.tsx'
 import { DashboardProvider } from './context/DashboardProvider.tsx'
+import { AdminProvider } from './context/AdminProvider.tsx'
 createRoot(document.getElementById('root')!).render(
   <BrowserRouter>
     <StrictMode>
@@ -30,7 +31,9 @@ createRoot(document.getElementById('root')!).render(
                         <ReportsProvider>
                           <SettingsProvider>
                             <DashboardProvider>
-                              <App />
+                              <AdminProvider>
+                                <App />
+                              </AdminProvider>
                             </DashboardProvider>
                           </SettingsProvider>
                         </ReportsProvider>
