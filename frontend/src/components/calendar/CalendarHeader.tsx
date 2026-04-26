@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { AddButton, EditButton, DeleteButton } from './buttons';
+import { AddButton } from './buttons';
 
 interface CalendarHeaderProps {
   currentMonth: Date;
@@ -8,8 +8,6 @@ interface CalendarHeaderProps {
   onNextMonth: () => void;
   onToday?: () => void;
   onAdd?: () => void;
-  onEdit?: () => void;
-  onDelete?: () => void;
 }
 
 export const CalendarHeader: React.FC<CalendarHeaderProps> = ({
@@ -17,8 +15,6 @@ export const CalendarHeader: React.FC<CalendarHeaderProps> = ({
   onPreviousMonth,
   onNextMonth,
   onAdd,
-  onEdit,
-  onDelete,
 }) => {
   const monthNames = [
     'Ianuarie', 'Februarie', 'Martie', 'Aprilie', 'Mai', 'Iunie',
@@ -69,8 +65,6 @@ export const CalendarHeader: React.FC<CalendarHeaderProps> = ({
 
         <div className="flex items-center gap-3">
           <AddButton onClick={onAdd} />
-          <EditButton onClick={onEdit} />
-          <DeleteButton onClick={onDelete} />
         </div>
       </div>
 

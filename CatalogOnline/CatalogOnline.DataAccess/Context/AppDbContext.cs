@@ -6,6 +6,7 @@ using CatalogOnline.Domain.Entities.Group;
 using CatalogOnline.Domain.Entities.Students;
 using CatalogOnline.Domain.Entities.User;
 using CatalogOnline.Domain.Entities.Calendar;
+using CatalogOnline.Domain.Entities.Notification;
 using CatalogOnline.Domain.Entities.Report;
 using Microsoft.EntityFrameworkCore;
 
@@ -115,5 +116,6 @@ namespace CatalogOnline.DataAccess.Context
           public DbSet<CalendarEventData> CalendarEvents { get; set; }
           public DbSet<ReportData> Report { get; set; }
           public DbSet<ImportLogData> ImportLog { get; set; }
+          public DbSet<NotificationSeenData> NotificationSeen { get; set; }
      }
 }

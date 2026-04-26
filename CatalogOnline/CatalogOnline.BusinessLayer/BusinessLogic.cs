@@ -73,5 +73,9 @@ namespace CatalogOnline.BusinessLayer
           {
                return new AdminService();
           }
+          public INotificationAction NotificationAction()
+          {
+               return new NotificationService();
+          }
      }
 }
